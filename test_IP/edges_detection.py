@@ -4,14 +4,19 @@
 # File to test edges detection with Image Processing
 
 import cv2
+import time
 import argparse
 import numpy as np
+from imutils.video import VideoStream
 
 
 def get_arguments():
     ap = argparse.ArgumentParser()
     ap.add_argument('-w', '--webcam', required=False,
                     help='Use webcam', action='store_true')
+    ap.add_argument('-p', '--picamera', type=int, default=-1,
+                    help='Whether or not the raspberry Pi camera should be used')
+
     args = vars(ap.parse_args())
 
     return args
@@ -19,7 +24,12 @@ def get_arguments():
 
 def main():
     args = get_arguments()
-    camera = cv2.VideoCapture(0)
+
+    if args['webcam']:
+        camera = cv2.VideoCapture(0)
+    elif args['picamera']:
+        camera = VideoStream(usePiCamera=args['picamera'] > 0).start()
+        time.sleep(2.0)
 
     while True:
         if args['webcam']:
@@ -27,6 +37,8 @@ def main():
 
             if not ret:
                 break
+        elif args['picamera']:
+            image = camera.read()
 
         cv2.imshow("Originale", image)
 

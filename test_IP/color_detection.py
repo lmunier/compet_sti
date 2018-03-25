@@ -1,8 +1,10 @@
 # python dynamic_color_tracking.py --filter HSV --webcam
 
 import cv2
+import time
 import argparse
 import numpy as np
+from imutils.video import VideoStream
 
 
 DELAY_BLUR = 100
@@ -29,6 +31,8 @@ def get_arguments():
                     help='Range filter. RGB or HSV')
     ap.add_argument('-w', '--webcam', required=False,
                     help='Use webcam', action='store_true')
+    ap.add_argument('-p', '--picamera', type=int, default=-1,
+                    help='Whether or not the raspberry Pi camera should be used')
     args = vars(ap.parse_args())
 
     if not args['filter'].upper() in ['RGB', 'HSV']:
@@ -50,7 +54,13 @@ def get_trackbar_values(range_filter):
 def main():
     args = get_arguments()
     range_filter = args['filter'].upper()
-    camera = cv2.VideoCapture(0)
+
+    if args['webcam']:
+        camera = cv2.VideoCapture(0)
+    elif args['picamera']:
+        camera = VideoStream(usePiCamera=args['picamera'] > 0).start()
+        times.sleep(2.0)
+
     setup_trackbars(range_filter)
 
     while True:
@@ -59,11 +69,13 @@ def main():
 
             if not ret:
                 break
+        elif args['picamera']:
+            image = camera.read()
 
-            if range_filter == 'RGB':
-                frame_to_thresh = image.copy()
-            else:
-                frame_to_thresh = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        if range_filter == 'RGB':
+            frame_to_thresh = image.copy()
+        else:
+            frame_to_thresh = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         v1_min, v2_min, v3_min, v1_max, v2_max, v3_max = get_trackbar_values(range_filter)
 
