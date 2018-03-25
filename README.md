@@ -1,0 +1,1 @@
+# compet_sti
