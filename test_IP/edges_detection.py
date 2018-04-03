@@ -7,6 +7,7 @@ import cv2
 import time
 import argparse
 import numpy as np
+
 from imutils.video import VideoStream
 
 
@@ -29,6 +30,9 @@ def main():
         camera = cv2.VideoCapture(0)
     elif args['picamera']:
         camera = VideoStream(usePiCamera=args['picamera'] > 0).start()
+        camera.resolution = (640, 480)
+        camera.brightness = 25
+        camera.framerate = 30
         time.sleep(2.0)
 
     while True:
@@ -44,11 +48,13 @@ def main():
 
         # convert the image to grayscale, blur it, and find edges
         # in the image
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        #gray = cv2.bilateralFilter(gray, 11, 17, 17)
-        edged = cv2.Canny(gray, 100, 200)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv = cv2.inRange(hsv, (30, 30, 40), (153, 153, 255))
+#        gray = cv2.bilateralFilter(gray, 11, 17, 17)
+        edged = cv2.Canny(hsv, 100, 200)
 
-        cv2.imshow("Grayscaled", edged)
+        cv2.imshow("HSV", hsv)
+        cv2.imshow("Edged", edged)
 
         if cv2.waitKey(1) & 0xFF is ord('q'):
             break
