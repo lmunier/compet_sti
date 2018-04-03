@@ -9,14 +9,10 @@ import cv2
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-o", "--output", required=True,
-	help="path to output video file")
-ap.add_argument("-p", "--picamera", type=int, default=-1,
-	help="whether or not the Raspberry Pi camera should be used")
-ap.add_argument("-f", "--fps", type=int, default=20,
-	help="FPS of output video")
-ap.add_argument("-c", "--codec", type=str, default="MJPG",
-	help="codec of output video")
+ap.add_argument("-o", "--output", required=True, help="path to output video file")
+ap.add_argument("-p", "--picamera", type=int, default=-1, help="whether or not the Raspberry Pi camera should be used")
+ap.add_argument("-f", "--fps", type=int, default=20, help="FPS of output video")
+ap.add_argument("-c", "--codec", type=str, default="MJPG", help="codec of output video")
 args = vars(ap.parse_args())
 
 # initialize the video stream and allow the camera
