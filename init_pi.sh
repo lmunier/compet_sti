@@ -9,6 +9,15 @@ sudo apt-get -y update
 # Install tmux to split screen in commandline
 sudo apt-get install -y tmux
 
+# Install libraries to use webcam
+sudo apt-get install -y fswebcam
+
+# Install libraries to use raspicam
+pip install picamera[array]
+
+# Install some features to work on opencv
+pip install imutils
+
 # Clean installations
 sudo apt-get -y autoclean
 sudo apt-get -y autoremove
