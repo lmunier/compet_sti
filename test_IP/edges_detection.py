@@ -1,5 +1,6 @@
+#!/usr/bin/python
 # -*-coding:Utf-8 -*
-#lm250318.
+#lm020518.1510
 
 # File to test edges detection with Image Processing
 
