@@ -6,9 +6,14 @@
 
 import numpy as np
 import cv2 as cv
+from imutils.video import FPS
 
 face_cascade = cv.CascadeClassifier('/home/pi/opencv-3.4.1/data/haarcascades/haarcascade_frontalface_default.xml')
 vs_webcam = cv.VideoCapture(0)
+vs_webcam.set(cv.CAP_PROP_FRAME_WIDTH, 320)
+vs_webcam.set(cv.CAP_PROP_FRAME_HEIGHT, 240)
+vs_webcam.set(cv.CAP_PROP_FPS, 10);
+fps = FPS().start()
 
 while True:
 	ret_val, frame  = vs_webcam.read()
@@ -29,4 +34,12 @@ while True:
 	if key == ord('q'):
 		break
 
+	# update the FPS counter
+	fps.update()
+
 cv.destroyAllWindows()
+
+# stop the timer and display FPS information
+fps.stop()
+print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
+print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
