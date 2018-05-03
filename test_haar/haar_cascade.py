@@ -9,10 +9,13 @@ import cv2 as cv
 from imutils.video import FPS
 
 face_cascade = cv.CascadeClassifier('/home/pi/opencv-3.4.1/data/haarcascades/haarcascade_frontalface_default.xml')
+#bottle_cascade = cv.CascadeClassifier('/home/pi/dataset/data/cascade.xml')
+
 vs_webcam = cv.VideoCapture(0)
 vs_webcam.set(cv.CAP_PROP_FRAME_WIDTH, 320)
 vs_webcam.set(cv.CAP_PROP_FRAME_HEIGHT, 240)
 vs_webcam.set(cv.CAP_PROP_FPS, 10);
+cv.waitKey(1000)
 fps = FPS().start()
 
 while True:
@@ -20,8 +23,10 @@ while True:
 	gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 
 	faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+#	bottle = bottle_cascade.detectMultiScale(frame, 1.3, 5)
 
 	for (x, y, w, h) in faces:
+#	for (x, y, w, h) in bottle:
 		cv.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 		roi_gray = gray[y:y+h, x:x+w]
 		roi_color = frame[y:y+h, x:x+w]

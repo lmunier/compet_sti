@@ -48,7 +48,7 @@ while True:
 	if args["picamera"] == 3:
 		cv2.imshow("Frame PI", frame_raspi)
 		cv2.imshow("Frame webcam", frame_webcam)
-	else:
+	elif args["picamera"]:
 		cv2.imshow("Frame", frame)
 
 	key = cv2.waitKey(1) & 0xFF
