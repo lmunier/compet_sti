@@ -18,6 +18,7 @@ def take_args():
 	ap = argparse.ArgumentParser()
 	ap.add_argument("-d", "--data", default='p', help="Photo or Video to save")
 	ap.add_argument("-c", "--camera", default='r', help="Raspicam or Webcam")
+	ap.add_argument("-p", "--preview", default='n', help="Would you like to preview data ?")
 	args = vars(ap.parse_args())
 
 	return args
@@ -27,21 +28,22 @@ def init_webcam(data):
 	if data["camera"] == 'w':
 		vs = cv.VideoCapture(0)
 		time.sleep(1.0)
-		vs.set(cv.CAP_PROP_FRAME_WIDTH, 160)
-		vs.set(cv.CAP_PROP_FRAME_HEIGHT, 120)
+		vs.set(cv.CAP_PROP_FRAME_WIDTH, 640)
+		vs.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
 	else:
 		vs = VideoStream(usePiCamera=True).start()
 		time.sleep(1.0)
-		vs.resolution = (160, 120)
+		vs.resolution = (640, 480)
 
 	if data["data"] == 'v':
 		# Define the codec and create VideoWriter object
-		fourcc = cv.VideoWriter_fourcc(*'XVID')
-		out = cv.VideoWriter('output.avi',fourcc, 20.0, (160,120))
+		fourcc = cv.VideoWriter_fourcc(*'FMP4')
+		out = cv.VideoWriter('output.h264',fourcc, 20.0, (640, 480))
 	else:
 		out = None
 
 	return vs, out
+
 
 if __name__ == "__main__":
 	args = take_args()
@@ -54,22 +56,32 @@ if __name__ == "__main__":
 		else:
 			image = vs.read()
 
-		# Write on the file and show preview
-		out.write(image)
-		cv.imshow("Preview", image)
+		# Write on the file
+		if args["data"] == 'v':
+			image = cv.flip(image, 0)
+			out.write(image)
 
-		key = cv.waitKey(1) & 0xFF
+		# Preview if it is demanded
+		if args["preview"] == 'y':
+			cv.imshow("Preview", image)
+			key = cv.waitKey(1) & 0xFF
+		else:
+			key = input("Please insert a key")
 
 		# Save if we press 's' or quit with 'q'
 		if key == ord('s') and args["data"] is not 'v':
 			file = '/home/pi/dataset/test_schorle/neg_schorle{}.jpg'.format(img)
 			cv.imwrite(file, image)
 			img += 1
-		elif key == ord('q'):
+		elif key == ord('q') or key == 'q':
 			break
 
 	# Release all components
-	vs.release()
+	if args["camera"] == 'w':
+		vs.release()
+	else:
+		vs.stop()
+
 	if args["data"] == 'v':
 		out.release()
 
