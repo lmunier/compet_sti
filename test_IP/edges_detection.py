@@ -1,5 +1,6 @@
+#!/usr/bin/python
 # -*-coding:Utf-8 -*
-#lm250318.
+#lm020518.1510
 
 # File to test edges detection with Image Processing
 
@@ -7,6 +8,7 @@ import cv2
 import time
 import argparse
 import numpy as np
+
 from imutils.video import VideoStream
 import imutils
 
@@ -30,6 +32,9 @@ def main():
         camera = cv2.VideoCapture(0)
     elif args['picamera'] != -1:
         camera = VideoStream(usePiCamera=args['picamera'] > 0).start()
+        camera.resolution = (640, 480)
+        camera.brightness = 25
+        camera.framerate = 30
         time.sleep(2.0)
     elif args['query']:
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
