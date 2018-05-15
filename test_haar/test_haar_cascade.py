@@ -7,7 +7,8 @@
 import numpy as np
 import cv2 as cv
 
-image = cv.imread('/home/pi/EPFL-Media-Library/image32_largeprvw.jpeg',0)
+#image = cv.imread('/home/pi/EPFL-Media-Library/image32_largeprvw.jpeg',0)
+image = cv.imread('/home/pi/video_data/jpg/sprite/sprite1009.jpg',0)
 bottle_cascade = cv.CascadeClassifier('/home/pi/compet_sti/test_haar/data/cascade.xml')
 bottle = bottle_cascade.detectMultiScale(image, 1.3, 5)
 
