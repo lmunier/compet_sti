@@ -10,6 +10,8 @@
 #define LED_TRACKING_TRACKING_H
 
 #include <opencv2/opencv.hpp>
+#include <raspicam/raspicam.h>
+#include <ctime>
 #include <cstdlib>
 #include <iostream>
 

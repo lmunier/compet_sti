@@ -15,5 +15,5 @@
   <featureParams>
     <maxCatCount>0</maxCatCount>
     <featSize>1</featSize>
-    <mode>BASIC</mode></featureParams></params>
+    <mode>ALL</mode></featureParams></params>
 </opencv_storage>
