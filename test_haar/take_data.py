@@ -27,13 +27,13 @@ def take_args():
 def init_webcam(data):
 	if data["camera"] == 'w':
 		vs = cv.VideoCapture(0)
-		time.sleep(1.0)
 		vs.set(cv.CAP_PROP_FRAME_WIDTH, 640)
 		vs.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
 	else:
 		vs = VideoStream(usePiCamera=True).start()
-		time.sleep(1.0)
 		vs.resolution = (640, 480)
+
+	time.sleep(0.5)
 
 	if data["data"] == 'v':
 		# Define the codec and create VideoWriter object
@@ -55,6 +55,8 @@ if __name__ == "__main__":
 			ret_val, image = vs.read()
 		else:
 			image = vs.read()
+
+		image = cv.flip(image, flipCode=-1)
 
 		# Write on the file
 		if args["data"] == 'v':
