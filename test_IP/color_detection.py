@@ -64,7 +64,7 @@ def main():
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
         image = cv2.imread(args['query'])
         image = imutils.resize(image, height=300)
-        image = cv2.convertScaleAbs(image, alpha=1, beta=-255)
+        image = cv2.convertScaleAbs(image, alpha=1.2, beta=-255)
 
     setup_trackbars(range_filter)
 

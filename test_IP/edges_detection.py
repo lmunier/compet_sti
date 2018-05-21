@@ -39,10 +39,10 @@ def main():
     elif args['query']:
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
         image = cv2.imread(args['query'])
-        image = imutils.resize(image, height=300)
+        #image = imutils.resize(image, height=300)
 
     # kernel to filter noise
-    kernel = np.ones((3, 3), np.uint8)
+    kernel = np.ones((5, 5), np.uint8)
 
     while state:
         if args['webcam'] != -1:
@@ -56,17 +56,17 @@ def main():
             state = False
 
         # show original image
-        originale = image.copy()
-        cv2.imshow("Originale", originale)
+        #originale = image.copy()
+        #cv2.imshow("Originale", originale)
 
         # convert the image to grayscale, blur it, and find edges
         # in the image
         image = cv2.convertScaleAbs(image, beta=-255)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-        thresh = cv2.inRange(hsv, (30, 70, 40), (150, 255, 255))
-        opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-        opening = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
+        thresh = cv2.inRange(hsv, (30, 100, 70), (150, 255, 255))
+        opening = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        opening = cv2.morphologyEx(opening, cv2.MORPH_OPEN, kernel)
 
         hsv = cv2.bilateralFilter(opening, 15, 17, 17)  # bilateral filter to keep edges
         cv2.imshow("HSV", hsv)
@@ -76,7 +76,6 @@ def main():
         # ones, and initialize our screen contour
         im2, cnts, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         cnts.sort(key=cv2.contourArea, reverse=True)
-        screenCnt = None
 
         # loop over our contours to find number of bottles in image
         nb_bottles = 0
@@ -88,7 +87,9 @@ def main():
             approx = cv2.approxPolyDP(c, 0.03 * peri, True)
 
             # if our approximated contour has four points, then we can assume that we have found our screen
-            if 50 <= area <= 5000 and 4 <= len(approx) <= 10 and cv2.isContourConvex(approx):
+            print(cv2.isContourConvex(approx))
+            print(area)
+            if 20 <= abs(area) <= 5000 and 4 <= len(approx) <= 8 and cv2.isContourConvex(approx):
                 nb_bottles += 1
                 cv2.drawContours(image, [approx], -1, (0, 255, 0), 3)
 
