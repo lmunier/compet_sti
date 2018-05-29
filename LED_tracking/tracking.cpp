@@ -8,7 +8,14 @@
 
 #include "tracking.h"
 
-void LED_tracking() {
+int LED_tracking() {
+    VideoCapture webcam = init_webcam();
+
+    if(!webcam.isOpened()){
+        std::cout << "Can not open webcam." << std::endl;
+        return -1;
+    }
+
     // Initialization of matrices
     cv2::Mat image;
 
@@ -16,8 +23,14 @@ void LED_tracking() {
     int dist_to_center = 0;
     int c = 0;
 
-    while(c < 5){
-        LED_detection(dist_to_center, dist_to_corner);
+    while(true){
+        bool bSuccess = webcam.read(image);
+
+        if(!bSuccess){
+            std::cout << "Webcam disconnected."<< std::endl;
+            return -1;
+        }
+        //LED_detection(dist_to_center, dist_to_corner);
 
         if(is_bottle_captured())
             std::cout << "Send to arduino " << dist_to_center << ", " << dist_to_corner << std::endl;
@@ -25,14 +38,33 @@ void LED_tracking() {
         if(is_aligned())
             std::cout << "Fire !!!" << std::endl;
 
-        c++;
+        imshow("Image", image);
+
+        if (waitKey(10) == 27)
+        {
+            cout << "Esc key is pressed by user. Stopping the video." << endl;
+            break;
+        }
     }
+
+    return 0;
 }
 
-void convert2binary(){
+VideoCapture init_webcam(){
+    VideoCapture webcam(0);
+
+    return webcam;
+}
+
+cv2::Mat convert2binary(cv2::Mat image){
+    // Initialize binary matrix
+    cv2::Mat binary;
+
     // Set threshold and maxValue
     double thresh = 0;
     double maxValue = 255;
+
+    return binary;
 }
 
 void LED_detection(int& center, int& corner){

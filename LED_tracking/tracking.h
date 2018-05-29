@@ -10,14 +10,16 @@
 #define LED_TRACKING_TRACKING_H
 
 #include <opencv2/opencv.hpp>
-#include <raspicam/raspicam.h>
+//#include <raspicam/raspicam.h>
 #include <ctime>
 #include <cstdlib>
 #include <iostream>
 
-void LED_tracking();
+VideoCapture init_webcam();
+
+int LED_tracking();
 void LED_detection(int&, int&);
-void convert2binary();
+cv2::Mat convert2binary(cv2::Mat);
 
 bool is_bottle_captured();
 bool is_aligned();

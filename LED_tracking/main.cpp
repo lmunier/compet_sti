@@ -9,7 +9,8 @@
 #include "tracking.h"
 
 int main() {
-    LED_tracking();
+    if(LED_tracking() == -1)
+        std::cout << "There was a problem during the run." << std::endl;
 
     return 0;
 }
