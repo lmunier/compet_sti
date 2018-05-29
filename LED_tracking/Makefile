@@ -1,6 +1,6 @@
 #Module:		Makefile
 #Version:		1.0
-#Update:		13 avril 2014
+#Update:		29.05.2018
 #Responsability:	Munier Louis
 #Description :
 # This file will manage the compilation of our project.

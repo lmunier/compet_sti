@@ -9,6 +9,9 @@
 #include "tracking.h"
 
 void LED_tracking() {
+    // Initialization of matrices
+    cv2::Mat image;
+
     int dist_to_corner = 0;
     int dist_to_center = 0;
     int c = 0;
@@ -24,6 +27,12 @@ void LED_tracking() {
 
         c++;
     }
+}
+
+void convert2binary(){
+    // Set threshold and maxValue
+    double thresh = 0;
+    double maxValue = 255;
 }
 
 void LED_detection(int& center, int& corner){

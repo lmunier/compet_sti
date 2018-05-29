@@ -17,6 +17,7 @@
 
 void LED_tracking();
 void LED_detection(int&, int&);
+void convert2binary();
 
 bool is_bottle_captured();
 bool is_aligned();
