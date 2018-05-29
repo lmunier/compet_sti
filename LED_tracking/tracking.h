@@ -15,11 +15,11 @@
 #include <cstdlib>
 #include <iostream>
 
-VideoCapture init_webcam();
+cv::VideoCapture init_webcam();
 
 int LED_tracking();
 void LED_detection(int&, int&);
-cv2::Mat convert2binary(cv2::Mat);
+cv::Mat convert2binary(cv::Mat);
 
 bool is_bottle_captured();
 bool is_aligned();

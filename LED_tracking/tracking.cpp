@@ -9,7 +9,7 @@
 #include "tracking.h"
 
 int LED_tracking() {
-    VideoCapture webcam = init_webcam();
+    cv::VideoCapture webcam = init_webcam();
 
     if(!webcam.isOpened()){
         std::cout << "Can not open webcam." << std::endl;
@@ -17,7 +17,7 @@ int LED_tracking() {
     }
 
     // Initialization of matrices
-    cv2::Mat image;
+    cv::Mat image;
 
     int dist_to_corner = 0;
     int dist_to_center = 0;
@@ -38,11 +38,11 @@ int LED_tracking() {
         if(is_aligned())
             std::cout << "Fire !!!" << std::endl;
 
-        imshow("Image", image);
+        cv::imshow("Image", image);
 
-        if (waitKey(10) == 27)
+        if (cv::waitKey(10) == 27)
         {
-            cout << "Esc key is pressed by user. Stopping the video." << endl;
+            std::cout << "Esc key is pressed by user. Stopping the video." << std::endl;
             break;
         }
     }
@@ -50,15 +50,15 @@ int LED_tracking() {
     return 0;
 }
 
-VideoCapture init_webcam(){
-    VideoCapture webcam(0);
+cv::VideoCapture init_webcam(){
+    cv::VideoCapture webcam(0);
 
     return webcam;
 }
 
-cv2::Mat convert2binary(cv2::Mat image){
+cv::Mat convert2binary(cv::Mat image){
     // Initialize binary matrix
-    cv2::Mat binary;
+    cv::Mat binary;
 
     // Set threshold and maxValue
     double thresh = 0;
