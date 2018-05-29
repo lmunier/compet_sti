@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
 		# Save if we press 's' or quit with 'q'
 		if key == ord('s') and args["data"] is not 'v':
-			file = '/home/pi/dataset/test_schorle/neg_schorle{}.jpg'.format(img)
+			file = '/home/pi/dataset/data170518/data{}.jpg'.format(img)
 			cv.imwrite(file, image)
 			img += 1
 		elif key == ord('q') or key == 'q':

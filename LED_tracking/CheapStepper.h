@@ -33,6 +33,7 @@
 #define CHEAPSTEPPER_H
 
 #include <wiringPi.h>
+#include <stdlib.h>
 
 class CheapStepper
 {
@@ -85,8 +86,6 @@ public:
     void newMoveToDegreeCW(int deg) { newMoveToDegree(true, deg); }
     void newMoveToDegreeCCW(int deg) { newMoveToDegree(false, deg); }
 
-
-
     void step (bool clockwise);
     // move 1 step clockwise or counter-clockwise
 
@@ -96,10 +95,12 @@ public:
     int getStep() { return stepN; } // returns current miniStep position
     int getDelay() { return delay; } // returns current delay (microseconds)
     int getRpm() { return calcRpm(); } // returns current rpm
+
     int getPin(int p) {
         if (p<4) return pins[p]; // returns pin #
         return 0; // default 0
     }
+
     int getStepsLeft() { return stepsLeft; } // returns steps left in current move
 
 private:

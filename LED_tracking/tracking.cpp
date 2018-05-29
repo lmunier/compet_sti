@@ -11,8 +11,9 @@
 void LED_tracking() {
     int dist_to_corner = 0;
     int dist_to_center = 0;
+    int c = 0;
 
-    while(true){
+    while(c < 5){
         LED_detection(dist_to_center, dist_to_corner);
 
         if(is_bottle_captured())
@@ -20,6 +21,8 @@ void LED_tracking() {
 
         if(is_aligned())
             std::cout << "Fire !!!" << std::endl;
+
+        c++;
     }
 }
 
