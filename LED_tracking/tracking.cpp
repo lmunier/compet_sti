@@ -19,8 +19,9 @@ VideoCapture init_webcam(){
 }
 
 // Main part, tracking of the corner led where is the bin
-int led_tracking() {
-    VideoCapture webcam = init_webcam();
+
+int LED_tracking() {
+    cv::VideoCapture webcam = init_webcam();
 
     if(!webcam.isOpened()){
         std::cout << "Can not open webcam." << std::endl;
@@ -64,11 +65,11 @@ int led_tracking() {
         if(is_aligned())
             std::cout << "Fire !!!" << std::endl;
 
-        imshow("Image", image);
+        cv::imshow("Image", image);
 
-        if (waitKey(10) == 27)
+        if (cv::waitKey(10) == 27)
         {
-            cout << "Esc key is pressed by user. Stopping the video." << endl;
+            std::cout << "Esc key is pressed by user. Stopping the video." << std::endl;
             break;
         }
     }
