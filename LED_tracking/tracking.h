@@ -15,19 +15,19 @@
 #include <iostream>
 
 // Initialize webcam
-VideoCapture init_webcam();
+cv::VideoCapture init_webcam();
 
 // Main part, tracking of the corner led where is the bin
 int led_tracking();
 
 // Convert input image in binary image
-cv2::Mat convert2binary(cv2::Mat, double, double);
+cv::Mat convert2binary(cv::Mat, double, double);
 
 // Extract searching beacon led color
-cv2::Mat extract_color(cv2::Mat, int[], int[]);
+cv::Mat extract_color(cv::Mat, int[], int[]);
 
 // Extract position of beacon led
-void extract_position(cv2::Mat, int&, int&);
+void extract_position(cv::Mat, int&, int&);
 
 // If  a bottle is captured
 bool is_bottle_captured();

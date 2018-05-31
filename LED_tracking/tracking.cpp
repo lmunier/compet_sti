@@ -9,8 +9,8 @@
 #include "tracking.h"
 
 // Initialize webcam
-VideoCapture init_webcam(){
-    VideoCapture webcam(0);
+cv::VideoCapture init_webcam(){
+    cv::VideoCapture webcam(0);
 
     webcam.set(CAP_PROP_FRAME_HEIGHT, 320);
     webcam.set(CAP_PROP_FRAME_WIDTH, 640);
@@ -29,9 +29,9 @@ int LED_tracking() {
     }
 
     // Initialization of matrices
-    cv2::Mat image;
-    cv2::Mat binary;
-    cv2::Mat extracted;
+    cv::Mat image;
+    cv::Mat binary;
+    cv::Mat extracted;
 
     // Initialization of color threshold
         // Green leds
@@ -78,31 +78,31 @@ int LED_tracking() {
 }
 
 // Convert input image in binary image
-cv2::Mat convert2binary(cv2::Mat image, double thresh, double maxValue){
+cv::Mat convert2binary(cv::Mat image, double thresh, double maxValue){
     // Initialize binary matrix
-    cv2::Mat binary;
+    cv::Mat binary;
 
     // Binary threshold on our image
-    threshold(image, binary, thresh, maxValue, cv2.THRESH_BINARY);
+    threshold(image, binary, thresh, maxValue, cv.THRESH_BINARY);
 
     return binary;
 }
 
 // Extract searching beacon led color
-cv2::Mat extract_color(cv2::Mat image, int lower[], int upper[]){
+cv::Mat extract_color(cv::Mat image, int lower[], int upper[]){
     // Initialize extracted color matrix
-    cv2::Mat mask;
-    cv2::Mat extracted;
+    cv::Mat mask;
+    cv::Mat extracted;
 
     // Create and apply mask to our image
-    cv2::inRange(image, lower, upper, mask);
-    cv2::bitwise_and(image, image, extracted, mask);
+    cv::inRange(image, lower, upper, mask);
+    cv::bitwise_and(image, image, extracted, mask);
 
     return extracted;
 }
 
 // Extract position of beacon led
-void extract_position(cv2::Mat binary, int& center, int& corner){
+void extract_position(cv::Mat binary, int& center, int& corner){
     std::cout << "I try to detect corner LED" << std::endl;
 }
 
