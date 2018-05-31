@@ -8,7 +8,18 @@
 
 #include "tracking.h"
 
-int LED_tracking() {
+// Initialize webcam
+VideoCapture init_webcam(){
+    VideoCapture webcam(0);
+
+    webcam.set(CAP_PROP_FRAME_HEIGHT, 320);
+    webcam.set(CAP_PROP_FRAME_WIDTH, 640);
+
+    return webcam;
+}
+
+// Main part, tracking of the corner led where is the bin
+int led_tracking() {
     VideoCapture webcam = init_webcam();
 
     if(!webcam.isOpened()){
@@ -18,10 +29,22 @@ int LED_tracking() {
 
     // Initialization of matrices
     cv2::Mat image;
+    cv2::Mat binary;
+    cv2::Mat extracted;
 
-    int dist_to_corner = 0;
-    int dist_to_center = 0;
-    int c = 0;
+    // Initialization of color threshold
+        // Green leds
+        int lower[] = {170, 240, 170};
+        int upper[] = {255, 255, 215};
+
+    // Initialization of variables
+        // Set distance variables
+        int dist_to_corner = 0;
+        int dist_to_center = 0;
+
+        // Set threshold and maxValue
+        double thresh = 10;
+        double maxValue = 255;
 
     while(true){
         bool bSuccess = webcam.read(image);
@@ -30,7 +53,10 @@ int LED_tracking() {
             std::cout << "Webcam disconnected."<< std::endl;
             return -1;
         }
-        //LED_detection(dist_to_center, dist_to_corner);
+
+        extracted = extract_color(binary, lower, upper);
+        binary = convert2binary(extracted);
+        //extract_position(binary, dist_to_center, dist_to_corner);
 
         if(is_bottle_captured())
             std::cout << "Send to arduino " << dist_to_center << ", " << dist_to_corner << std::endl;
@@ -50,31 +76,41 @@ int LED_tracking() {
     return 0;
 }
 
-VideoCapture init_webcam(){
-    VideoCapture webcam(0);
-
-    return webcam;
-}
-
-cv2::Mat convert2binary(cv2::Mat image){
+// Convert input image in binary image
+cv2::Mat convert2binary(cv2::Mat image, double thresh, double maxValue){
     // Initialize binary matrix
     cv2::Mat binary;
 
-    // Set threshold and maxValue
-    double thresh = 0;
-    double maxValue = 255;
+    // Binary threshold on our image
+    threshold(image, binary, thresh, maxValue, cv2.THRESH_BINARY);
 
     return binary;
 }
 
-void LED_detection(int& center, int& corner){
+// Extract searching beacon led color
+cv2::Mat extract_color(cv2::Mat image, int lower[], int upper[]){
+    // Initialize extracted color matrix
+    cv2::Mat mask;
+    cv2::Mat extracted;
+
+    // Create and apply mask to our image
+    cv2::inRange(image, lower, upper, mask);
+    cv2::bitwise_and(image, image, extracted, mask);
+
+    return extracted;
+}
+
+// Extract position of beacon led
+void extract_position(cv2::Mat binary, int& center, int& corner){
     std::cout << "I try to detect corner LED" << std::endl;
 }
 
+// If  a bottle is captured
 bool is_bottle_captured(){
     return true;
 }
 
+// Check if the robot is aligned
 bool is_aligned(){
     return true;
 }
