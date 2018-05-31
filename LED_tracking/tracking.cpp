@@ -9,8 +9,8 @@
 #include "tracking.h"
 
 // Initialize webcam
-cv::VideoCapture init_webcam(){
-    cv::VideoCapture webcam(0);
+VideoCapture init_webcam(){
+    VideoCapture webcam(0);
 
     webcam.set(CAP_PROP_FRAME_HEIGHT, 320);
     webcam.set(CAP_PROP_FRAME_WIDTH, 640);
@@ -20,18 +20,18 @@ cv::VideoCapture init_webcam(){
 
 // Main part, tracking of the corner led where is the bin
 
-int LED_tracking() {
-    cv::VideoCapture webcam = init_webcam();
+int led_tracking() {
+    VideoCapture webcam = init_webcam();
 
     if(!webcam.isOpened()){
-        std::cout << "Can not open webcam." << std::endl;
+        cout << "Can not open webcam." << endl;
         return -1;
     }
 
     // Initialization of matrices
-    cv::Mat image;
-    cv::Mat binary;
-    cv::Mat extracted;
+    Mat image;
+    Mat binary;
+    Mat extracted;
 
     // Initialization of color threshold
         // Green leds
@@ -51,25 +51,25 @@ int LED_tracking() {
         bool bSuccess = webcam.read(image);
 
         if(!bSuccess){
-            std::cout << "Webcam disconnected."<< std::endl;
+            cout << "Webcam disconnected."<< endl;
             return -1;
         }
 
-        extracted = extract_color(binary, lower, upper);
-        binary = convert2binary(extracted);
+        extracted = extract_color(image, lower, upper);
+        binary = convert2binary(extracted, thresh, maxValue);
         //extract_position(binary, dist_to_center, dist_to_corner);
 
         if(is_bottle_captured())
-            std::cout << "Send to arduino " << dist_to_center << ", " << dist_to_corner << std::endl;
+            cout << "Send to arduino " << dist_to_center << ", " << dist_to_corner << endl;
 
         if(is_aligned())
-            std::cout << "Fire !!!" << std::endl;
+            cout << "Fire !!!" << endl;
 
-        cv::imshow("Image", image);
+        imshow("Image", image);
 
-        if (cv::waitKey(10) == 27)
+        if (waitKey(10) == 27)
         {
-            std::cout << "Esc key is pressed by user. Stopping the video." << std::endl;
+            cout << "Esc key is pressed by user. Stopping the video." << endl;
             break;
         }
     }
@@ -78,32 +78,33 @@ int LED_tracking() {
 }
 
 // Convert input image in binary image
-cv::Mat convert2binary(cv::Mat image, double thresh, double maxValue){
+Mat convert2binary(Mat image, double thresh, double maxValue){
     // Initialize binary matrix
-    cv::Mat binary;
+    Mat binary;
 
     // Binary threshold on our image
-    threshold(image, binary, thresh, maxValue, cv.THRESH_BINARY);
+    threshold(image, binary, thresh, maxValue, THRESH_BINARY);
 
     return binary;
 }
 
 // Extract searching beacon led color
-cv::Mat extract_color(cv::Mat image, int lower[], int upper[]){
+Mat extract_color(Mat image, int lower[], int upper[]){
     // Initialize extracted color matrix
-    cv::Mat mask;
-    cv::Mat extracted;
+    Mat mask;
+    Mat extracted;
 
     // Create and apply mask to our image
-    cv::inRange(image, lower, upper, mask);
-    cv::bitwise_and(image, image, extracted, mask);
+    cv::inRange(image, Scalar(lower[BLUE], lower[GREEN], lower[RED]),
+                Scalar(upper[BLUE], upper[GREEN], upper[RED]), mask);
+    bitwise_and(image, image, extracted, mask);
 
     return extracted;
 }
 
 // Extract position of beacon led
-void extract_position(cv::Mat binary, int& center, int& corner){
-    std::cout << "I try to detect corner LED" << std::endl;
+void extract_position(Mat binary, int& center, int& corner){
+    cout << "I try to detect corner LED" << endl;
 }
 
 // If  a bottle is captured
