@@ -9,8 +9,15 @@
 #include "tracking.h"
 
 // Initialize pins stepper
-CheapStepper init_stepper(){
+CheapStepper init_stepper(int& step, int& init_step){
     CheapStepper stepper_back(SB_IN1, SB_IN2, SB_IN3, SB_IN4);
+
+    step = stepper_back.getStep();
+    init_step = step;
+
+    stepper_back.setStepN(step);
+    stepper_back.setSeqN(0);
+
     return stepper_back;
 }
 
@@ -27,14 +34,6 @@ VideoCapture init_webcam(){
 // Main part, tracking of the corner led where is the bin
 
 int led_tracking() {
-    CheapStepper::stepper_back = init_stepper();
-    VideoCapture webcam = init_webcam();
-
-    if(!webcam.isOpened()){
-        cout << "Can not open webcam." << endl;
-        return -1;
-    }
-
     // Initialization of matrices
     Mat image;
     Mat extracted;
@@ -44,15 +43,34 @@ int led_tracking() {
         int lower_green[] = {170, 240, 170};
         int upper_green[] = {255, 255, 215};
 
-        // Green leds
+        // White leds
         int lower_white[] = {250, 250, 250};
         int upper_white[] = {255, 255, 255};
 
+        // Black leds
+        int lower_black[] = {0, 0, 0};
+        int upper_black[] = {40, 40, 40};
+
     // Initialization of variables
         // Set distance variables
-        double y = 0.0;
+        int led_y_pos = 0;
+        int led_x_pos = 0;
         double dist2corner = 0.0;
-        int dist2center = 0;
+
+        // Set step variable
+        static int init_step = 0;
+        int degree_correction = 0;
+        int step = 0;
+
+    wiringPiSetup();
+    CheapStepper stepper_back = init_stepper(step, init_step);
+
+    VideoCapture webcam = init_webcam();
+
+    if(!webcam.isOpened()){
+        cout << "Can not open webcam." << endl;
+        return -1;
+    }
 
     while(true){
         bool bSuccess = webcam.read(image);
@@ -62,16 +80,31 @@ int led_tracking() {
             return -1;
         }
 
-        extracted = extract_color(image, lower_white, upper_white);
-        y = extract_position(extracted, dist2center);
+        extracted = extract_color(image, lower_black, upper_black);
+        led_y_pos = extract_position(extracted, led_x_pos);
 
-        dist2corner = get_dist_corner(y);
+        dist2corner = get_dist_corner(led_y_pos);
+        manage_stepper(stepper_back, led_x_pos, step);
 
-        if(is_bottle_captured())
-            cout << "Send to arduino " << dist_to_center << ", " << dist_to_corner << endl;
+        if(is_aligned(led_x_pos)) {
+            cout << "Fire !!!" << endl; // TODO: Send to arduino "FIRE" with dist2corner
 
-        if(is_aligned(dist2center))
-            cout << "Fire !!!" << endl;
+            degree_correction = (step - init_step)*360/4096;
+            cout << "Degree to correct." << degree_correction << endl;
+
+            /*while (true) {// TODO: place checking that bottle is thrown
+
+                if (waitKey(10) == 27) {
+                    cout << "Esc key is pressed by user." << endl;
+                    break;
+                }
+            }*/
+        }
+
+        if(is_bottle_captured()) {
+            // TODO: Send to arduino led_x_pos to align
+            cout << "Send to arduino " << led_x_pos << endl;
+        }
 
         imshow("Image", image);
         imshow("Extracted", extracted);
@@ -87,14 +120,14 @@ int led_tracking() {
 }
 
 // Extract searching beacon led color
-Mat extract_color(Mat &image, int lower[], int upper[]){
+Mat extract_color(Mat& image, int lower[], int upper[]){
     // Initialize extracted color matrix
     Mat mask;
     Mat extracted;
 
     // Create and apply mask to our image
-    cv::inRange(image, Scalar(lower[BLUE], lower[GREEN], lower[RED]),
-                Scalar(upper[BLUE], upper[GREEN], upper[RED]), mask);
+    inRange(image, Scalar(lower[BLUE], lower[GREEN], lower[RED]),
+            Scalar(upper[BLUE], upper[GREEN], upper[RED]), mask);
     bitwise_and(image, image, extracted, mask);
 
     return extracted;
@@ -106,15 +139,13 @@ int extract_position(Mat& image, int& center){
     bool stop = false;
     int x_min = 0;
     int x_max = 0;
-    int x = 0;
-    int y = 0;
+    int x_pos = 0;
+    int y_pos = 0;
 
     // Find non zero to find the highest pixel
     for(int row = 0; row < HEIGHT_IMAGE; row++){
         for(int col = 0; col < WIDTH_IMAGE; col++){
-            if((int) image.at<Vec3b>(row, col)[0] >= 250) {
-                cout << "row " << row << "col " << col << "x_min " << x_min << "x_max " << x_max << " " << (int) image.at<Vec3b>(row, col)[0] << endl;
-
+            if((int) image.at<Vec3b>(row, col)[0] >= 5) {
                 if (x_min == 0) {
                     x_min = col;
                     stop = true;
@@ -122,7 +153,7 @@ int extract_position(Mat& image, int& center){
                     x_max = col;
             }
         }
-        y = row;
+        y_pos = row;
 
         if(stop)
             break;
@@ -131,25 +162,35 @@ int extract_position(Mat& image, int& center){
     }
 
     if(x_max != 0)
-        x = x_min + (x_max-x_min)/2;
+        x_pos = x_min + (x_max-x_min)/2;
     else
-        x = x_min;
+        x_pos = x_min;
 
     // Change values for dist2center
-    center = x;
+    center = x_pos;
 
     // Show result
     typedef Point_<uint16_t> Pixel;
-    Pixel pix(x, y);
+    Pixel pix(x_pos, y_pos);
     circle(image, pix, 10, (0, 0, 255), 2);
 
     // Return y value
-    return y;
+    return y_pos;
 }
 
 // Give distance to corner
-double get_dist_corner(double h_up_led){
-    return (DIST_ZERO/H_ZERO)*h_up_led;
+int get_dist_corner(double h_up_led){
+    return (int)((DIST_ZERO/H_ZERO)*h_up_led);
+}
+
+// Manage stepper back
+void manage_stepper(CheapStepper& stepper_back, int led_x_pos, int& step){
+    stepper_back.PID_orientation(led_x_pos);
+
+    if(WIDTH_IMAGE/2 - led_x_pos < 0)
+        stepper_back.stepCW();
+    else
+        stepper_back.stepCCW();
 }
 
 // If  a bottle is captured
@@ -158,6 +199,6 @@ bool is_bottle_captured(){
 }
 
 // Check if the robot is aligned
-bool is_aligned(int dist2center){
-    return dist2center < TOLERANCE_ALIGN;
+bool is_aligned(int led_x_pos){
+    return abs(led_x_pos - WIDTH_IMAGE/2) < TOLERANCE_ALIGN;
 }

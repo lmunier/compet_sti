@@ -34,28 +34,32 @@
 
 #include <wiringPi.h>
 #include <cstdlib>
+#include <iostream>
 
-#define V_MIN           8       // Minimum rpm
-#define V_MAX           23      // Maximum rpm
-#define TOLERANCE_ROT   10      // Tolerance PID rotation
+#define V_MIN           7       // Minimum rpm
+#define V_MAX           20      // Maximum rpm
+#define NBR_STEP        3      // Number of step to do
+#define STEP_MAX        4096    // Step maximum for this stepper
+#define TOLERANCE_ROT   13      // Tolerance PID rotation
 #define MIDDLE          320     // Desired target position
 
-#define KP_ROT          4       // Proportionnal coefficient rotation
+#define KP_ROT          0.3     // Proportionnal coefficient rotation
 #define KI_ROT          0       // Integrtive coefficient rotation
 #define KD_ROT          0       // Derivative coefficient rotation
 
-#define H               0.1     // Sampling time for PID
+#define SAMPLING        0.1     // (Sampling time for PID)
 
 class CheapStepper
 {
 
 public:
-    CheapStepper();
-    CheapStepper (int in1, int in2, int in3, int in4);
+    CheapStepper(int in1, int in2, int in3, int in4);
 
     void setRpm (int rpm); // sets speed (10-24 rpm, hi-low torque)
     // <6 rpm blocked in code, may overheat
     // 23-24rpm may skip
+    void setSeqN (int sequence){seqN = sequence;}
+    void setStepN (int step){stepN = step;}
 
     void set4076StepMode() { totalSteps = 4076; }
     void setTotalSteps (int numSteps) { totalSteps = numSteps; }
@@ -64,38 +68,11 @@ public:
     // blocking! (pauses arduino until move is done)
     void move (bool clockwise, int numSteps); // 4096 steps = 1 revolution
     void moveTo (bool clockwise, int toStep); // move to specific step position
-    void moveDegrees (bool clockwise, int deg);
-    void moveToDegree (bool clockwise, int deg);
 
     void moveCW (int numSteps) { move (true, numSteps); }
     void moveCCW (int numSteps) { move (false, numSteps); }
     void moveToCW (int toStep) { moveTo (true, toStep); }
     void moveToCCW (int toStep) { moveTo (false, toStep); }
-    void moveDegreesCW (int deg) { moveDegrees (true, deg); }
-    void moveDegreesCCW (int deg) { moveDegrees (false, deg); }
-    void moveToDegreeCW (int deg) { moveToDegree (true, deg); }
-    void moveToDegreeCCW (int deg) { moveToDegree (false, deg); }
-
-
-    // non-blocking versions of move()
-    // call run() in loop to keep moving
-
-    void newMove (bool clockwise, int numSteps);
-    void newMoveTo (bool clockwise, int toStep);
-    void newMoveDegrees (bool clockwise, int deg);
-    void newMoveToDegree (bool clockwise, int deg);
-
-    void run();
-    void stop();
-
-    void newMoveCW(int numSteps) { newMove(true, numSteps); }
-    void newMoveCCW(int numSteps) { newMove(false, numSteps); }
-    void newMoveToCW(int toStep) { newMoveTo(true, toStep); }
-    void newMoveToCCW(int toStep) { newMoveTo(false, toStep); }
-    void newMoveDegreesCW(int deg) { newMoveDegrees(true, deg); }
-    void newMoveDegreesCCW(int deg) { newMoveDegrees(false, deg); }
-    void newMoveToDegreeCW(int deg) { newMoveToDegree(true, deg); }
-    void newMoveToDegreeCCW(int deg) { newMoveToDegree(false, deg); }
 
     void step (bool clockwise);
     // move 1 step clockwise or counter-clockwise
@@ -105,7 +82,6 @@ public:
 
     int getStep() { return stepN; } // returns current miniStep position
     int getDelay() { return delay; } // returns current delay (microseconds)
-    int getRpm() { return calcRpm(); } // returns current rpm
 
     int getPin(int p) {
         if (p<4) return pins[p]; // returns pin #
@@ -117,18 +93,13 @@ public:
     void PID_orientation(int);
 
 private:
-
     int calcDelay(int rpm); // calcs microsecond step delay for given rpm
-    int calcRpm(int _delay); // calcs rpm for given delay in microseconds
-    int calcRpm(){
-        return calcRpm(delay); // calcs rpm from current delay
-    }
 
     void seqCW();
     void seqCCW();
     void seq(int seqNum); // send specific sequence num to driver
 
-    int pins[4] = {8,9,10,11}; // in1, in2, in3, in4
+    int pins[4] = {0}; // in1, in2, in3, in4
 
     int stepN = 0; // keeps track of step position
     // 0-4095 (4096 mini-steps / revolution) or maybe 4076...
