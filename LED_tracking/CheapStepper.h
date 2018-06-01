@@ -35,6 +35,17 @@
 #include <wiringPi.h>
 #include <cstdlib>
 
+#define V_MIN           8       // Minimum rpm
+#define V_MAX           23      // Maximum rpm
+#define TOLERANCE_ROT   10      // Tolerance PID rotation
+#define MIDDLE          320     // Desired target position
+
+#define KP_ROT          4       // Proportionnal coefficient rotation
+#define KI_ROT          0       // Integrtive coefficient rotation
+#define KD_ROT          0       // Derivative coefficient rotation
+
+#define H               0.1     // Sampling time for PID
+
 class CheapStepper
 {
 
@@ -102,6 +113,8 @@ public:
     }
 
     int getStepsLeft() { return stepsLeft; } // returns steps left in current move
+
+    void PID_orientation(int);
 
 private:
 

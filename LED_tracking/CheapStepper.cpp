@@ -148,10 +148,42 @@ void CheapStepper::stop(){
     stepsLeft = 0;
 }
 
-
 void CheapStepper::step(bool clockwise){
     if (clockwise) seqCW();
     else seqCCW();
+}
+
+// Controller to correct rotation
+void PID_orientation(int pos_beacon) {
+    static int e = 0;
+    static int ui = 0, e_p = 0, ud = 0;
+    static int speed = 0;
+
+    e = MIDDLE - pos_beacon;
+
+    // To minimize the effects of noise and data oscillation
+    if(e < TOLERANCE_ROT && e > - TOLERANCE_ROT){
+        e = 0;
+    }
+
+    ui += H * e;
+    ud = (e - e_p)/H;
+
+    speed = KP_ROT*e + KI_ROT*ui + KD_ROT*ud;
+
+    e_p = e;
+
+    // Anti-windup control to avoid aberrant commands
+    if (speed > V_MAX) {
+        ui = (V_MAX/KP_ROT) - e - ud;
+        speed = V_MAX;
+    } else if (speed < V_MIN) {
+        ui = (V_MIN/KP_ROT) - e - ud;
+        speed = V_MIN;
+    }
+
+    setRpm(speed);
+    return;
 }
 
 

@@ -21,17 +21,25 @@ using namespace cv;
 using namespace std;
 
 // Define some constants
-#define BLUE            0
-#define GREEN           1
-#define RED             2
+#define SB_IN1          1       // Correpsond to GPIO 18 (BCM)
+#define SB_IN2          4       // Correpsond to GPIO 23 (BCM)
+#define SB_IN3          5       // Correpsond to GPIO 24 (BCM)
+#define SB_IN4          6       // Correpsond to GPIO 25 (BCM)
 
-#define HEIGHT_IMAGE    320
-#define WIDTH_IMAGE     640
+#define BLUE            0       // Channel blue on image vector
+#define GREEN           1       // Channel green on image vector
+#define RED             2       // Channel red on image vector
 
-#define H_ZERO          1
-#define DIST_ZERO       10
+#define HEIGHT_IMAGE    320     // Height of our image/frame
+#define WIDTH_IMAGE     640     // Width of our image/frame
 
-#define TOLERANCE       10
+#define H_ZERO          1       // Measure between up led and ceil of our image at distance "zero"
+#define DIST_ZERO       10      // Distance "zero"
+
+#define TOLERANCE_ALIGN 10      // Tolerance for alignment
+
+// Initialize pins stepper
+CheapStepper init_stepper();
 
 // Initialize webcam
 VideoCapture init_webcam();

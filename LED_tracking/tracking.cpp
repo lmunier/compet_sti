@@ -8,6 +8,12 @@
 
 #include "tracking.h"
 
+// Initialize pins stepper
+CheapStepper init_stepper(){
+    CheapStepper stepper_back(SB_IN1, SB_IN2, SB_IN3, SB_IN4);
+    return stepper_back;
+}
+
 // Initialize webcam
 VideoCapture init_webcam(){
     VideoCapture webcam(0);
@@ -21,6 +27,7 @@ VideoCapture init_webcam(){
 // Main part, tracking of the corner led where is the bin
 
 int led_tracking() {
+    CheapStepper::stepper_back = init_stepper();
     VideoCapture webcam = init_webcam();
 
     if(!webcam.isOpened()){
@@ -152,5 +159,5 @@ bool is_bottle_captured(){
 
 // Check if the robot is aligned
 bool is_aligned(int dist2center){
-    return dist2center < TOLERANCE;
+    return dist2center < TOLERANCE_ALIGN;
 }
