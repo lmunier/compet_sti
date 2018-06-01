@@ -10,7 +10,7 @@
 
 int main() {
     if(led_tracking() == -1)
-        std::cout << "There was a problem during the run." << std::endl;
+        cout << "There was a problem during the run." << endl;
 
     return 0;
 }

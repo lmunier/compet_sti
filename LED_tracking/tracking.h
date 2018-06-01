@@ -10,24 +10,33 @@
 #define LED_TRACKING_TRACKING_H
 
 #include <opencv2/opencv.hpp>
+#include <cfloat>
 #include <ctime>
 #include <cstdlib>
 #include <iostream>
 
+using namespace cv;
+using namespace std;
+
+// Define some constants
+#define BLUE            0
+#define GREEN           1
+#define RED             2
+
+#define HEIGHT_IMAGE    320
+#define WIDTH_IMAGE     640
+
 // Initialize webcam
-cv::VideoCapture init_webcam();
+VideoCapture init_webcam();
 
 // Main part, tracking of the corner led where is the bin
 int led_tracking();
 
-// Convert input image in binary image
-cv::Mat convert2binary(cv::Mat, double, double);
-
 // Extract searching beacon led color
-cv::Mat extract_color(cv::Mat, int[], int[]);
+Mat extract_color(Mat&, int[], int[]);
 
 // Extract position of beacon led
-void extract_position(cv::Mat, int&, int&);
+void extract_position(Mat&, int&, int&);
 
 // If  a bottle is captured
 bool is_bottle_captured();

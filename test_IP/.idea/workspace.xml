@@ -14,8 +14,8 @@
       <file leaf-file-name="color_detection.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/color_detection.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="169">
-              <caret line="111" column="9" lean-forward="true" selection-start-line="111" selection-start-column="9" selection-end-line="111" selection-end-column="9" />
+            <state relative-caret-position="-392">
+              <caret line="78" column="21" lean-forward="true" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
               <folding>
                 <element signature="e#58#68#0" expanded="true" />
               </folding>
@@ -26,8 +26,8 @@
       <file leaf-file-name="LED_detection.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LED_detection.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="52" column="46" lean-forward="true" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="46" />
+            <state relative-caret-position="918">
+              <caret line="66" column="41" lean-forward="true" selection-start-line="66" selection-start-column="41" selection-end-line="66" selection-end-column="41" />
               <folding>
                 <element signature="e#58#68#0" expanded="true" />
               </folding>
@@ -698,8 +698,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/color_detection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="111" column="9" lean-forward="true" selection-start-line="111" selection-start-column="9" selection-end-line="111" selection-end-column="9" />
+        <state relative-caret-position="-392">
+          <caret line="78" column="21" lean-forward="true" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
           <folding>
             <element signature="e#58#68#0" expanded="true" />
           </folding>
@@ -708,8 +708,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/LED_detection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="52" column="46" lean-forward="true" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="46" />
+        <state relative-caret-position="918">
+          <caret line="66" column="41" lean-forward="true" selection-start-line="66" selection-start-column="41" selection-end-line="66" selection-end-column="41" />
           <folding>
             <element signature="e#58#68#0" expanded="true" />
           </folding>

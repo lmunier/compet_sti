@@ -20,8 +20,11 @@ def get_arguments():
 
 def main():
     # Definition of color tracking
-    lower = [170, 240, 170]
-    upper = [255, 255, 215]
+    #lower = [170, 240, 170]
+    #upper = [255, 255, 215]
+
+    lower = [250, 250, 250]
+    upper = [255, 255, 255]
 
     args = get_arguments()
     state = True
