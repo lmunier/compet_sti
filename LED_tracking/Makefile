@@ -13,12 +13,12 @@ LDFLAGS = /home/pi/opencv-3.4.1/build/lib -lopencv_world -lboost_filesystem
 LIBS = -lstdc++ -lm -Llib -lwiringPi `pkg-config opencv --cflags --libs`
 CFILES = main.cpp CheapStepper.cpp tracking.cpp
 OFILES = $(CFILES:.cpp=.o)
-CIBLE = LED_tracking.x
+CIBLE = led_tracking.x
 
 
 # First rule definition
-LED_tracking.x: $(OFILES)
-	$(CC) $(OFILES) $(LIBS) -o LED_tracking.x
+led_tracking.x: $(OFILES)
+	$(CC) $(OFILES) $(LIBS) -o led_tracking.x
 
 # Particular target definition
 depend:
