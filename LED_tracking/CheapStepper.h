@@ -33,7 +33,7 @@
 #define CHEAPSTEPPER_H
 
 #include <wiringPi.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 class CheapStepper
 {

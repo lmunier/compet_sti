@@ -43,8 +43,9 @@ int led_tracking() {
 
     // Initialization of variables
         // Set distance variables
+        double y = 0.0;
+        double dist2corner = 0.0;
         int dist2center = 0;
-        int dist2corner = 0;
 
     while(true){
         bool bSuccess = webcam.read(image);
@@ -55,13 +56,15 @@ int led_tracking() {
         }
 
         extracted = extract_color(image, lower_white, upper_white);
-        extract_position(extracted, dist2center, dist2corner);
+        y = extract_position(extracted, dist2center);
+
+        dist2corner = get_dist_corner(y);
 
         if(is_bottle_captured())
-            //cout << "Send to arduino " << dist_to_center << ", " << dist_to_corner << endl;
+            cout << "Send to arduino " << dist_to_center << ", " << dist_to_corner << endl;
 
-        if(is_aligned())
-            //cout << "Fire !!!" << endl;
+        if(is_aligned(dist2center))
+            cout << "Fire !!!" << endl;
 
         imshow("Image", image);
         imshow("Extracted", extracted);
@@ -91,27 +94,21 @@ Mat extract_color(Mat &image, int lower[], int upper[]){
 }
 
 // Extract position of beacon led
-void extract_position(Mat& image, int& center, int& corner){
+int extract_position(Mat& image, int& center){
     // Initialize variables
-    typedef Point_<uint16_t> Pixel1;
-
     bool stop = false;
-    auto x_min = 0.0;
-    double x_max = 0.0;
-    double x = 0.0;
-    double y = 0.0;
-
-    /*Rect roi1(0, 0, 10, 200);
-    Mat sub(image, roi1);
-    cout << sub << endl;*/
+    int x_min = 0;
+    int x_max = 0;
+    int x = 0;
+    int y = 0;
 
     // Find non zero to find the highest pixel
     for(int row = 0; row < HEIGHT_IMAGE; row++){
         for(int col = 0; col < WIDTH_IMAGE; col++){
-            if(image.at<Vec3b>(row, col)[0] >= 250) {
+            if((int) image.at<Vec3b>(row, col)[0] >= 250) {
                 cout << "row " << row << "col " << col << "x_min " << x_min << "x_max " << x_max << " " << (int) image.at<Vec3b>(row, col)[0] << endl;
 
-                if (x_min == 0.0) {
+                if (x_min == 0) {
                     x_min = col;
                     stop = true;
                 } else
@@ -123,7 +120,7 @@ void extract_position(Mat& image, int& center, int& corner){
         if(stop)
             break;
         else
-            x_min = 0.0;
+            x_min = 0;
     }
 
     if(x_max != 0)
@@ -131,68 +128,22 @@ void extract_position(Mat& image, int& center, int& corner){
     else
         x = x_min;
 
-    dist_to
+    // Change values for dist2center
+    center = x;
 
-    Pixel1 pix(x, y);
+    // Show result
+    typedef Point_<uint16_t> Pixel;
+    Pixel pix(x, y);
     circle(image, pix, 10, (0, 0, 255), 2);
+
+    // Return y value
+    return y;
 }
 
-// Extract position of beacon led
-/*void extract_position(Mat& image, int& center, int& corner){
-    // Initialize variables
-    Mat locations;
-    typedef Point_<uint8_t> Pixel;
-
-    auto x_min = 0.0;
-    double x_max = 0.0;
-    double y = 0.0;
-    bool stop = false;
-
-    Rect roi1(0, 0, 10, 200);
-    Mat sub(image, roi1);
-    cout << sub << endl;
-
-    // ------------------- With just one line -------------------
-    // Find non zero to find the highest pixel
-    /*for(int col = 0; col < WIDTH_IMAGE; col++){
-        if(image.at<Vec3b>(row, col)[0] >= 100) {
-            cout << "row " << row << "col " << col << "x_min " << x_min << "x_max " << x_max << endl;
-            cout << (int)image.at<Vec3b>(row, col)[0] << endl;
-
-            if (x_min == 0.0)
-                x_min = col;
-            else
-                x_max = col;
-        }
-    }*/
-    //-----------------------------------------------------------
-
-    /*image.forEach<Pixel>([&](Pixel &pixel, const int position[]) -> void {
-        if (pixel.x == 255 && x_min == 0.0) {
-            x_min = position[0];
-            stop = true;
-        } else if (pixel.x == 255)
-            x_max = position[0];
-
-        if (position[0] == WIDTH_IMAGE - 1){
-            cout << "Coucou" << endl;
-
-            if (!stop) {
-                x_min = 0.0;
-                y = position[1];
-            } else
-                return;
-        }
-    });
-
-    x_min = locations.at<Point>(0).x;
-    x_max = locations.at<Point>(0).x;
-    y = locations.at<Point>(0).y;
-    Pixel pix(x_min + (x_max-x_min)/2, y);
-
-    circle(image, pix, 10, (0, 0, 255), 2);
-    cout << "x_min " << x_min << " x_max " << x_max << " y " << y << endl;
-}*/
+// Give distance to corner
+double get_dist_corner(double h_up_led){
+    return (DIST_ZERO/H_ZERO)*h_up_led;
+}
 
 // If  a bottle is captured
 bool is_bottle_captured(){
@@ -200,6 +151,6 @@ bool is_bottle_captured(){
 }
 
 // Check if the robot is aligned
-bool is_aligned(){
-    return true;
+bool is_aligned(int dist2center){
+    return dist2center < TOLERANCE;
 }

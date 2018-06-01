@@ -9,6 +9,8 @@
 #ifndef LED_TRACKING_TRACKING_H
 #define LED_TRACKING_TRACKING_H
 
+#include "CheapStepper.h"
+
 #include <opencv2/opencv.hpp>
 #include <cfloat>
 #include <ctime>
@@ -26,6 +28,11 @@ using namespace std;
 #define HEIGHT_IMAGE    320
 #define WIDTH_IMAGE     640
 
+#define H_ZERO          1
+#define DIST_ZERO       10
+
+#define TOLERANCE       10
+
 // Initialize webcam
 VideoCapture init_webcam();
 
@@ -36,12 +43,15 @@ int led_tracking();
 Mat extract_color(Mat&, int[], int[]);
 
 // Extract position of beacon led
-void extract_position(Mat&, int&, int&);
+int extract_position(Mat&, int&);
+
+// Give distance to corner
+double get_dist_corner(double);
 
 // If  a bottle is captured
 bool is_bottle_captured();
 
 // Check if the robot is aligned
-bool is_aligned();
+bool is_aligned(int);
 
 #endif //LED_TRACKING_TRACKING_H
