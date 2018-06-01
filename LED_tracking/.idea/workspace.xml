@@ -34,21 +34,21 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
+          <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/main.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="255">
-                  <caret line="15" column="1" lean-forward="false" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+                <state relative-caret-position="204">
+                  <caret line="12" column="3" lean-forward="false" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="tracking.cpp" pinned="false" current-in-tab="true">
+          <file leaf-file-name="tracking.cpp" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tracking.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="544">
-                  <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+                <state relative-caret-position="3315">
+                  <caret line="195" column="5" lean-forward="true" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
                   <folding />
                 </state>
               </provider>
@@ -57,8 +57,8 @@
           <file leaf-file-name="CheapStepper.cpp" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/CheapStepper.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="113">
-                  <caret line="74" column="4" lean-forward="false" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="4" />
+                <state relative-caret-position="-907">
+                  <caret line="129" column="39" lean-forward="false" selection-start-line="129" selection-start-column="39" selection-end-line="129" selection-end-column="39" />
                   <folding />
                 </state>
               </provider>
@@ -71,8 +71,8 @@
           <file leaf-file-name="CheapStepper.h" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/CheapStepper.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="108">
-                  <caret line="77" column="39" lean-forward="true" selection-start-line="77" selection-start-column="39" selection-end-line="77" selection-end-column="39" />
+                <state relative-caret-position="261">
+                  <caret line="84" column="61" lean-forward="false" selection-start-line="84" selection-start-column="61" selection-end-line="84" selection-end-column="61" />
                   <folding />
                 </state>
               </provider>
@@ -102,11 +102,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/main.cpp" />
-        <option value="$PROJECT_DIR$/CheapStepper.cpp" />
-        <option value="$PROJECT_DIR$/CheapStepper.h" />
         <option value="$PROJECT_DIR$/tracking.h" />
+        <option value="$PROJECT_DIR$/CheapStepper.h" />
+        <option value="$PROJECT_DIR$/CheapStepper.cpp" />
         <option value="$PROJECT_DIR$/tracking.cpp" />
+        <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
   </component>
@@ -198,12 +198,12 @@
       <option name="presentableId" value="Default" />
       <updated>1526385845344</updated>
       <workItem from="1526385847959" duration="5378000" />
-      <workItem from="1527592927253" duration="73942000" />
+      <workItem from="1527592927253" duration="75031000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79320000" />
+    <option name="totallyTimeSpent" value="80409000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -405,14 +405,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="1" lean-forward="false" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tracking.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="550">
@@ -423,24 +415,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CheapStepper.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="77" column="39" lean-forward="true" selection-start-line="77" selection-start-column="39" selection-end-line="77" selection-end-column="39" />
+        <state relative-caret-position="261">
+          <caret line="84" column="61" lean-forward="false" selection-start-line="84" selection-start-column="61" selection-end-line="84" selection-end-column="61" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CheapStepper.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="74" column="4" lean-forward="false" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="4" />
+        <state relative-caret-position="-907">
+          <caret line="129" column="39" lean-forward="false" selection-start-line="129" selection-start-column="39" selection-end-line="129" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tracking.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+        <state relative-caret-position="3315">
+          <caret line="195" column="5" lean-forward="true" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="3" lean-forward="false" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
           <folding />
         </state>
       </provider>

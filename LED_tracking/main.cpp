@@ -6,6 +6,12 @@
  * Management of the camera who tracks the corner LED to throw the bottle in right place.
  */
 
+/* TODO:
+ * - implementation communication arduino
+ * - implementation test bottle
+ * - implementation test align AND no angle to correct
+ */
+
 #include "tracking.h"
 
 int main() {

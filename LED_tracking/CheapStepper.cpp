@@ -125,16 +125,17 @@ int CheapStepper::calcDelay (int rpm){
     unsigned long d = 60000000 / (totalSteps* (unsigned long) rpm);
     // in range: 600-1465 microseconds (24-1 rpm)
     return (int) d;
+}
 
+int CheapStepper::calcRpm (int _delay){
+    unsigned long rpm = 60000000 / (unsigned long) _delay / totalSteps;
+    return (int) rpm;
 }
 
 void CheapStepper::seqCW (){
     seqN++;
     if (seqN > 7) seqN = 0; // roll over to A seq
     seq(seqN);
-
-    std::cout << seqN << std::endl;
-    std::cout << stepN << std::endl;
 
     stepN++; // track miniSteps
     if (stepN >= totalSteps){
@@ -146,9 +147,6 @@ void CheapStepper::seqCCW (){
     seqN--;
     if (seqN < 0) seqN = 7; // roll over to DA seq
     seq(seqN);
-
-    std::cout << seqN << std::endl;
-    std::cout << stepN << std::endl;
 
     stepN--; // track miniSteps
     if (stepN < 0){

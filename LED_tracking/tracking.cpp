@@ -185,12 +185,15 @@ int get_dist_corner(double h_up_led){
 
 // Manage stepper back
 void manage_stepper(CheapStepper& stepper_back, int led_x_pos, int& step){
+    int rpm = stepper_back.getRpm();
     stepper_back.PID_orientation(led_x_pos);
 
-    if(WIDTH_IMAGE/2 - led_x_pos < 0)
-        stepper_back.stepCW();
-    else
-        stepper_back.stepCCW();
+    for(int s=0; s<rpm/3; s++) {
+        if (WIDTH_IMAGE / 2 - led_x_pos < 0)
+            stepper_back.stepCW();
+        else
+            stepper_back.stepCCW();
+    }
 }
 
 // If  a bottle is captured
