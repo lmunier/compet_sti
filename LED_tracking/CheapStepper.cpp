@@ -31,18 +31,17 @@
 
 #include "CheapStepper.h"
 
-CheapStepper::CheapStepper () {
-    for (int pin=0; pin<4; pin++){
-        pinMode(pins[pin], OUTPUT);
-    }
-}
-
 CheapStepper::CheapStepper (int in1, int in2, int in3, int in4) {
     pins[0] = in1;
     pins[1] = in2;
     pins[2] = in3;
     pins[3] = in4;
-    CheapStepper();
+
+    std::cout << seqN << std::endl;
+
+    for (int pin=0; pin<4; pin++){
+        pinMode(pins[pin], OUTPUT);
+    }
 }
 
 void CheapStepper::setRpm (int rpm){
@@ -67,91 +66,51 @@ void CheapStepper::moveTo (bool clockwise, int toStep){
     }
 }
 
-void CheapStepper::moveDegrees (bool clockwise, int deg){
-    int nSteps = (unsigned long) deg * totalSteps / 360;
-    move(clockwise, nSteps);
-}
-
-void CheapStepper::moveToDegree (bool clockwise, int deg){
-    // keep to 0-359 range
-    if (deg >= 360) deg %= 360;
-    else if (deg < 0) {
-        deg %= 360; // returns negative if deg not multiple of 360
-        if (deg < 0) deg += 360; // shift into 0-359 range
-    }
-
-    int toStep = deg * totalSteps / 360;
-    moveTo (clockwise, toStep);
-}
-
-
-// NON-BLOCKING MOVES
-
-void CheapStepper::newMove (bool clockwise, int numSteps){
-    // numSteps sign ignored
-    // stepsLeft signed positive if clockwise, neg if ccw
-
-    if (clockwise) stepsLeft = abs(numSteps);
-    else stepsLeft = -1 * abs(numSteps);
-
-    lastStepTime = micros();
-}
-
-void CheapStepper::newMoveTo (bool clockwise, int toStep){
-    // keep toStep in 0-(totalSteps-1) range
-    if (toStep >= totalSteps) toStep %= totalSteps;
-    else if (toStep < 0) {
-        toStep %= totalSteps; // returns negative if toStep not multiple of totalSteps
-        if (toStep < 0) toStep += totalSteps; // shift into 0-(totalSteps-1) range
-    }
-
-    if (clockwise) stepsLeft = abs(toStep - stepN);
-        // clockwise: simple diff, always pos
-    else stepsLeft = -1*(totalSteps - abs(toStep - stepN));
-    // counter-clockwise: totalSteps - diff, made neg
-
-    lastStepTime = micros();
-}
-
-void CheapStepper::newMoveDegrees (bool clockwise, int deg){
-    int nSteps = (unsigned long) deg * totalSteps / 360;
-    newMove (clockwise, nSteps);
-}
-
-void CheapStepper::newMoveToDegree (bool clockwise, int deg){
-    // keep to 0-359 range
-    if (deg >= 360) deg %= 360;
-    else if (deg < 0) {
-        deg %= 360; // returns negative if deg not multiple of 360
-        if (deg < 0) deg += 360; // shift into 0-359 range
-    }
-
-    int toStep = deg * totalSteps / 360;
-    newMoveTo (clockwise, toStep);
-}
-
-void CheapStepper::run(){
-    if (micros() - lastStepTime >= delay) { // if time for step
-        if (stepsLeft > 0) { // clockwise
-            stepCW();
-            stepsLeft--;
-        } else if (stepsLeft < 0){ // counter-clockwise
-            stepCCW();
-            stepsLeft++;
-        }
-
-        lastStepTime = micros();
-    }
-}
-
-void CheapStepper::stop(){
-    stepsLeft = 0;
-}
-
-
 void CheapStepper::step(bool clockwise){
     if (clockwise) seqCW();
     else seqCCW();
+}
+
+// Controller to correct rotation
+void CheapStepper::PID_orientation(int pos_beacon) {
+    static int e = 0;
+    static int ui = 0, e_p = 0, ud = 0;
+    static int speed = 0;
+
+    e = MIDDLE - pos_beacon;
+
+    // To minimize the effects of noise and data oscillation
+    if(e < TOLERANCE_ROT && e > - TOLERANCE_ROT){
+        e = 0;
+    }
+
+    ui += e*SAMPLING;
+    ud = (int)((e - e_p)/SAMPLING - 0.5);
+
+    speed = (int)(KP_ROT*e + KI_ROT*ui + KD_ROT*ud);
+
+    e_p = e;
+
+    // Anti-windup control to avoid aberrant commands
+    if (abs(speed) > V_MAX) {
+        ui = (int)((V_MAX/KP_ROT) - e - ud);
+
+        if(speed > 0)
+            speed = V_MAX;
+        else
+            speed = -V_MAX;
+    } else if (abs(speed) < V_MIN) {
+        ui = (int)((V_MIN/KP_ROT) - e - ud);
+
+        if(speed > 0)
+            speed = V_MIN;
+        else
+            speed = -V_MIN;
+    }
+
+    std::cout << abs(speed) << std::endl;
+
+    setRpm(abs(speed));
 }
 
 
@@ -166,13 +125,11 @@ int CheapStepper::calcDelay (int rpm){
     unsigned long d = 60000000 / (totalSteps* (unsigned long) rpm);
     // in range: 600-1465 microseconds (24-1 rpm)
     return (int) d;
-
 }
 
 int CheapStepper::calcRpm (int _delay){
     unsigned long rpm = 60000000 / (unsigned long) _delay / totalSteps;
     return (int) rpm;
-
 }
 
 void CheapStepper::seqCW (){

@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/CheapStepper.cpp
+CheapStepper.h
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/CheapStepper.h
+
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/CheapStepper.h
+wiringPi.h
+-
+stdlib.h
+-
+
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/main.cpp
+tracking.h
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/tracking.h
+
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/tracking.cpp
+tracking.h
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/tracking.h
+
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/tracking.h
+opencv2/opencv.hpp
+-
+raspicam/raspicam.h
+-
+ctime
+-
+cstdlib
+-
+iostream
+-
+

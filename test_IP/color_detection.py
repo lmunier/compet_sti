@@ -64,7 +64,7 @@ def main():
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
         image = cv2.imread(args['query'])
         image = imutils.resize(image, height=300)
-        image = cv2.convertScaleAbs(image, alpha=1.2, beta=-255)
+        #image = cv2.convertScaleAbs(image, alpha=1.2, beta=-255)
 
     setup_trackbars(range_filter)
 
@@ -87,6 +87,8 @@ def main():
             frame_to_thresh = image.copy()
         else:
             frame_to_thresh = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+        cv2.imshow("HSV", frame_to_thresh)
 
         v1_min, v2_min, v3_min, v1_max, v2_max, v3_max = get_trackbar_values(range_filter)
 
