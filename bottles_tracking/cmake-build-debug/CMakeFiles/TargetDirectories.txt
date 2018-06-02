@@ -1,0 +1,3 @@
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/bottles_tracking/cmake-build-debug/CMakeFiles/bottles_tracking.dir
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/bottles_tracking/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Munier Louis/Documents/GitHub/compet_sti/bottles_tracking/cmake-build-debug/CMakeFiles/rebuild_cache.dir
