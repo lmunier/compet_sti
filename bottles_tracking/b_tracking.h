@@ -11,6 +11,7 @@
 
 #define LED_PIN         0 // PIN to enable LEDs gpio (BCM 17)
 
+#include <wiringPi.h>
 #include <opencv2/opencv.hpp>
 #include <cfloat>
 #include <ctime>
