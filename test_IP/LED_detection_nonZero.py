@@ -23,19 +23,11 @@ def main():
     #lower = [170, 240, 170]
     #upper = [255, 255, 215]
 
-#    lower = [0, 0, 254]
-#    upper = [255, 10, 255]
-
-    lower = [0, 0, 0]
-    upper = [255, 110, 255]
-
-    kernel = np.ones((3, 3), np.uint8)
+    lower = [240, 240, 240]
+    upper = [255, 255, 255]
 
     args = get_arguments()
     state = True
-    x = 0
-    y_up = 0
-    y_down = 0
 
     if args['webcam'] != -1:
         camera = cv2.VideoCapture(0)
@@ -47,7 +39,6 @@ def main():
         image = cv2.imread(args['query'])
 #        image = imutils.resize(image, height=320)
 
-
     while state:
         if args['webcam'] != -1:
             ret, image = camera.read()
@@ -57,42 +48,33 @@ def main():
         elif args['picamera'] != -1:
             image = camera.read()
 
-        cv2.imshow("Image", image)
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        height, width, nb_color = image.shape
+        print(width, height, nb_color)
 
-        height, width, color = image.shape
-        print(height, width, color)
         # create NumPy arrays from the boundaries
         lower = np.array(lower, dtype="uint8")
         upper = np.array(upper, dtype="uint8")
 
         # find the colors within the specified boundaries and apply
         # the mask
-        thresh = cv2.inRange(hsv, lower, upper)
-        bitwise = cv2.bitwise_and(image, image, mask=thresh)
+        mask = cv2.inRange(image, lower, upper)
+        output = cv2.bitwise_and(image, image, mask=mask)
 
-        opening = cv2.morphologyEx(bitwise, cv2.MORPH_OPEN, kernel)
-        output = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
         cv2.imshow("images", output)
 
-        for r in range(0, height-1):
-            for c in range(0, width-1):
-                if(output[r][c][0] >= 10):
-                    x = c
-                    y_up = r
-                    break
+        gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+        retval, binary = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
+        nonzero = cv2.findNonZero(binary)
 
-            if x is not 0:
-                break
+        #for element in nonzero:
+        #    print(element)
+        #print(nonzero[0][0][1])
+        x = nonzero[0][0][0]
+        y = nonzero[0][0][1]
 
-        for r in range(0, height-1):
-            for c in range(x-10, x+10):
-                if(output[r][c][0] >= 10):
-                    y_down = r
-
-        print(x, y_up, y_down, y_up-y_down)
-        cv2.circle(output, (int(x), int(y_up)), 10, (0, 0, 255), 2)
-        cv2.circle(output, (int(x), int(y_down)), 5, (0, 255, 255), 2)
+        print(x, y)
+        cv2.circle(output, (int(x), int(y)), 10, (0, 0, 255), 2)
+        cv2.circle(output, (int(width/2), int(y)), 5, (0, 255, 255), 2)
         cv2.imshow("result", output)
 
         if cv2.waitKey(1) & 0xFF is ord('q'):
