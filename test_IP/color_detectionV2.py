@@ -24,17 +24,17 @@ def setup_trackbars(range_filter):
         for j in range_filter:
             if range_filter == "HSV":
                 if f == 0:
-                    v[0] = 40
+                    v[0] = 38
                     v[1] = 255
                 elif f == 1:
-                    v[0] = 0
-                    v[1] = 150
+                    v[0] = 50
+                    v[1] = 200
                 else:
                     v[0] = 125
                     v[1] = 230
             elif range_filter == "BGR":
                 if f == 0:
-                    v[0] = 70
+                    v[0] = 80
                     v[1] = 255
                 elif f == 1:
                     v[0] = 0
@@ -70,6 +70,7 @@ def get_trackbar_values(range_filter):
 
 
 def main():
+    blur_kernel_size = 9
     args = get_arguments()
     range_filter_HSV = "HSV"
     range_filter_RGB = "BGR"
@@ -84,7 +85,7 @@ def main():
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
         image = cv2.imread(args['source'])
         image = imutils.resize(image, height=300)
-        image = cv2.blur(image, (5, 5))
+        image = cv2.blur(image, (blur_kernel_size, blur_kernel_size))
         #image = cv2.convertScaleAbs(image, alpha=1.2, beta=-255)
 
     setup_trackbars(range_filter_HSV)
@@ -97,17 +98,18 @@ def main():
     while state:
         if args['source'] == 'w':
             ret, image = camera.read()
-            image = cv2.blur(image, (5, 5))
+            image = cv2.blur(image, (blur_kernel_size, blur_kernel_size))
 
             if not ret:
                 break
         elif args['source'] == 'r':
             image = camera.read()
-            image = cv2.blur(image, (5, 5))
+            image = cv2.blur(image, (blur_kernel_size, blur_kernel_size))
 
 
         # contrast increasing
         cv2.imshow("Original", image)
+        output = image.copy()
 
         RGB_v1_min, RGB_v2_min, RGB_v3_min, RGB_v1_max, RGB_v2_max, RGB_v3_max = get_trackbar_values(range_filter_RGB)
         HSV_v1_min, HSV_v2_min, HSV_v3_min, HSV_v1_max, HSV_v2_max, HSV_v3_max = get_trackbar_values(range_filter_HSV)
@@ -130,6 +132,31 @@ def main():
         opening = cv2.morphologyEx(rgb_hsv, cv2.MORPH_OPEN, kernel)
         opening = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
         cv2.imshow("Opening", opening)
+
+        edged = cv2.Canny(opening, 30, 200)
+        cv2.imshow("Edged", edged)
+
+        # find contours in the edged image, keep only the largest
+        # ones, and initialize our screen contour
+        im2, cnts, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cnts.sort(key=cv2.contourArea, reverse=False)
+
+        # loop over our contours to find number of bottles in image
+        nb_bottles = 0
+
+        for c in cnts:
+            print(c)
+            # approximate the contour
+            peri = cv2.arcLength(c, True)
+            area = cv2.contourArea(c, True)
+            approx = cv2.approxPolyDP(c, 0.03 * peri, True)
+
+            # if our approximated contour has four points, then we can assume that we have found our screen
+            if abs(area) <= 3000:
+                nb_bottles += 1
+                cv2.drawContours(output, [approx], -1, (0, 255, 0), 3)
+
+        cv2.imshow("Output", output)
 
         if cv2.waitKey(1) & 0xFF is ord('q'):
             break
