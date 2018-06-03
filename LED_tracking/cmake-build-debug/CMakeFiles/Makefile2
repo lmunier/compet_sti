@@ -59,39 +59,39 @@ CMAKE_SOURCE_DIR = "C:\Users\Munier Louis\Documents\GitHub\compet_sti\LED_tracki
 CMAKE_BINARY_DIR = "C:\Users\Munier Louis\Documents\GitHub\compet_sti\LED_tracking\cmake-build-debug"
 
 #=============================================================================
-# Target rules for target CMakeFiles/LED_tracking.dir
+# Target rules for target CMakeFiles/led_tracking.dir
 
 # All Build rule for target.
-CMakeFiles/LED_tracking.dir/all:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/depend
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="C:\Users\Munier Louis\Documents\GitHub\compet_sti\LED_tracking\cmake-build-debug\CMakeFiles" --progress-num=1,2,3,4 "Built target LED_tracking"
-.PHONY : CMakeFiles/LED_tracking.dir/all
+CMakeFiles/led_tracking.dir/all:
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/depend
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="C:\Users\Munier Louis\Documents\GitHub\compet_sti\LED_tracking\cmake-build-debug\CMakeFiles" --progress-num=1,2,3,4 "Built target led_tracking"
+.PHONY : CMakeFiles/led_tracking.dir/all
 
 # Include target in all.
-all: CMakeFiles/LED_tracking.dir/all
+all: CMakeFiles/led_tracking.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/LED_tracking.dir/rule: cmake_check_build_system
+CMakeFiles/led_tracking.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\Munier Louis\Documents\GitHub\compet_sti\LED_tracking\cmake-build-debug\CMakeFiles" 4
-	$(MAKE) -f CMakeFiles\Makefile2 CMakeFiles/LED_tracking.dir/all
+	$(MAKE) -f CMakeFiles\Makefile2 CMakeFiles/led_tracking.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\Munier Louis\Documents\GitHub\compet_sti\LED_tracking\cmake-build-debug\CMakeFiles" 0
-.PHONY : CMakeFiles/LED_tracking.dir/rule
+.PHONY : CMakeFiles/led_tracking.dir/rule
 
 # Convenience name for target.
-LED_tracking: CMakeFiles/LED_tracking.dir/rule
+led_tracking: CMakeFiles/led_tracking.dir/rule
 
-.PHONY : LED_tracking
-
-# clean rule for target.
-CMakeFiles/LED_tracking.dir/clean:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/clean
-.PHONY : CMakeFiles/LED_tracking.dir/clean
+.PHONY : led_tracking
 
 # clean rule for target.
-clean: CMakeFiles/LED_tracking.dir/clean
+CMakeFiles/led_tracking.dir/clean:
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/clean
+.PHONY : CMakeFiles/led_tracking.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/led_tracking.dir/clean
 
 .PHONY : clean
 

@@ -110,17 +110,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named LED_tracking
+# Target rules for targets named led_tracking
 
 # Build rule for target.
-LED_tracking: cmake_check_build_system
-	$(MAKE) -f CMakeFiles\Makefile2 LED_tracking
-.PHONY : LED_tracking
+led_tracking: cmake_check_build_system
+	$(MAKE) -f CMakeFiles\Makefile2 led_tracking
+.PHONY : led_tracking
 
 # fast build rule for target.
-LED_tracking/fast:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/build
-.PHONY : LED_tracking/fast
+led_tracking/fast:
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/build
+.PHONY : led_tracking/fast
 
 CheapStepper.obj: CheapStepper.cpp.obj
 
@@ -128,7 +128,7 @@ CheapStepper.obj: CheapStepper.cpp.obj
 
 # target to build an object file
 CheapStepper.cpp.obj:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/CheapStepper.cpp.obj
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/CheapStepper.cpp.obj
 .PHONY : CheapStepper.cpp.obj
 
 CheapStepper.i: CheapStepper.cpp.i
@@ -137,7 +137,7 @@ CheapStepper.i: CheapStepper.cpp.i
 
 # target to preprocess a source file
 CheapStepper.cpp.i:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/CheapStepper.cpp.i
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/CheapStepper.cpp.i
 .PHONY : CheapStepper.cpp.i
 
 CheapStepper.s: CheapStepper.cpp.s
@@ -146,7 +146,7 @@ CheapStepper.s: CheapStepper.cpp.s
 
 # target to generate assembly for a file
 CheapStepper.cpp.s:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/CheapStepper.cpp.s
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/CheapStepper.cpp.s
 .PHONY : CheapStepper.cpp.s
 
 main.obj: main.cpp.obj
@@ -155,7 +155,7 @@ main.obj: main.cpp.obj
 
 # target to build an object file
 main.cpp.obj:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/main.cpp.obj
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/main.cpp.obj
 .PHONY : main.cpp.obj
 
 main.i: main.cpp.i
@@ -164,7 +164,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -173,7 +173,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 tracking.obj: tracking.cpp.obj
@@ -182,7 +182,7 @@ tracking.obj: tracking.cpp.obj
 
 # target to build an object file
 tracking.cpp.obj:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/tracking.cpp.obj
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/tracking.cpp.obj
 .PHONY : tracking.cpp.obj
 
 tracking.i: tracking.cpp.i
@@ -191,7 +191,7 @@ tracking.i: tracking.cpp.i
 
 # target to preprocess a source file
 tracking.cpp.i:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/tracking.cpp.i
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/tracking.cpp.i
 .PHONY : tracking.cpp.i
 
 tracking.s: tracking.cpp.s
@@ -200,7 +200,7 @@ tracking.s: tracking.cpp.s
 
 # target to generate assembly for a file
 tracking.cpp.s:
-	$(MAKE) -f CMakeFiles\LED_tracking.dir\build.make CMakeFiles/LED_tracking.dir/tracking.cpp.s
+	$(MAKE) -f CMakeFiles\led_tracking.dir\build.make CMakeFiles/led_tracking.dir/tracking.cpp.s
 .PHONY : tracking.cpp.s
 
 # Help Target
@@ -209,7 +209,7 @@ help:
 	@echo ... all (the default if no target is provided)
 	@echo ... clean
 	@echo ... depend
-	@echo ... LED_tracking
+	@echo ... led_tracking
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... CheapStepper.obj

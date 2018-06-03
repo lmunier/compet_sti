@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = @CMakeFiles/LED_tracking.dir/includes_CXX.rsp
+CXX_INCLUDES = @CMakeFiles/led_tracking.dir/includes_CXX.rsp
 

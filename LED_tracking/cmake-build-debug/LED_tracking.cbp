@@ -17,8 +17,8 @@
 					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="LED_tracking">
-				<Option output="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/LED_tracking.exe" prefix_auto="0" extension_auto="0"/>
+			<Target title="led_tracking">
+				<Option output="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/led_tracking.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -34,14 +34,14 @@
 					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/6.3.0/../../../../mingw32/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 LED_tracking"/>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 led_tracking"/>
 					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="LED_tracking/fast">
-				<Option output="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/LED_tracking.exe" prefix_auto="0" extension_auto="0"/>
+			<Target title="led_tracking/fast">
+				<Option output="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/led_tracking.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -57,7 +57,7 @@
 					<Add directory="c:\mingw\bin\../lib/gcc/mingw32/6.3.0/../../../../mingw32/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 LED_tracking/fast"/>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 led_tracking/fast"/>
 					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -85,19 +85,19 @@
 			</Target>
 		</Build>
 		<Unit filename="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/CheapStepper.cpp">
-			<Option target="LED_tracking"/>
+			<Option target="led_tracking"/>
 		</Unit>
 		<Unit filename="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/CheapStepper.h">
-			<Option target="LED_tracking"/>
+			<Option target="led_tracking"/>
 		</Unit>
 		<Unit filename="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/main.cpp">
-			<Option target="LED_tracking"/>
+			<Option target="led_tracking"/>
 		</Unit>
 		<Unit filename="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/tracking.cpp">
-			<Option target="LED_tracking"/>
+			<Option target="led_tracking"/>
 		</Unit>
 		<Unit filename="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/tracking.h">
-			<Option target="LED_tracking"/>
+			<Option target="led_tracking"/>
 		</Unit>
 		<Unit filename="C:/Users/Munier Louis/Documents/GitHub/compet_sti/LED_tracking/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

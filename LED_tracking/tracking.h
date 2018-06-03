@@ -54,7 +54,7 @@ Mat extract_color(Mat&, int[], int[]);
 int extract_position(Mat&, int&);
 
 // Give distance to corner
-int get_dist_corner(double);
+double get_dist_corner(int, char);
 
 // Manage stepper back
 void manage_stepper(CheapStepper&, int, int&);
