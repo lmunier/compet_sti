@@ -108,8 +108,6 @@ void CheapStepper::PID_orientation(int pos_beacon) {
             speed = -V_MIN;
     }
 
-    std::cout << abs(speed) << std::endl;
-
     setRpm(abs(speed));
 }
 

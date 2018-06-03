@@ -9,14 +9,12 @@
 #include "tracking.h"
 
 // Initialize pins stepper
-CheapStepper init_stepper(int& step, int& init_step){
+CheapStepper init_stepper(int& init_step){
     CheapStepper stepper_back(SB_IN1, SB_IN2, SB_IN3, SB_IN4);
+    init_step = stepper_back.getStep();
 
-    step = stepper_back.getStep();
-    init_step = step;
-
-    stepper_back.setStepN(step);
-    stepper_back.setSeqN(0);
+//    stepper_back.setStepN(step);
+//    stepper_back.setSeqN(0);
 
     return stepper_back;
 }
@@ -60,10 +58,9 @@ int led_tracking() {
         // Set step variable
         static int init_step = 0;
         int degree_correction = 0;
-        int step = 0;
 
     wiringPiSetup();
-    CheapStepper stepper_back = init_stepper(step, init_step);
+    CheapStepper stepper_back = init_stepper(init_step);
 
     VideoCapture webcam = init_webcam();
 
@@ -80,16 +77,16 @@ int led_tracking() {
             return -1;
         }
 
-        extracted = extract_color(image, lower_black, upper_black);
+        extracted = extract_color(image, lower_white, upper_white);
         led_y_pos = extract_position(extracted, led_x_pos);
 
         dist2corner = get_dist_corner(led_y_pos);
-        manage_stepper(stepper_back, led_x_pos, step);
+        manage_stepper(stepper_back, led_x_pos);
 
         if(is_aligned(led_x_pos)) {
             cout << "Fire !!!" << endl; // TODO: Send to arduino "FIRE" with dist2corner
 
-            degree_correction = (step - init_step)*360/4096;
+            degree_correction = (stepper_back.getStep() - init_step)*360/4096;
             cout << "Degree to correct." << degree_correction << endl;
 
             /*while (true) {// TODO: place checking that bottle is thrown
@@ -145,7 +142,7 @@ int extract_position(Mat& image, int& center){
     // Find non zero to find the highest pixel
     for(int row = 0; row < HEIGHT_IMAGE; row++){
         for(int col = 0; col < WIDTH_IMAGE; col++){
-            if((int) image.at<Vec3b>(row, col)[0] >= 5) {
+            if((int) image.at<Vec3b>(row, col)[0] >= 250) {
                 if (x_min == 0) {
                     x_min = col;
                     stop = true;
@@ -179,12 +176,33 @@ int extract_position(Mat& image, int& center){
 }
 
 // Give distance to corner
-int get_dist_corner(double h_up_led){
-    return (int)((DIST_ZERO/H_ZERO)*h_up_led);
+//-----------------------OLD--------------------------
+/*double get_dist_corner(int h_up_led){
+    return (DIST_ZERO/H_ZERO)*h_up_led;
+}*/
+//-----------------------OLD--------------------------
+
+// Give distance to corner
+double get_dist_corner(int pixels, char function){
+    double x = pixels;
+    double x_2 = x * x;
+    double x_3 = x_2 * x;
+
+    switch(function) {
+        case 'h':
+            return -3.9789e-7 * x_3 + 3.5671e-4 * x_2 - 0.1134 * x + 14.9132;
+        case 'y':
+            return 1.241e-6 * x_3 - 1.5465e-4 * x_2 + 0.0187 * x + 1.9045;
+        default :
+            cout << "Wrong distance argument." << endl;
+            break;
+    }
+
+    return -1.0;
 }
 
 // Manage stepper back
-void manage_stepper(CheapStepper& stepper_back, int led_x_pos, int& step){
+void manage_stepper(CheapStepper& stepper_back, int led_x_pos){
     int rpm = stepper_back.getRpm();
     stepper_back.PID_orientation(led_x_pos);
 
