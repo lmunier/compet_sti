@@ -22,11 +22,11 @@ int bottles_scanning(){
 
     while(c > 0){
         led_enable(true);
-        delay(1000);
-        led_enable(false);
-        delay(1000);
+        delay(5000);
+        //led_enable(false);
+        //delay(5000);
 
-        c--;
+        //c--;
     }
 
     return 1;

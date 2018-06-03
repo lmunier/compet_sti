@@ -39,7 +39,7 @@ using namespace std;
 #define TOLERANCE_ALIGN 10      // Tolerance for alignment
 
 // Initialize pins stepper
-CheapStepper init_stepper(int&, int&);
+CheapStepper init_stepper(int&);
 
 // Initialize webcam
 VideoCapture init_webcam();
@@ -57,7 +57,7 @@ int extract_position(Mat&, int&);
 int get_dist_corner(double);
 
 // Manage stepper back
-void manage_stepper(CheapStepper&, int, int&);
+void manage_stepper(CheapStepper&, int);
 
 // If  a bottle is captured
 bool is_bottle_captured();
