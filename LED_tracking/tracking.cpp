@@ -176,8 +176,29 @@ int extract_position(Mat& image, int& center){
 }
 
 // Give distance to corner
-int get_dist_corner(double h_up_led){
-    return (int)((DIST_ZERO/H_ZERO)*h_up_led);
+//-----------------------OLD--------------------------
+/*double get_dist_corner(int h_up_led){
+    return (DIST_ZERO/H_ZERO)*h_up_led;
+}*/
+//-----------------------OLD--------------------------
+
+// Give distance to corner
+double get_dist_corner(int pixels, char function){
+    double x = pixels;
+    double x_2 = x * x;
+    double x_3 = x_2 * x;
+
+    switch(function) {
+        case 'h':
+            return -3.9789e-7 * x_3 + 3.5671e-4 * x_2 - 0.1134 * x + 14.9132;
+        case 'y':
+            return 1.241e-6 * x_3 - 1.5465e-4 * x_2 + 0.0187 * x + 1.9045;
+        default :
+            cout << "Wrong distance argument." << endl;
+            break;
+    }
+
+    return -1.0;
 }
 
 // Manage stepper back

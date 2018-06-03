@@ -1,3 +1,3 @@
-"C:\Program Files\JetBrains\CLion 2017.2.3\bin\cmake\bin\cmake.exe" -E remove -f CMakeFiles\LED_tracking.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\LED_tracking.dir/objects.a @CMakeFiles\LED_tracking.dir\objects1.rsp
-C:\MinGW\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\LED_tracking.dir/objects.a -Wl,--no-whole-archive  -o LED_tracking.exe -Wl,--out-implib,libLED_tracking.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\LED_tracking.dir\linklibs.rsp
+"C:\Program Files\JetBrains\CLion 2017.2.3\bin\cmake\bin\cmake.exe" -E remove -f CMakeFiles\led_tracking.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\led_tracking.dir/objects.a @CMakeFiles\led_tracking.dir\objects1.rsp
+C:\MinGW\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\led_tracking.dir/objects.a -Wl,--no-whole-archive  -o led_tracking.exe -Wl,--out-implib,libled_tracking.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\led_tracking.dir\linklibs.rsp
