@@ -12,6 +12,7 @@
 
 #include <wiringPi.h>
 #include <opencv2/opencv.hpp>
+#include <raspicam/raspicam_cv.h>
 #include <cfloat>
 #include <ctime>
 #include <cstdlib>
@@ -19,11 +20,18 @@
 
 using namespace cv;
 using namespace std;
+using namespace raspicam;
 
-#define LED_PIN         0 // PIN to enable LEDs gpio (BCM 17)
+#define LED_PIN         0       // PIN to enable LEDs gpio (BCM 17)
+
+#define HEIGHT_IMAGE    480     // Height of our image/frame
+#define WIDTH_IMAGE     640     // Width of our image/frame
 
 // Pins initialization
 void init_pins();
+
+// Raspicam initialization
+RaspiCam_Cv init_raspicam();
 
 // OpenCV function to detect bottles
 int bottles_scanning();
