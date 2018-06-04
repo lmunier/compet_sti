@@ -23,7 +23,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="take_data.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="take_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../test_haar/take_data.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="441">
@@ -33,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="color_detectionV2.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="color_detectionV2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/color_detectionV2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="577">
-              <caret line="157" column="0" lean-forward="true" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+            <state relative-caret-position="-766">
+              <caret line="89" column="69" lean-forward="false" selection-start-line="89" selection-start-column="69" selection-end-line="89" selection-end-column="69" />
               <folding />
             </state>
           </provider>
@@ -122,8 +122,8 @@
         <option value="$PROJECT_DIR$/LED_dection.py" />
         <option value="$PROJECT_DIR$/color_detection.py" />
         <option value="$PROJECT_DIR$/LED_detection.py" />
-        <option value="$PROJECT_DIR$/color_detectionV2.py" />
         <option value="$PROJECT_DIR$/brightest_zone.py" />
+        <option value="$PROJECT_DIR$/color_detectionV2.py" />
       </list>
     </option>
   </component>
@@ -727,14 +727,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/color_detectionV2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="577">
-          <caret line="157" column="0" lean-forward="true" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/brightest_zone.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -759,6 +751,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="441">
           <caret line="79" column="0" lean-forward="true" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/color_detectionV2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-766">
+          <caret line="89" column="69" lean-forward="false" selection-start-line="89" selection-start-column="69" selection-end-line="89" selection-end-column="69" />
           <folding />
         </state>
       </provider>

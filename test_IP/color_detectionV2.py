@@ -78,6 +78,7 @@ def main():
 
     if args['source'] == 'w':
         camera = cv2.VideoCapture(0)
+        camera.set(cv2.CAP_PROP_BRIGHTNESS, 0.5)
     elif args['source'] == 'r':
         camera = VideoStream(usePiCamera=args['picamera'] > 0).start()
         time.sleep(2.0)
@@ -85,6 +86,7 @@ def main():
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
         image = cv2.imread(args['source'])
         image = imutils.resize(image, height=300)
+
         image = cv2.blur(image, (blur_kernel_size, blur_kernel_size))
         #image = cv2.convertScaleAbs(image, alpha=1.2, beta=-255)
 
