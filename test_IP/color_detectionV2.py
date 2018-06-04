@@ -5,6 +5,7 @@ import argparse
 import numpy as np
 from imutils.video import VideoStream
 import imutils
+import time
 
 
 DELAY_BLUR = 100
@@ -50,6 +51,22 @@ def setup_trackbars(range_filter):
                 cv2.createTrackbar("%s_%s" % (j, i), "Trackbars", v[1], 255, callback)
 
 
+def brigthest_zone(image):
+    radius = 5
+
+    # load the image and convert it to grayscale
+    orig = image.copy()
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # apply a Gaussian blur to the image then find the brightest
+    # region
+    gray = cv2.GaussianBlur(gray, (radius, radius), 0)
+    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
+    image = orig.copy()
+    cv2.circle(image, maxLoc, radius, (255, 0, 0), 2)
+
+    cv2.imshow("MaxLoc", image)
+
 def get_arguments():
     ap = argparse.ArgumentParser()
     ap.add_argument('-s', '--source', default='r', help="Chose source (raspicam, webcam or file")
@@ -80,7 +97,7 @@ def main():
         camera = cv2.VideoCapture(0)
         camera.set(cv2.CAP_PROP_BRIGHTNESS, 0.5)
     elif args['source'] == 'r':
-        camera = VideoStream(usePiCamera=args['picamera'] > 0).start()
+        camera = VideoStream(usePiCamera=True).start()
         time.sleep(2.0)
     elif args['source'] != ('r' or 'w'):
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
@@ -112,6 +129,8 @@ def main():
         # contrast increasing
         cv2.imshow("Original", image)
         output = image.copy()
+
+        brigthest_zone(image)
 
         RGB_v1_min, RGB_v2_min, RGB_v3_min, RGB_v1_max, RGB_v2_max, RGB_v3_max = get_trackbar_values(range_filter_RGB)
         HSV_v1_min, HSV_v2_min, HSV_v3_min, HSV_v1_max, HSV_v2_max, HSV_v3_max = get_trackbar_values(range_filter_HSV)
