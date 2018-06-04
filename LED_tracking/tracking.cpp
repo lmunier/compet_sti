@@ -9,14 +9,9 @@
 #include "tracking.h"
 
 // Initialize pins stepper
-CheapStepper init_stepper(int& step, int& init_step){
+CheapStepper init_stepper(int& init_step){
     CheapStepper stepper_back(SB_IN1, SB_IN2, SB_IN3, SB_IN4);
-
-    step = stepper_back.getStep();
-    init_step = step;
-
-    stepper_back.setStepN(step);
-    stepper_back.setSeqN(0);
+    init_step = stepper_back.getStep();
 
     return stepper_back;
 }
@@ -27,6 +22,7 @@ VideoCapture init_webcam(){
 
     webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
+    webcam.set(CAP_PROP_BRIGHTNESS, 0.5);
 
     return webcam;
 }
@@ -36,20 +32,15 @@ VideoCapture init_webcam(){
 int led_tracking() {
     // Initialization of matrices
     Mat image;
+    Mat blur;
+    Mat gray;
+    Mat image_hsv;
     Mat extracted;
 
     // Initialization of color threshold
-        // Green leds
-        int lower_green[] = {170, 240, 170};
-        int upper_green[] = {255, 255, 215};
-
         // White leds
-        int lower_white[] = {250, 250, 250};
-        int upper_white[] = {255, 255, 255};
-
-        // Black leds
-        int lower_black[] = {0, 0, 0};
-        int upper_black[] = {40, 40, 40};
+        int lower_hsv_yellow[] = {20, 0, 250};
+        int upper_hsv_yellow[] = {60, 55, 255};
 
     // Initialization of variables
         // Set distance variables
@@ -60,10 +51,17 @@ int led_tracking() {
         // Set step variable
         static int init_step = 0;
         int degree_correction = 0;
-        int step = 0;
+
+
+	// Set blur kernel
+	int kernel_blur = 3;
+
+        // Extract max, min
+        //Point minLoc, maxLoc;
+        //double min=0.0, max=0.0;
 
     wiringPiSetup();
-    CheapStepper stepper_back = init_stepper(step, init_step);
+    CheapStepper stepper_back = init_stepper(init_step);
 
     VideoCapture webcam = init_webcam();
 
@@ -80,16 +78,25 @@ int led_tracking() {
             return -1;
         }
 
-        extracted = extract_color(image, lower_black, upper_black);
+        // Blur image to avoid noise
+        GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
+
+        // Extract max in prevision
+        //cvtColor(blur, gray, COLOR_BGR2GRAY);
+        //minMaxLoc(gray, &min, &max, &minLoc, &maxLoc);
+
+        // Extracted color to detect LEDs
+        cvtColor(blur,image_hsv, COLOR_BGR2HSV);
+        extracted = extract_color(image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         led_y_pos = extract_position(extracted, led_x_pos);
 
-        dist2corner = get_dist_corner(led_y_pos);
-        manage_stepper(stepper_back, led_x_pos, step);
+        dist2corner = get_dist_corner(led_y_pos, 'y');
+        manage_stepper(stepper_back, led_x_pos);
 
         if(is_aligned(led_x_pos)) {
             cout << "Fire !!!" << endl; // TODO: Send to arduino "FIRE" with dist2corner
 
-            degree_correction = (step - init_step)*360/4096;
+            degree_correction = (stepper_back.getStep() - init_step)*360/4096;
             cout << "Degree to correct." << degree_correction << endl;
 
             /*while (true) {// TODO: place checking that bottle is thrown
@@ -106,7 +113,10 @@ int led_tracking() {
             cout << "Send to arduino " << led_x_pos << endl;
         }
 
-        imshow("Image", image);
+        // Show result
+        //circle(blur, maxLoc, 10, (255, 255, 0), 2);
+
+        imshow("Image", blur);
         imshow("Extracted", extracted);
 
         if (waitKey(10) == 27)
@@ -126,14 +136,67 @@ Mat extract_color(Mat& image, int lower[], int upper[]){
     Mat extracted;
 
     // Create and apply mask to our image
-    inRange(image, Scalar(lower[BLUE], lower[GREEN], lower[RED]),
-            Scalar(upper[BLUE], upper[GREEN], upper[RED]), mask);
+    inRange(image, Scalar(lower[HUE], lower[SAT], lower[VAL]),
+            Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
     bitwise_and(image, image, extracted, mask);
 
     return extracted;
 }
 
 // Extract position of beacon led
+int extract_position(Mat& image, int& center){
+    // Initialize matrices
+    Mat gray;
+
+    // Extract max, min
+    Point minLoc, maxLoc;
+    double min=0.0, max=0.0;
+
+    // Initialize variables
+    bool stop = false;
+    int x_min = 0;
+    int x_max = 0;
+    int x_pos = 0;
+    int y_pos = 0;
+
+    // Extract max
+    cvtColor(image, gray, COLOR_BGR2GRAY);
+    minMaxLoc(gray, &min, &max, &minLoc, &maxLoc);
+
+    // Find non zero to find the highest pixel
+    /*for(int row = 0; row < HEIGHT_IMAGE; row++){
+
+        for(int col = 0; col < WIDTH_IMAGE; col++){
+            if((int) image.at<Vec3b>(row, col)[0] >= 20) {
+                if (x_min == 0) {
+                    x_min = col;
+                    stop = true;
+                } else
+                    x_max = col;
+            }
+        }
+        y_pos = row;
+
+        if(stop)
+            break;
+        else
+            x_min = 0;
+    }*/
+
+    // Change values for dist2center
+    center = x_pos;
+
+    // Show result
+    typedef Point_<uint16_t> Pixel;
+    circle(image, maxLoc, 10, (0, 0, 255), 2);
+
+    // Return y value
+    return y_pos;
+}
+
+// Extract position of beacon led
+//-------------------------OLD----------------------------
+/*
 int extract_position(Mat& image, int& center){
     // Initialize variables
     bool stop = false;
@@ -145,7 +208,7 @@ int extract_position(Mat& image, int& center){
     // Find non zero to find the highest pixel
     for(int row = 0; row < HEIGHT_IMAGE; row++){
         for(int col = 0; col < WIDTH_IMAGE; col++){
-            if((int) image.at<Vec3b>(row, col)[0] >= 5) {
+            if((int) image.at<Vec3b>(row, col)[0] >= 20) {
                 if (x_min == 0) {
                     x_min = col;
                     stop = true;
@@ -171,12 +234,15 @@ int extract_position(Mat& image, int& center){
 
     // Show result
     typedef Point_<uint16_t> Pixel;
-    Pixel pix(x_pos, y_pos);
-    circle(image, pix, 10, (0, 0, 255), 2);
+    Pixel pix_up(x_pos, y_pos);
+    Pixel pix_down(x_pos, y_pos); 
+    circle(image, pix_up, 10, (0, 0, 255), 2);
+    circle(image, pix_down, 10, (0, 255, 255), 2);
 
     // Return y value
     return y_pos;
-}
+}*/
+//--------------------------------------------------------
 
 // Give distance to corner
 //-----------------------OLD--------------------------
@@ -205,7 +271,7 @@ double get_dist_corner(int pixels, char function){
 }
 
 // Manage stepper back
-void manage_stepper(CheapStepper& stepper_back, int led_x_pos, int& step){
+void manage_stepper(CheapStepper& stepper_back, int led_x_pos){
     int rpm = stepper_back.getRpm();
     stepper_back.PID_orientation(led_x_pos);
 

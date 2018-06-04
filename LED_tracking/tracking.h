@@ -26,11 +26,11 @@ using namespace std;
 #define SB_IN3          5       // Correpsond to GPIO 24 (BCM)
 #define SB_IN4          6       // Correpsond to GPIO 25 (BCM)
 
-#define BLUE            0       // Channel blue on image vector
-#define GREEN           1       // Channel green on image vector
-#define RED             2       // Channel red on image vector
+#define HUE             0       // Channel blue on image vector
+#define SAT             1       // Channel green on image vector
+#define VAL             2       // Channel red on image vector
 
-#define HEIGHT_IMAGE    320     // Height of our image/frame
+#define HEIGHT_IMAGE    480     // Height of our image/frame
 #define WIDTH_IMAGE     640     // Width of our image/frame
 
 #define H_ZERO          1       // Measure between up led and ceil of our image at distance "zero"
@@ -39,7 +39,7 @@ using namespace std;
 #define TOLERANCE_ALIGN 10      // Tolerance for alignment
 
 // Initialize pins stepper
-CheapStepper init_stepper(int&, int&);
+CheapStepper init_stepper(int&);
 
 // Initialize webcam
 VideoCapture init_webcam();
@@ -57,7 +57,7 @@ int extract_position(Mat&, int&);
 double get_dist_corner(int, char);
 
 // Manage stepper back
-void manage_stepper(CheapStepper&, int, int&);
+void manage_stepper(CheapStepper&, int);
 
 // If  a bottle is captured
 bool is_bottle_captured();
