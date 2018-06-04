@@ -47,8 +47,8 @@
           <file leaf-file-name="tracking.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tracking.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-1048">
-                  <caret line="249" column="3" lean-forward="false" selection-start-line="249" selection-start-column="3" selection-end-line="249" selection-end-column="3" />
+                <state relative-caret-position="-748">
+                  <caret line="61" column="0" lean-forward="true" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -73,7 +73,7 @@
           <file leaf-file-name="CheapStepper.h" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/CheapStepper.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="125">
+                <state relative-caret-position="578">
                   <caret line="34" column="21" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="21" />
                   <folding />
                 </state>
@@ -83,8 +83,8 @@
           <file leaf-file-name="tracking.h" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tracking.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="227">
-                  <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+                <state relative-caret-position="567">
+                  <caret line="36" column="59" lean-forward="true" selection-start-line="36" selection-start-column="59" selection-end-line="36" selection-end-column="59" />
                   <folding />
                 </state>
               </provider>
@@ -124,7 +124,7 @@
     <option name="height" value="1087" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -137,24 +137,7 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="LED_tracking" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="LED_tracking" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="LED_tracking" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="LED_tracking" type="462c0819:PsiDirectoryNode" />
-              <item name="cmake-build-debug" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
@@ -202,12 +185,13 @@
       <updated>1526385845344</updated>
       <workItem from="1526385847959" duration="5378000" />
       <workItem from="1527592927253" duration="77991000" />
-      <workItem from="1528024945229" duration="4058000" />
+      <workItem from="1528024945229" duration="4656000" />
+      <workItem from="1528106460826" duration="3304000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87427000" />
+    <option name="totallyTimeSpent" value="91329000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -270,6 +254,56 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="44" lean-forward="false" selection-start-line="5" selection-start-column="44" selection-end-line="5" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="12" lean-forward="false" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CheapStepper.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3842">
+          <caret line="226" column="29" lean-forward="false" selection-start-line="226" selection-start-column="29" selection-end-line="226" selection-end-column="29" />
+          <folding>
+            <marker date="1528079128052" expanded="true" signature="894:977" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tracking.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4233">
+          <caret line="249" column="3" lean-forward="false" selection-start-line="249" selection-start-column="3" selection-end-line="249" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CheapStepper.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" column="21" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tracking.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -477,24 +511,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CheapStepper.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
+        <state relative-caret-position="578">
           <caret line="34" column="21" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tracking.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1048">
-          <caret line="249" column="3" lean-forward="false" selection-start-line="249" selection-start-column="3" selection-end-line="249" selection-end-column="3" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tracking.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+        <state relative-caret-position="567">
+          <caret line="36" column="59" lean-forward="true" selection-start-line="36" selection-start-column="59" selection-end-line="36" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tracking.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-748">
+          <caret line="61" column="0" lean-forward="true" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
           <folding />
         </state>
       </provider>
