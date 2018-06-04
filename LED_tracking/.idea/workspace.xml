@@ -107,8 +107,8 @@
         <option value="$PROJECT_DIR$/CheapStepper.h" />
         <option value="$PROJECT_DIR$/CheapStepper.cpp" />
         <option value="$PROJECT_DIR$/main.cpp" />
-        <option value="$PROJECT_DIR$/tracking.cpp" />
         <option value="$PROJECT_DIR$/tracking.h" />
+        <option value="$PROJECT_DIR$/tracking.cpp" />
       </list>
     </option>
   </component>
@@ -186,12 +186,12 @@
       <workItem from="1526385847959" duration="5378000" />
       <workItem from="1527592927253" duration="77991000" />
       <workItem from="1528024945229" duration="4656000" />
-      <workItem from="1528106460826" duration="3304000" />
+      <workItem from="1528106460826" duration="3379000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="91329000" />
+    <option name="totallyTimeSpent" value="91404000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
