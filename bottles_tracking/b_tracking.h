@@ -36,6 +36,9 @@ RaspiCam_Cv init_raspicam();
 // OpenCV function to detect bottles
 int bottles_scanning();
 
+// Maximum light localization
+void max_light_localization(Mat&, double&, Point&);
+
 // LEDs management
 void led_enable(bool);
 

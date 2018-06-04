@@ -37,8 +37,8 @@ int bottles_scanning(){
     int kernel_blur = 3;
 
     // Extract max, min
-    Point minLoc, maxLoc;
-    double min=0.0, max=0.0;
+    Point max_loc;
+    double max = 0.0;
 
     wiringPiSetup();
     init_pins();
@@ -53,12 +53,31 @@ int bottles_scanning(){
     }
 
     while(true){
+        // Take video input
         camera.grab();
         camera.retrieve(image);
-        imshow("Image", image);
-    }
 
-    return 1;
+        max_light_localization(image, max, max_loc);
+    }
+}
+
+// Localize the maximum of light in image
+void max_light_localization(Mat& image, double& max, Point& max_loc){
+    // Initialize matrices
+    Mat gray;
+    Mat blur;
+
+    // Initialize variables
+    int kernel_blur = 3;
+    double min = 0;
+    Point min_loc = 0;
+
+    // Blur image to avoid noise
+    GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
+
+    // Extract max in prevision
+    cvtColor(blur, gray, COLOR_BGR2GRAY);
+    minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 }
 
 // LEDs management
