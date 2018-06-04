@@ -80,7 +80,8 @@ int led_tracking() {
         extracted = extract_color(image, lower_white, upper_white);
         led_y_pos = extract_position(extracted, led_x_pos);
 
-        dist2corner = get_dist_corner(led_y_pos);
+        dist2corner = get_dist_corner(led_y_pos, 'y');
+	cout << dist2corner << endl;
         manage_stepper(stepper_back, led_x_pos);
 
         if(is_aligned(led_x_pos)) {
