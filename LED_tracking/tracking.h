@@ -26,11 +26,14 @@ using namespace std;
 #define SB_IN3          5       // Correpsond to GPIO 24 (BCM)
 #define SB_IN4          6       // Correpsond to GPIO 25 (BCM)
 
-#define BLUE            0       // Channel blue on image vector
-#define GREEN           1       // Channel green on image vector
-#define RED             2       // Channel red on image vector
+#define TOL_BEACON      5
+#define HOLE            5
 
-#define HEIGHT_IMAGE    320     // Height of our image/frame
+#define HUE             0       // Channel blue on image vector
+#define SAT             1       // Channel green on image vector
+#define VAL             2       // Channel red on image vector
+
+#define HEIGHT_IMAGE    480     // Height of our image/frame
 #define WIDTH_IMAGE     640     // Width of our image/frame
 
 #define H_ZERO          1       // Measure between up led and ceil of our image at distance "zero"
@@ -48,13 +51,13 @@ VideoCapture init_webcam();
 int led_tracking();
 
 // Extract searching beacon led color
-Mat extract_color(Mat&, int[], int[]);
+Mat extract_color(Mat&, Mat&, int[], int[]);
 
 // Extract position of beacon led
-int extract_position(Mat&, int&);
+int extract_position(Mat&, int&, int&, int&);
 
 // Give distance to corner
-double get_dist_corner(int, char);
+double get_dist_corner(int, int, char);
 
 // Manage stepper back
 void manage_stepper(CheapStepper&, int);

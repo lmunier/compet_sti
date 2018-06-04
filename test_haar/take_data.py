@@ -9,10 +9,6 @@ import time
 import argparse
 import numpy as np
 import cv2 as cv
-import RPi.GPIO as GPIO
-
-GPIO.setmode(GPIO.BCM)  # set board mode to Broadcom
-GPIO.setup(17, GPIO.OUT)  # set up pin 17
 
 from imutils.video import VideoStream
 from imutils.video import FPS
@@ -32,17 +28,17 @@ def init_webcam(data):
 	if data["camera"] == 'w':
 		vs = cv.VideoCapture(0)
 		vs.set(cv.CAP_PROP_FRAME_WIDTH, 640)
-		vs.set(cv.CAP_PROP_FRAME_HEIGHT, 320)
+		vs.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
 	else:
 		vs = VideoStream(usePiCamera=True).start()
-		vs.resolution = (640, 320)
+		vs.resolution = (640, 480)
 
 	time.sleep(0.5)
 
 	if data["data"] == 'v':
 		# Define the codec and create VideoWriter object
 		fourcc = cv.VideoWriter_fourcc(*'FMP4')
-		out = cv.VideoWriter('output.h264',fourcc, 20.0, (640, 320))
+		out = cv.VideoWriter('output.h264',fourcc, 20.0, (640, 480))
 	else:
 		out = None
 
@@ -53,26 +49,18 @@ if __name__ == "__main__":
 	args = take_args()
 	vs, out = init_webcam(args)
 	img = 1
-	c = 10
-	time.sleep(5)
-	GPIO.output(17, 1)
 
 	while True:
 		if args["camera"] == 'w':
 			ret_val, image = vs.read()
 		else:
-#			image = vs.read()
-#			GPIO.output(17, 1)
-#			time.sleep(0.005)
 			image = vs.read()
-#			time.sleep(0.5)
-#			GPIO.output(17, 0)
 
-		#image = cv.flip(image, flipCode=-1)
+		image = cv.flip(image, flipCode=-1)
 
 		# Write on the file
 		if args["data"] == 'v':
-			#image = cv.flip(image, 0)
+			image = cv.flip(image, 0)
 			out.write(image)
 
 		# Preview if it is demanded
@@ -84,15 +72,11 @@ if __name__ == "__main__":
 
 		# Save if we press 's' or quit with 'q'
 		if key == ord('s') and args["data"] is not 'v':
-#			file = '/home/pi/dataset/data170518/data{}.jpg'.format(img)
-			file = '/home/pi/environment{}.jpg'.format(img)
+			file = '/home/pi/dataset/data170518/data{}.jpg'.format(img)
 			cv.imwrite(file, image)
 			img += 1
 		elif key == ord('q') or key == 'q':
 			break
-
-#		c -= 1
-#		time.sleep(2)
 
 	# Release all components
 	if args["camera"] == 'w':

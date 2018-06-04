@@ -10,8 +10,6 @@
 #ifndef BOTTLES_TRACKING_B_TRACKING_H
 #define BOTTLES_TRACKING_B_TRACKING_H
 
-#define LED_PIN         0 // PIN to enable LEDs gpio (BCM 17)
-
 #include <wiringPi.h>
 #include <opencv2/opencv.hpp>
 #include <cfloat>
@@ -21,6 +19,8 @@
 
 using namespace cv;
 using namespace std;
+
+#define LED_PIN         0 // PIN to enable LEDs gpio (BCM 17)
 
 // Pins initialization
 void init_pins();

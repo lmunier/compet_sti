@@ -14,8 +14,18 @@
 
 #include "tracking.h"
 
+#include <future>
+#include <thread>
+
 int main() {
-    if(led_tracking() == -1)
+    auto state = async(launch::async, led_tracking());
+
+    cout << "caca" << endl;
+
+    int i = 0;
+    cin >> i;
+    cout << i << endl;
+    if(state == -1)
         cout << "There was a problem during the run." << endl;
 
     return 0;

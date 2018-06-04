@@ -37,8 +37,6 @@ CheapStepper::CheapStepper (int in1, int in2, int in3, int in4) {
     pins[2] = in3;
     pins[3] = in4;
 
-    std::cout << seqN << std::endl;
-
     for (int pin=0; pin<4; pin++){
         pinMode(pins[pin], OUTPUT);
     }
