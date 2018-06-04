@@ -110,7 +110,7 @@ int led_tracking() {
 
         if(is_bottle_captured()) {
             // TODO: Send to arduino led_x_pos to align
-            cout << "Send to arduino " << led_x_pos << endl;
+//            cout << "Send to arduino " << led_x_pos << endl;
         }
 
         // Show result
