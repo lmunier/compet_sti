@@ -87,6 +87,7 @@ int led_tracking() {
 
         // Extracted color to detect LEDs
         cvtColor(blur,image_hsv, COLOR_BGR2HSV);
+
         extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         extract_position(extracted, led_x_pos, led_y_min, led_y_max);
 
@@ -136,6 +137,7 @@ Mat extract_color(Mat& image, Mat& hsv, int lower[], int upper[]){
     Mat extracted;
 
     // Create and apply mask to our image
+
     inRange(hsv, Scalar(lower[HUE], lower[SAT], lower[VAL]),
             Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
     bitwise_and(image, image, extracted, mask);
@@ -193,6 +195,59 @@ int extract_position(Mat& image, int& center, int& y_min, int& y_max){
     circle(image, pix_up, 10, (0, 0, 255), 2);
     circle(image, pix_down, 10, (0, 255, 255), 2);
 }
+
+// Extract position of beacon led
+//-------------------------OLD----------------------------
+/*
+int extract_position(Mat& image, int& center){
+    // Initialize matrices
+    Mat gray;
+
+    // Extract max, min
+    Point minLoc, maxLoc;
+    double min=0.0, max=0.0;
+
+    // Initialize variables
+    bool stop = false;
+    int x_min = 0;
+    int x_max = 0;
+    int x_pos = 0;
+    int y_pos = 0;
+
+    // Extract max
+    cvtColor(image, gray, COLOR_BGR2GRAY);
+    minMaxLoc(gray, &min, &max, &minLoc, &maxLoc);
+
+    // Find non zero to find the highest pixel
+    /*for(int row = 0; row < HEIGHT_IMAGE; row++){
+
+        for(int col = 0; col < WIDTH_IMAGE; col++){
+            if((int) image.at<Vec3b>(row, col)[0] >= 20) {
+                if (x_min == 0) {
+                    x_min = col;
+                    stop = true;
+                } else
+                    x_max = col;
+            }
+        }
+        y_pos = row;
+
+        if(stop)
+            break;
+        else
+            x_min = 0;
+    }
+
+    // Change values for dist2center
+    center = x_pos;
+
+    // Show result
+    typedef Point_<uint16_t> Pixel;
+    circle(image, maxLoc, 10, (0, 0, 255), 2);
+
+    // Return y value
+    return y_pos;
+}*/
 
 // Extract position of beacon led
 //-------------------------OLD----------------------------

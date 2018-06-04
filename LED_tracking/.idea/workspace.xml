@@ -37,8 +37,8 @@
           <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/main.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="272">
-                  <caret line="16" column="12" lean-forward="false" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
+                <state relative-caret-position="323">
+                  <caret line="19" column="12" lean-forward="false" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
                   <folding />
                 </state>
               </provider>
@@ -47,8 +47,8 @@
           <file leaf-file-name="tracking.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tracking.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="533">
-                  <caret line="133" column="1" lean-forward="true" selection-start-line="133" selection-start-column="1" selection-end-line="133" selection-end-column="1" />
+                <state relative-caret-position="-1048">
+                  <caret line="249" column="3" lean-forward="false" selection-start-line="249" selection-start-column="3" selection-end-line="249" selection-end-column="3" />
                   <folding />
                 </state>
               </provider>
@@ -57,9 +57,11 @@
           <file leaf-file-name="CheapStepper.cpp" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/CheapStepper.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="3910">
-                  <caret line="230" column="29" lean-forward="false" selection-start-line="228" selection-start-column="8" selection-end-line="230" selection-end-column="29" />
-                  <folding />
+                <state relative-caret-position="3842">
+                  <caret line="226" column="29" lean-forward="false" selection-start-line="226" selection-start-column="29" selection-end-line="226" selection-end-column="29" />
+                  <folding>
+                    <marker date="1528079128052" expanded="true" signature="894:977" ph="{...}" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -81,8 +83,8 @@
           <file leaf-file-name="tracking.h" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tracking.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="635">
-                  <caret line="55" column="26" lean-forward="true" selection-start-line="55" selection-start-column="26" selection-end-line="55" selection-end-column="26" />
+                <state relative-caret-position="227">
+                  <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -105,8 +107,8 @@
         <option value="$PROJECT_DIR$/CheapStepper.h" />
         <option value="$PROJECT_DIR$/CheapStepper.cpp" />
         <option value="$PROJECT_DIR$/main.cpp" />
-        <option value="$PROJECT_DIR$/tracking.h" />
         <option value="$PROJECT_DIR$/tracking.cpp" />
+        <option value="$PROJECT_DIR$/tracking.h" />
       </list>
     </option>
   </component>
@@ -200,12 +202,12 @@
       <updated>1526385845344</updated>
       <workItem from="1526385847959" duration="5378000" />
       <workItem from="1527592927253" duration="77991000" />
-      <workItem from="1528024945229" duration="3060000" />
+      <workItem from="1528024945229" duration="4058000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="86429000" />
+    <option name="totallyTimeSpent" value="87427000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -296,7 +298,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3910">
           <caret line="230" column="29" lean-forward="true" selection-start-line="228" selection-start-column="8" selection-end-line="230" selection-end-column="29" />
-          <folding />
+          <folding>
+            <marker date="1528079128052" expanded="true" signature="894:977" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -344,7 +348,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="527">
           <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1528079128052" expanded="true" signature="894:977" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -445,8 +451,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="12" lean-forward="false" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
+        <state relative-caret-position="323">
+          <caret line="19" column="12" lean-forward="false" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -461,9 +467,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CheapStepper.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3910">
-          <caret line="230" column="29" lean-forward="false" selection-start-line="228" selection-start-column="8" selection-end-line="230" selection-end-column="29" />
-          <folding />
+        <state relative-caret-position="3842">
+          <caret line="226" column="29" lean-forward="false" selection-start-line="226" selection-start-column="29" selection-end-line="226" selection-end-column="29" />
+          <folding>
+            <marker date="1528079128052" expanded="true" signature="894:977" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -475,18 +483,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tracking.h">
+    <entry file="file://$PROJECT_DIR$/tracking.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="635">
-          <caret line="55" column="26" lean-forward="true" selection-start-line="55" selection-start-column="26" selection-end-line="55" selection-end-column="26" />
+        <state relative-caret-position="-1048">
+          <caret line="249" column="3" lean-forward="false" selection-start-line="249" selection-start-column="3" selection-end-line="249" selection-end-column="3" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tracking.cpp">
+    <entry file="file://$PROJECT_DIR$/tracking.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="533">
-          <caret line="133" column="1" lean-forward="true" selection-start-line="133" selection-start-column="1" selection-end-line="133" selection-end-column="1" />
+        <state relative-caret-position="227">
+          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
           <folding />
         </state>
       </provider>
