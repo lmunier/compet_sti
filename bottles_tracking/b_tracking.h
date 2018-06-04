@@ -39,6 +39,9 @@ int bottles_scanning();
 // Maximum light localization
 void max_light_localization(Mat&, double&, Point&);
 
+// Region Of Interest near of the maximum localization
+Mat set_roi(Mat&, Point);
+
 // LEDs management
 void led_enable(bool);
 

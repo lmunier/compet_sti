@@ -80,6 +80,18 @@ void max_light_localization(Mat& image, double& max, Point& max_loc){
     minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 }
 
+// Region of interest near of the maximum localization
+Mat set_roi(Mat& original, Point max_loc){
+    // Initialize variable to keep tracking on the same bottle
+    int coeff = max_loc.y/2 + HEIGHT_IMAGE/2;
+
+    // Initialize rectangle
+    Rect selection(max_loc.x - coeff/2, max_loc.x + coeff/2, max_loc.y - coeff/2, max_loc.y + coeff/2);
+
+    // Return new region of interest
+    return LoadedImage(Rec);
+}
+
 // LEDs management
 void led_enable(bool enable){
     digitalWrite(LED_PIN, enable);
