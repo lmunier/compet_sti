@@ -23,22 +23,34 @@ RaspiCam_Cv init_raspicam(){
     return camera;
 }
 
+// LEDs management
+void led_enable(bool enable){
+    digitalWrite(LED_PIN, enable);
+}
+
 // OpenCV function to detect bottles
 int bottles_scanning(){
     // Initialize variables
     Mat image;
+    Mat region_of_interest;
+    Mat filtered;
 
     // Initialization of variables
-    // Set distance variables
-    int bottle_x_pos = 0;
-    int bottle_y_pos = 0;
+        // Set distance variables
+        int bottle_x_pos = 0;
+        int bottle_y_pos = 0;
 
-    // Set blur kernel
-    int kernel_blur = 3;
+        // Set blur kernel
+        int kernel_blur = 3;
 
-    // Extract max, min
-    Point max_loc;
-    double max = 0.0;
+        // Extract max, min
+        Point max_loc;
+        double max = 0.0;
+
+    // Initialization of color threshold
+        // Bottles
+        int lower_hsv_bottles[] = {20, 0, 250};
+        int upper_hsv_bottles[] = {60, 55, 255};
 
     wiringPiSetup();
     init_pins();
@@ -52,13 +64,30 @@ int bottles_scanning(){
         return -1;
     }
 
+    // Turn on light
+    led_enable(true);
+
     while(true){
         // Take video input
         camera.grab();
         camera.retrieve(image);
 
         max_light_localization(image, max, max_loc);
+        region_of_interest = set_roi(image, max_loc);
+        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+
+        imshow("Original", image);
+        imshow("ROI", region_of_interest);
+        imshow("Extract", filtered);
+
+        if(waitKey(10) == 'q')
+            break;
     }
+
+    // Turn off light
+    led_enable(false);
+
+    return 1;
 }
 
 // Localize the maximum of light in image
@@ -69,8 +98,8 @@ void max_light_localization(Mat& image, double& max, Point& max_loc){
 
     // Initialize variables
     int kernel_blur = 3;
-    double min = 0;
-    Point min_loc = 0;
+    double min = 0.0;
+    Point min_loc;
 
     // Blur image to avoid noise
     GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
@@ -89,10 +118,23 @@ Mat set_roi(Mat& original, Point max_loc){
     Rect selection(max_loc.x - coeff/2, max_loc.x + coeff/2, max_loc.y - coeff/2, max_loc.y + coeff/2);
 
     // Return new region of interest
-    return LoadedImage(Rec);
+    return original(selection);
 }
 
-// LEDs management
-void led_enable(bool enable){
-    digitalWrite(LED_PIN, enable);
+// Extract searching beacon led color
+Mat extract_color(Mat& original, int lower[], int upper[]){
+    // Initialize extracted color matrix
+    Mat mask;
+    Mat hsv;
+    Mat extracted;
+
+    // Change BGR to HSV mode for our image
+    cvtColor(original, hsv, COLOR_BGR2HSV);
+
+    // Create and apply mask to our image
+    inRange(hsv, Scalar(lower[HUE], lower[SAT], lower[VAL]),
+                 Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
+    bitwise_and(original, original, extracted, mask);
+
+    return extracted;
 }
