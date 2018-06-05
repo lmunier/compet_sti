@@ -19,6 +19,8 @@ RaspiCam_Cv init_raspicam(){
 
     camera.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     camera.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
+    camera.set(CAP_PROP_CONTRAST, 65);
+    camera.set(CAP_PROP_BRIGHTNESS, 40);
 
     return camera;
 }
@@ -50,8 +52,8 @@ int bottles_scanning(){
 
     // Initialization of color threshold
         // Bottles
-        int lower_hsv_bottles[] = {20, 0, 250};
-        int upper_hsv_bottles[] = {60, 55, 255};
+        int lower_hsv_bottles[] = {0, 0, 0};
+        int upper_hsv_bottles[] = {255, 255, 255};
 
         // Beacons
 //        int lower_beacon[NB_COLORS][NB_CHANNELS] = {{176, 218, 255}, {196, 252, 255},
@@ -61,51 +63,44 @@ int bottles_scanning(){
 
         // Beacons HSV
         int lower_beacon[1][NB_CHANNELS] = {{0, 0, 0}};
-        int upper_beacon[1][NB_CHANNELS] = {{255, 255, 235}};
+        int upper_beacon[1][NB_CHANNELS] = {{255, 255, 230}};
 
     wiringPiSetup();
     init_pins();
 
     // Initialize camera
-    //RaspiCam_Cv camera = init_raspicam();
+    RaspiCam_Cv camera = init_raspicam();
 
     // Open camera
-    /*if(!camera.open()) {
+    if(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
         return -1;
-    }*/
+    }
 
     // Turn on light
     led_enable(true);
-    int i = 0;
+
     while(true){
         // Take video input
-        //camera.grab();
-        //camera.retrieve(image);
-
-        image = imread("/home/pi/beacon2.jpg");
+        camera.grab();
+        camera.retrieve(image);
 
         deleted = del_color(image, lower_beacon, upper_beacon);
         max_light_localization(deleted, max, max_loc, kernel_blur);
-        //region_of_interest = set_roi(image, max_loc);
-        //filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+        region_of_interest = set_roi(image, max_loc);
+        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
-        imshow("Original", image);
+//        imshow("Original", image);
         imshow("Deleted", deleted);
-        //imshow("ROI", region_of_interest);
-        //imshow("Extract", filtered);
-
-        if(waitKey(10) == 's'){
-            imwrite("/home/pi/bottle" + to_string(i) + ".jpg", region_of_interest);
-            i++;
-        }
+//        imshow("ROI", region_of_interest);
+        imshow("Extract", filtered);
 
         if(waitKey(10) == 'q')
             break;
     }
 
     // Turn off light
-    //led_enable(false);
+    led_enable(false);
 
     return 1;
 }
