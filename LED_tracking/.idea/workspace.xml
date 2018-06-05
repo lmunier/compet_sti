@@ -47,8 +47,8 @@
           <file leaf-file-name="tracking.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tracking.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="652">
-                  <caret line="189" column="0" lean-forward="true" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
+                <state relative-caret-position="754">
+                  <caret line="195" column="50" lean-forward="true" selection-start-line="190" selection-start-column="4" selection-end-line="195" selection-end-column="50" />
                   <folding />
                 </state>
               </provider>
@@ -84,7 +84,7 @@
             <entry file="file://$PROJECT_DIR$/tracking.h">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="493">
-                  <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="32" selection-end-column="62" />
+                  <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="32" selection-end-column="64" />
                   <folding />
                 </state>
               </provider>
@@ -186,12 +186,12 @@
       <workItem from="1526385847959" duration="5378000" />
       <workItem from="1527592927253" duration="77991000" />
       <workItem from="1528024945229" duration="4656000" />
-      <workItem from="1528106460826" duration="8295000" />
+      <workItem from="1528106460826" duration="11498000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96320000" />
+    <option name="totallyTimeSpent" value="99523000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -520,15 +520,15 @@
     <entry file="file://$PROJECT_DIR$/tracking.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
-          <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="32" selection-end-column="62" />
+          <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="32" selection-end-column="64" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tracking.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="652">
-          <caret line="189" column="0" lean-forward="true" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
+        <state relative-caret-position="754">
+          <caret line="195" column="50" lean-forward="true" selection-start-line="190" selection-start-column="4" selection-end-line="195" selection-end-column="50" />
           <folding />
         </state>
       </provider>
