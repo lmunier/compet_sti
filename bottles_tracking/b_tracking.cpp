@@ -66,20 +66,25 @@ int bottles_scanning(){
 
     // Turn on light
     led_enable(true);
-
+    i = 0;
     while(true){
         // Take video input
         camera.grab();
         camera.retrieve(image);
 
         max_light_localization(image, max, max_loc, kernel_blur);
-//        region_of_interest = set_roi(image, max_loc);
-//        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
-        filtered = extract_color(image, lower_hsv_bottles, upper_hsv_bottles);
+        region_of_interest = set_roi(image, max_loc);
+        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+//        filtered = extract_color(image, lower_hsv_bottles, upper_hsv_bottles);
 
         imshow("Original", image);
-//        imshow("ROI", region_of_interest);
+        imshow("ROI", region_of_interest);
         imshow("Extract", filtered);
+
+        if(waitKey(10) == 's'){
+            imwrite("/home/pi/bottle" + std::to_string(i+1) + ".png", region_of_interest);
+            i++
+        }
 
         if(waitKey(10) == 'q')
             break;
@@ -121,23 +126,32 @@ Mat set_roi(Mat& original, Point max_loc){
     // Initialize variable to keep tracking on the same bottle
     int x_start = 0;
     int y_start = 0;
-    int coeff = max_loc.y/2 + HEIGHT_IMAGE/2;
+    int coeff = HEIGHT_IMAGE/2 + max_loc.y/2;
 
+    cout << "Coeff " << coeff << endl;
+    cout << "Max_loc " << max_loc << endl;
+    cout << "Rows " << original.rows << " Cols " << original.cols << endl;
     // Initialize rectangle
     if(max_loc.x - coeff/2 < 0)
         x_start = 0;
-    else if(max_loc.x + coeff/2 > WIDTH_IMAGE - 1)
-        x_start = WIDTH_IMAGE - coeff - 1;
+    else if(max_loc.x + coeff/2 >= original.cols)
+        x_start = original.cols - coeff - 1;
+    else
+        x_start = max_loc.x - coeff/2;
 
     if(max_loc.y - coeff/2 < 0)
         y_start = 0;
-    else if(max_loc.y + coeff/2 > HEIGHT_IMAGE - 1)
-        y_start = HEIGHT_IMAGE - coeff - 1;
+    else if(max_loc.y + coeff/2 >= original.rows)
+        y_start = original.rows - coeff - 1;
+    else
+        y_start = max_loc.y - coeff/2;
 
-    Rect selection(x_start, y_start, x_start + coeff, y_start + coeff);
-
+    Rect selection(x_start, y_start, coeff, coeff);
+    cout << "x_start" << x_start << "y_start" << y_start << endl;
+    cout << "Rect" << selection << endl;
     // Return new region of interest
     return original(selection);
+//    return original;
 }
 
 // Extract searching beacon led color
