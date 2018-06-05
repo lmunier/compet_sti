@@ -31,6 +31,7 @@ using namespace raspicam;
 #define HEIGHT_IMAGE    480     // Height of our image/frame
 #define WIDTH_IMAGE     640     // Width of our image/frame
 
+#define BOTTLE_TOLERANCE 10     // Tolerance to not detect bottle if the max luminosity point is on the up left
 // Pins initialization
 void init_pins();
 
@@ -44,7 +45,7 @@ void led_enable(bool);
 int bottles_scanning();
 
 // Maximum light localization
-void max_light_localization(Mat&, double&, Point&);
+void max_light_localization(Mat&, double&, Point&, int);
 
 // Region Of Interest near of the maximum localization
 Mat set_roi(Mat&, Point);

@@ -72,12 +72,13 @@ int bottles_scanning(){
         camera.grab();
         camera.retrieve(image);
 
-        max_light_localization(image, max, max_loc);
-        region_of_interest = set_roi(image, max_loc);
-        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+        max_light_localization(image, max, max_loc, kernel_blur);
+//        region_of_interest = set_roi(image, max_loc);
+//        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+        filtered = extract_color(image, lower_hsv_bottles, upper_hsv_bottles);
 
         imshow("Original", image);
-        imshow("ROI", region_of_interest);
+//        imshow("ROI", region_of_interest);
         imshow("Extract", filtered);
 
         if(waitKey(10) == 'q')
@@ -91,13 +92,12 @@ int bottles_scanning(){
 }
 
 // Localize the maximum of light in image
-void max_light_localization(Mat& image, double& max, Point& max_loc){
+void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_blur){
     // Initialize matrices
     Mat gray;
     Mat blur;
 
     // Initialize variables
-    int kernel_blur = 3;
     double min = 0.0;
     Point min_loc;
 
@@ -107,15 +107,34 @@ void max_light_localization(Mat& image, double& max, Point& max_loc){
     // Extract max in prevision
     cvtColor(blur, gray, COLOR_BGR2GRAY);
     minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
+
+    // Show result
+    circle(image, max_loc, 10, (0, 255, 255), 2);
 }
 
 // Region of interest near of the maximum localization
 Mat set_roi(Mat& original, Point max_loc){
+    // If we do not have any bottles on image
+    if(max_loc.x < BOTTLE_TOLERANCE && max_loc.y < BOTTLE_TOLERANCE)
+        return original;
+
     // Initialize variable to keep tracking on the same bottle
+    int x_start = 0;
+    int y_start = 0;
     int coeff = max_loc.y/2 + HEIGHT_IMAGE/2;
 
     // Initialize rectangle
-    Rect selection(max_loc.x - coeff/2, max_loc.x + coeff/2, max_loc.y - coeff/2, max_loc.y + coeff/2);
+    if(max_loc.x - coeff/2 < 0)
+        x_start = 0;
+    else if(max_loc.x + coeff/2 > WIDTH_IMAGE - 1)
+        x_start = WIDTH_IMAGE - coeff - 1;
+
+    if(max_loc.y - coeff/2 < 0)
+        y_start = 0;
+    else if(max_loc.y + coeff/2 > HEIGHT_IMAGE - 1)
+        y_start = HEIGHT_IMAGE - coeff - 1;
+
+    Rect selection(x_start, y_start, x_start + coeff, y_start + coeff);
 
     // Return new region of interest
     return original(selection);
