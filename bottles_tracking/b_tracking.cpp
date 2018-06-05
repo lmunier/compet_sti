@@ -19,6 +19,8 @@ RaspiCam_Cv init_raspicam(){
 
     camera.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     camera.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
+    camera.set(CAP_PROP_CONTRAST, 65);
+    camera.set(CAP_PROP_BRIGHTNESS, 40);
 
     return camera;
 }
@@ -50,8 +52,18 @@ int bottles_scanning(){
 
     // Initialization of color threshold
         // Bottles
-        int lower_hsv_bottles[] = {20, 0, 250};
-        int upper_hsv_bottles[] = {60, 55, 255};
+        int lower_hsv_bottles[] = {0, 0, 0};
+        int upper_hsv_bottles[] = {255, 255, 255};
+
+        // Beacons
+//        int lower_beacon[NB_COLORS][NB_CHANNELS] = {{176, 218, 255}, {196, 252, 255},
+//                                                    {220, 235, 255}, {200, 245, 222}};
+//        int upper_beacon[NB_COLORS][NB_CHANNELS] = {{206, 244, 255}, {214, 255, 255},
+//                                                    {245, 255, 245}, {220, 255, 235}};
+
+        // Beacons HSV
+        int lower_beacon[1][NB_CHANNELS] = {{0, 0, 0}};
+        int upper_beacon[1][NB_CHANNELS] = {{255, 255, 230}};
 
         // Beacons
         int lower_beacon[NB_COLORS][NB_CHANNELS] = {{176, 218, 255}, {196, 252, 255},
@@ -79,17 +91,15 @@ int bottles_scanning(){
         //camera.grab();
         //camera.retrieve(image);
 
-        image = imread("/home/pi/beacon1.jpg");
-
         deleted = del_color(image, lower_beacon, upper_beacon);
         max_light_localization(deleted, max, max_loc, kernel_blur);
-        //region_of_interest = set_roi(image, max_loc);
-        //filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+        region_of_interest = set_roi(image, max_loc);
+        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
-        imshow("Original", image);
+//        imshow("Original", image);
         imshow("Deleted", deleted);
-        //imshow("ROI", region_of_interest);
-        //imshow("Extract", filtered);
+//        imshow("ROI", region_of_interest);
+        imshow("Extract", filtered);
 
         if(waitKey(10) == 'q')
             break;
@@ -119,16 +129,36 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
     minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 
     // Show result
-    circle(image, max_loc, 10, (0, 0, 255), 2);
+    circle(image, max_loc, 10, (0, 255, 255), 2);
 }
 
 // Region of interest near of the maximum localization
 Mat set_roi(Mat& original, Point max_loc){
+    // If we do not have any bottles on image
+    if(max_loc.x < BOTTLE_TOLERANCE && max_loc.y < BOTTLE_TOLERANCE)
+        return original;
+
     // Initialize variable to keep tracking on the same bottle
-    int coeff = max_loc.y/2 + HEIGHT_IMAGE/2;
+    int x_start = 0;
+    int y_start = 0;
+    int coeff = HEIGHT_IMAGE/2 + max_loc.y/2;
 
     // Initialize rectangle
-    Rect selection(max_loc.x - coeff/2, max_loc.x + coeff/2, max_loc.y - coeff/2, max_loc.y + coeff/2);
+    if(max_loc.x - coeff/2 < 0)
+        x_start = 0;
+    else if(max_loc.x + coeff/2 >= original.cols)
+        x_start = original.cols - coeff - 1;
+    else
+        x_start = max_loc.x - coeff/2;
+
+    if(max_loc.y - coeff/2 < 0)
+        y_start = 0;
+    else if(max_loc.y + coeff/2 >= original.rows)
+        y_start = original.rows - coeff - 1;
+    else
+        y_start = max_loc.y - coeff/2;
+
+    Rect selection(x_start, y_start, coeff, coeff);
 
     // Return new region of interest
     return original(selection);
@@ -165,7 +195,7 @@ Mat del_color(Mat& original, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS])
         inRange(original, Scalar(lower[i][BLUE], lower[i][GREEN], lower[i][RED]),
                           Scalar(upper[i][BLUE], upper[i][GREEN], upper[i][RED]), mask);
 
-        bitwise_not(mask, mask);
+//        bitwise_not(mask, mask);
 
         imshow("Mask", mask);
         if(first) {

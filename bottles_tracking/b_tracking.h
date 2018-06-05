@@ -38,6 +38,8 @@ using namespace raspicam;
 #define HEIGHT_IMAGE    480     // Height of our image/frame
 #define WIDTH_IMAGE     640     // Width of our image/frame
 
+#define BOTTLE_TOLERANCE 10     // Tolerance to not detect bottle if the max luminosity point is on the up left
+
 // Pins initialization
 void init_pins();
 

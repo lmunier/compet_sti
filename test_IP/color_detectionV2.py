@@ -25,17 +25,17 @@ def setup_trackbars(range_filter):
         for j in range_filter:
             if range_filter == "HSV":
                 if f == 0:
-                    v[0] = 38
+                    v[0] = 25
                     v[1] = 255
                 elif f == 1:
-                    v[0] = 50
-                    v[1] = 200
+                    v[0] = 0
+                    v[1] = 255
                 else:
-                    v[0] = 125
-                    v[1] = 230
+                    v[0] = 0
+                    v[1] = 235
             elif range_filter == "BGR":
                 if f == 0:
-                    v[0] = 80
+                    v[0] = 0
                     v[1] = 255
                 elif f == 1:
                     v[0] = 0
@@ -52,19 +52,21 @@ def setup_trackbars(range_filter):
 
 
 def brigthest_zone(image):
-    radius = 5
+    radius = 3
 
     # load the image and convert it to grayscale
+    h, w, c = image.shape
+    crop = image[0:h-50, 0:w-1]
     orig = image.copy()
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 
     # apply a Gaussian blur to the image then find the brightest
     # region
     gray = cv2.GaussianBlur(gray, (radius, radius), 0)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-    image = orig.copy()
     cv2.circle(image, maxLoc, radius, (255, 0, 0), 2)
 
+    cv2.imshow("Crop", crop)
     cv2.imshow("MaxLoc", image)
 
 def get_arguments():
@@ -87,7 +89,7 @@ def get_trackbar_values(range_filter):
 
 
 def main():
-    blur_kernel_size = 9
+    blur_kernel_size = 1
     args = get_arguments()
     range_filter_HSV = "HSV"
     range_filter_RGB = "BGR"
@@ -102,7 +104,7 @@ def main():
     elif args['source'] != ('r' or 'w'):
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
         image = cv2.imread(args['source'])
-        image = imutils.resize(image, height=300)
+#        image = imutils.resize(image, height=300)
 
         image = cv2.blur(image, (blur_kernel_size, blur_kernel_size))
         #image = cv2.convertScaleAbs(image, alpha=1.2, beta=-255)
@@ -130,8 +132,6 @@ def main():
         cv2.imshow("Original", image)
         output = image.copy()
 
-        brigthest_zone(image)
-
         RGB_v1_min, RGB_v2_min, RGB_v3_min, RGB_v1_max, RGB_v2_max, RGB_v3_max = get_trackbar_values(range_filter_RGB)
         HSV_v1_min, HSV_v2_min, HSV_v3_min, HSV_v1_max, HSV_v2_max, HSV_v3_max = get_trackbar_values(range_filter_HSV)
 
@@ -139,14 +139,18 @@ def main():
 
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         HSV_thresh = cv2.inRange(hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
+        HSV = cv2.bitwise_and(image, image, mask=HSV_thresh)
+        cv2.imshow("HSV", HSV)
 
         rgb_hsv = cv2.bitwise_and(image, image, mask=RGB_thresh)
         rgb_hsv = cv2.cvtColor(rgb_hsv, cv2.COLOR_BGR2HSV)
         rgb_hsv = cv2.inRange(rgb_hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
 
+        brigthest_zone(HSV)
+
         # Show all images
         cv2.imshow("RGB", RGB_thresh)
-        cv2.imshow("HSV", HSV_thresh)
+        cv2.imshow("HSV_tresh", HSV_thresh)
         cv2.imshow("rgb_hsv", rgb_hsv)
 
         # show the frame to our screen
@@ -166,7 +170,7 @@ def main():
         nb_bottles = 0
 
         for c in cnts:
-            print(c)
+#            print(c)
             # approximate the contour
             peri = cv2.arcLength(c, True)
             area = cv2.contourArea(c, True)
