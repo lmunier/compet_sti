@@ -16,7 +16,9 @@ from picamera.array import PiRGBArray
 
 camera = PiCamera()
 camera.resolution = (640, 480)
-camera.framerate = 32
+#camera.framerate = 32
+camera.exposure_mode = 'night'
+camera.awb_mode = 'flash'
 rawCapture = PiRGBArray(camera, size=(640, 480))
 
 # allow the camera to warmup
