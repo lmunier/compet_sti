@@ -66,7 +66,7 @@ int bottles_scanning(){
 
     // Turn on light
     led_enable(true);
-    i = 0;
+    int i = 0;
     while(true){
         // Take video input
         camera.grab();
@@ -82,8 +82,8 @@ int bottles_scanning(){
         imshow("Extract", filtered);
 
         if(waitKey(10) == 's'){
-            imwrite("/home/pi/bottle" + std::to_string(i+1) + ".png", region_of_interest);
-            i++
+            imwrite("/home/pi/bottle" + to_string(i) + ".jpg", region_of_interest);
+            i++;
         }
 
         if(waitKey(10) == 'q')
@@ -128,9 +128,6 @@ Mat set_roi(Mat& original, Point max_loc){
     int y_start = 0;
     int coeff = HEIGHT_IMAGE/2 + max_loc.y/2;
 
-    cout << "Coeff " << coeff << endl;
-    cout << "Max_loc " << max_loc << endl;
-    cout << "Rows " << original.rows << " Cols " << original.cols << endl;
     // Initialize rectangle
     if(max_loc.x - coeff/2 < 0)
         x_start = 0;
@@ -147,11 +144,9 @@ Mat set_roi(Mat& original, Point max_loc){
         y_start = max_loc.y - coeff/2;
 
     Rect selection(x_start, y_start, coeff, coeff);
-    cout << "x_start" << x_start << "y_start" << y_start << endl;
-    cout << "Rect" << selection << endl;
+
     // Return new region of interest
     return original(selection);
-//    return original;
 }
 
 // Extract searching beacon led color
