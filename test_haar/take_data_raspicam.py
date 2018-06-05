@@ -11,36 +11,30 @@ import argparse
 import numpy as np
 import cv2 as cv
 import RPi.GPIO as GPIO
-import picamera
-import picamera.array
+from picamera import PiCamera
+from picamera.array import PiRGBArray
 
-GPIO.setmode(GPIO.BCM)  # set board mode to Broadcom
-GPIO.setup(17, GPIO.OUT)  # set up pin 17
+camera = PiCamera()
+camera.resolution = (640, 480)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(640, 480))
 
-from imutils.video import VideoStream
-from imutils.video import FPS
+# allow the camera to warmup
+time.sleep(0.1)
 
+# capture frames from the camera
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+	# grab the raw NumPy array representing the image, then initialize the timestamp
+	# and occupied/unoccupied text
+	image = frame.array
 
-img = 1
+	# show the frame
+	cv.imshow("Frame", image)
+	key = cv.waitKey(1) & 0xFF
 
-with picamera.PiCamera() as camera:
-	camera.resolution = (640, 480)
-	camera.start_preview()
-	time.sleep(2)
+	# clear the stream in preparation for the next frame
+	rawCapture.truncate(0)
 
-	while(True):
-		with picamera.array.PiRGBArray(camera) as stream:
-			camera.capture(stream, format='bgr')
-			image = stream.array
-
-			key = input()
-
-			if key == ord('s') or key == 's':
-#				file = '/home/pi/dataset/data170518/data{}.jpg'.format(img)
-				file = '/home/pi/environment{}.jpg'.format(img)
-				cv.imwrite(file, image)
-				img += 1
-			elif key == ord('q') or key == 'q':
-				break
-
-			key = 0
+	# if the `q` key was pressed, break from the loop
+	if key == ord("q"):
+		break

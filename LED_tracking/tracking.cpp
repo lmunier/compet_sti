@@ -151,7 +151,7 @@ int extract_position(Mat& image, int& center, int& y_min, int& y_max){
     Mat gray;
 
     // Extract max, min
-    Point minLoc, maxLoc;
+    Point min_loc, max_loc;
     double min=0.0, max=0.0;
 
     // Initialize variables
@@ -160,14 +160,14 @@ int extract_position(Mat& image, int& center, int& y_min, int& y_max){
 
     // Extract max
     cvtColor(image, gray, COLOR_BGR2GRAY);
-    minMaxLoc(gray, &min, &max, &minLoc, &maxLoc);
+    minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 
     // Extract hight of beacon
     for(int row = 0; row < HEIGHT_IMAGE - 1; row++){
         nbr = 0;
         x_tmp = 0;
 
-        for(int col = maxLoc.x - TOL_BEACON; col < maxLoc.x + TOL_BEACON - 1; col++){
+        for(int col = max_loc.x - TOL_BEACON; col < max_loc.x + TOL_BEACON - 1; col++){
             if(col < 0)
                 col = 0;
             else if (col > WIDTH_IMAGE - 1)
@@ -196,66 +196,9 @@ int extract_position(Mat& image, int& center, int& y_min, int& y_max){
     circle(image, pix_down, 10, (0, 255, 255), 2);
 }
 
-// Extract position of beacon led
-//-------------------------OLD----------------------------
-/*
-int extract_position(Mat& image, int& center){
-    // Initialize variables
-    bool stop = false;
-    int x_min = 0;
-    int x_max = 0;
-    int x_pos = 0;
-    int y_pos = 0;
-
-    // Find non zero to find the highest pixel
-    for(int row = 0; row < HEIGHT_IMAGE; row++){
-        for(int col = 0; col < WIDTH_IMAGE; col++){
-            if((int) image.at<Vec3b>(row, col)[0] >= 20) {
-                if (x_min == 0) {
-                    x_min = col;
-                    stop = true;
-                } else
-                    x_max = col;
-            }
-        }
-        y_pos = row;
-
-        if(stop)
-            break;
-        else
-            x_min = 0;
-    }
-
-    if(x_max != 0)
-        x_pos = x_min + (x_max-x_min)/2;
-    else
-        x_pos = x_min;
-
-    // Change values for dist2center
-    center = x_pos;
-
-    // Show result
-    typedef Point_<uint16_t> Pixel;
-    Pixel pix_up(x_pos, y_pos);
-    Pixel pix_down(x_pos, y_pos);
-    circle(image, pix_up, 10, (0, 0, 255), 2);
-    circle(image, pix_down, 10, (0, 255, 255), 2);
-
-    // Return y value
-    return y_pos;
-}*/
-//--------------------------------------------------------
-
-// Give distance to corner
-//-----------------------OLD--------------------------
-/*double get_dist_corner(int h_up_led){
-    return (DIST_ZERO/H_ZERO)*h_up_led;
-}*/
-//-----------------------OLD--------------------------
-
 // Give distance to corner
 double get_dist_corner(int pixel_min, int pixel_max,  char function){
-    double x = 0.0, x_2 = 0.0, x_3 = 0.0;
+    double x, x_2, x_3;
 
     switch(function){
         case 'h':
@@ -276,12 +219,7 @@ double get_dist_corner(int pixel_min, int pixel_max,  char function){
             return -3.9789e-7 * x_3 + 3.5671e-4 * x_2 - 0.1134 * x + 14.9132;
         case 'y':
             return 1.241e-6 * x_3 - 1.5465e-4 * x_2 + 0.0187 * x + 1.9045;
-        default :
-            cout << "Wrong distance argument." << endl;
-            break;
     }
-
-    return -1.0;
 }
 
 // Manage stepper back
