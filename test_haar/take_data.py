@@ -56,7 +56,7 @@ if __name__ == "__main__":
 		else:
 			image = vs.read()
 
-		image = cv.flip(image, flipCode=-1)
+#		image = cv.flip(image, flipCode=-1)
 
 		# Write on the file
 		if args["data"] == 'v':
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
 		# Save if we press 's' or quit with 'q'
 		if key == ord('s') and args["data"] is not 'v':
-			file = '/home/pi/dataset/data170518/data{}.jpg'.format(img)
+			file = '/home/pi/beacon{}.jpg'.format(img)
 			cv.imwrite(file, image)
 			img += 1
 		elif key == ord('q') or key == 'q':

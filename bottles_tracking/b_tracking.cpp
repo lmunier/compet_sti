@@ -76,8 +76,8 @@ int bottles_scanning(){
     }*/
 
     // Turn on light
-    //led_enable(true);
-
+    led_enable(true);
+    int i = 0;
     while(true){
         // Take video input
         //camera.grab();
@@ -94,6 +94,11 @@ int bottles_scanning(){
         imshow("Deleted", deleted);
         //imshow("ROI", region_of_interest);
         //imshow("Extract", filtered);
+
+        if(waitKey(10) == 's'){
+            imwrite("/home/pi/bottle" + to_string(i) + ".jpg", region_of_interest);
+            i++;
+        }
 
         if(waitKey(10) == 'q')
             break;
@@ -123,16 +128,36 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
     minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 
     // Show result
-    circle(image, max_loc, 10, (0, 0, 255), 2);
+    circle(image, max_loc, 10, (0, 255, 255), 2);
 }
 
 // Region of interest near of the maximum localization
 Mat set_roi(Mat& original, Point max_loc){
+    // If we do not have any bottles on image
+    if(max_loc.x < BOTTLE_TOLERANCE && max_loc.y < BOTTLE_TOLERANCE)
+        return original;
+
     // Initialize variable to keep tracking on the same bottle
-    int coeff = max_loc.y/2 + HEIGHT_IMAGE/2;
+    int x_start = 0;
+    int y_start = 0;
+    int coeff = HEIGHT_IMAGE/2 + max_loc.y/2;
 
     // Initialize rectangle
-    Rect selection(max_loc.x - coeff/2, max_loc.x + coeff/2, max_loc.y - coeff/2, max_loc.y + coeff/2);
+    if(max_loc.x - coeff/2 < 0)
+        x_start = 0;
+    else if(max_loc.x + coeff/2 >= original.cols)
+        x_start = original.cols - coeff - 1;
+    else
+        x_start = max_loc.x - coeff/2;
+
+    if(max_loc.y - coeff/2 < 0)
+        y_start = 0;
+    else if(max_loc.y + coeff/2 >= original.rows)
+        y_start = original.rows - coeff - 1;
+    else
+        y_start = max_loc.y - coeff/2;
+
+    Rect selection(x_start, y_start, coeff, coeff);
 
     // Return new region of interest
     return original(selection);
