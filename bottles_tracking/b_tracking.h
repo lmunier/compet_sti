@@ -24,6 +24,10 @@ using namespace raspicam;
 
 #define LED_PIN         0       // PIN to enable LEDs gpio (BCM 17)
 
+#define HUE             0       // Channel blue on image vector
+#define SAT             1       // Channel green on image vector
+#define VAL             2       // Channel red on image vector
+
 #define HEIGHT_IMAGE    480     // Height of our image/frame
 #define WIDTH_IMAGE     640     // Width of our image/frame
 
@@ -33,10 +37,19 @@ void init_pins();
 // Raspicam initialization
 RaspiCam_Cv init_raspicam();
 
+// LEDs management
+void led_enable(bool);
+
 // OpenCV function to detect bottles
 int bottles_scanning();
 
-// LEDs management
-void led_enable(bool);
+// Maximum light localization
+void max_light_localization(Mat&, double&, Point&);
+
+// Region Of Interest near of the maximum localization
+Mat set_roi(Mat&, Point);
+
+// Extract searching beacon led color
+Mat extract_color(Mat& image, int lower[], int upper[]);
 
 #endif //BOTTLES_TRACKING_B_TRACKING_H
