@@ -26,7 +26,7 @@ Uart::Uart(){
     //											immediately with a failure status if the output can't be written immediately.
     //
     //	O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
-    uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
+    uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);		//Open in blocking read/write mode
 
     if (uart0_filestream == -1){
         //ERROR - CAN'T OPEN SERIAL PORT
@@ -55,6 +55,18 @@ Uart::Uart(){
     tcsetattr(uart0_filestream, TCSANOW, &options);
 }
 
+// Allways listen pin RX
+void* Uart::infinite_receiving(){
+    cout << state_port << endl;
+
+    while(state_port){
+        receive(uart0_filestream);
+    }
+
+    return NULL;
+}
+
+// To transmit informations by TX pin to the arduino
 void Uart::transmit(int uart0_filestream){
     //----- TX BYTES -----
     unsigned char tx_buffer[20];
@@ -73,6 +85,7 @@ void Uart::transmit(int uart0_filestream){
     }
 }
 
+// Receive informations from arduino
 void Uart::receive(int uart0_filestream){
     //----- CHECK FOR ANY RX BYTES -----
     if (uart0_filestream != -1){
@@ -94,11 +107,6 @@ void Uart::receive(int uart0_filestream){
     }
 }
 
-void Uart::infinite_receiving(){
-    while(state_port){
-        receive(uart0_filestream);
-    }
-}
 
 void Uart::close_port(int uart0_filestream){
     close(uart0_filestream);

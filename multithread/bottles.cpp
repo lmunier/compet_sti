@@ -1,4 +1,4 @@
-//Module:		    b_tracking.cpp
+//Module:		    bottles.cpp
 //version:		    1.0
 //Update:           06.06.2018
 //Responsability:	Munier Louis
@@ -16,6 +16,7 @@ void init_pins(){
 // Raspicam initialization
 RaspiCam_Cv init_raspicam(){
     RaspiCam_Cv camera;
+    sleep(WAIT_WAKEUP_CAMERA);
 
     camera.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     camera.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
@@ -31,7 +32,7 @@ void led_enable(bool enable){
 }
 
 // OpenCV function to detect bottles
-void bottles_scanning(){
+void* bottles_scanning(void*){
     // Initialize variables
     Mat image;
     Mat region_of_interest;
@@ -77,7 +78,6 @@ void bottles_scanning(){
     // Open camera
     if(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
-        return;
     }
 
     // Turn on light
@@ -103,12 +103,16 @@ void bottles_scanning(){
 //        imshow("ROI", region_of_interest);
         imshow("Extract", filtered);
 
+        cout << "bottles" << endl;
+
         if(waitKey(10) == 'q')
             break;
     }
 
     // Turn off light
     led_enable(false);
+
+    return NULL;
 }
 
 // Localize the maximum of light in image

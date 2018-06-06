@@ -20,6 +20,8 @@ Stepper init_stepper(int& init_step){
 VideoCapture init_webcam(){
     VideoCapture webcam(0);
 
+    sleep(WAIT_WAKEUP_WEBCAM);
+
     webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
     webcam.set(CAP_PROP_BRIGHTNESS, 0.5);
@@ -67,15 +69,15 @@ void* led_tracking(void*) {
 
     if(!webcam.isOpened()){
         cout << "Can not open webcam." << endl;
-        return;
     }
 
     while(true){
+        cout << "beacon" << endl;
+
         bool bSuccess = webcam.read(image);
 
         if(!bSuccess){
             cout << "Webcam disconnected."<< endl;
-            return;
         }
 
         // Blur image to avoid noise
@@ -126,6 +128,8 @@ void* led_tracking(void*) {
             break;
         }
     }
+
+    return NULL;
 }
 
 // Extract searching beacon led color
@@ -144,7 +148,7 @@ Mat extract_color(Mat& image, Mat& hsv, int lower[], int upper[]){
 }
 
 // Extract position of beacon led
-int extract_position(Mat& image, int& center, int& y_min, int& y_max){
+void extract_position(Mat& image, int& center, int& y_min, int& y_max){
     // Initialize matrices
     Mat gray;
 
@@ -195,7 +199,7 @@ int extract_position(Mat& image, int& center, int& y_min, int& y_max){
 }
 
 // Give distance to corner
-double get_dist_corner(int pixel_min, int pixel_max,  char function){
+double get_dist_corner(int pixel_min, int pixel_max, char function){
     double x, x_2, x_3;
 
     switch(function){
@@ -206,7 +210,7 @@ double get_dist_corner(int pixel_min, int pixel_max,  char function){
             x = pixel_max;
             break;
         default:
-            return -1.0;
+            return ERROR_DIST;
     }
 
     x_2 = x * x;
@@ -218,6 +222,8 @@ double get_dist_corner(int pixel_min, int pixel_max,  char function){
         case 'y':
             return 1.241e-6 * x_3 - 1.5465e-4 * x_2 + 0.0187 * x + 1.9045;
     }
+
+    return ERROR_DIST;
 }
 
 // Manage stepper back
