@@ -40,6 +40,9 @@
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
                 <element signature="e#58#68#0" expanded="true" />
+                <marker date="1528229607971" expanded="true" signature="442:497" ph="..." />
+                <marker date="1528229607971" expanded="true" signature="469:497" ph="..." />
+                <marker date="1528229607971" expanded="true" signature="5294:5744" ph="..." />
               </folding>
             </state>
           </provider>
@@ -48,8 +51,8 @@
       <file leaf-file-name="take_data_raspicam.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../test_haar/take_data_raspicam.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+            <state relative-caret-position="577">
+              <caret line="43" column="0" lean-forward="true" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -763,14 +766,17 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#58#68#0" expanded="true" />
+            <marker date="1528229607971" expanded="true" signature="442:497" ph="..." />
+            <marker date="1528229607971" expanded="true" signature="469:497" ph="..." />
+            <marker date="1528229607971" expanded="true" signature="5294:5744" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../test_haar/take_data_raspicam.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="40" column="0" lean-forward="true" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+        <state relative-caret-position="577">
+          <caret line="43" column="0" lean-forward="true" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
           <folding />
         </state>
       </provider>

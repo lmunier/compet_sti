@@ -1,4 +1,3 @@
-
 //Module:		    b_tracking.h
 //version:		    1.0
 //Update:           02.06.2018
