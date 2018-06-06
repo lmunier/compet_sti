@@ -15,6 +15,7 @@
 #include <fcntl.h>			//Used for UART
 #include <termios.h>		//Used for UART
 
+using namespace std;
 
 class Uart {
 public:

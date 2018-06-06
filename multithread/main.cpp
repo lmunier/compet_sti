@@ -16,7 +16,7 @@
 
 using namespace std;
 
-typedef void* (*THREADFUNCPTR)(void*);
+typedef void* (*UARTPTR)(void*);
 
 int main(){
     // Initialize variables
@@ -28,7 +28,7 @@ int main(){
 
     //------------------Thread creation----------------
     // Thread to listen arduino
-    int rx_verif = pthread_create(&listen_serial, NULL, (THREADFUNCPTR) &Uart::infinite_receiving, ptr_uart0);
+    int rx_verif = pthread_create(&listen_serial, NULL, (UARTPTR) &Uart::infinite_receiving, ptr_uart0);
 
     if (rx_verif) {
         cout << "Error:unable to create thread," << rx_verif << endl;
@@ -50,33 +50,6 @@ int main(){
         cout << "Error:unable to create thread," << led_verif << endl;
         exit(-1);
     }
-}
 
-//-------------------EXAMPLE--------------------
-/*
-#define NUM_THREADS 5
-
-void PrintHello(void *threadid) {
-    long tid;
-    tid = (long)threadid;
-    cout << "Hello World! Thread ID, " << tid << endl;
     pthread_exit(NULL);
 }
-
-int main () {
-    pthread_t threads[NUM_THREADS];
-    int rc;
-    int i;
-
-    for( i = 0; i < NUM_THREADS; i++ ) {
-        cout << "main() : creating thread, " << i << endl;
-        rc = pthread_create(&threads[i], NULL, PrintHello, i);
-
-        if (rc) {
-            cout << "Error:unable to create thread," << rc << endl;
-            exit(-1);
-        }
-    }
-    pthread_exit(NULL);
-}*/
-//----------------------------------------------

@@ -26,7 +26,7 @@ Uart::Uart(){
     //											immediately with a failure status if the output can't be written immediately.
     //
     //	O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
-    uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
+    uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);		//Open in blocking read/write mode
 
     if (uart0_filestream == -1){
         //ERROR - CAN'T OPEN SERIAL PORT
@@ -57,6 +57,8 @@ Uart::Uart(){
 
 // Allways listen pin RX
 void* Uart::infinite_receiving(){
+    cout << state_port << endl;
+
     while(state_port){
         receive(uart0_filestream);
     }
@@ -100,7 +102,7 @@ void Uart::receive(int uart0_filestream){
         } else {
             //Bytes received
             rx_buffer[rx_length] = '\0';
-//            printf("%i bytes read : %s\n", rx_length, rx_buffer);
+            printf("%i bytes read : %s\n", rx_length, rx_buffer);
         }
     }
 }

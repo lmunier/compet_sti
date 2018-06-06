@@ -1,4 +1,4 @@
-//Module:		    b_tracking.cpp
+//Module:		    bottles.cpp
 //version:		    1.0
 //Update:           06.06.2018
 //Responsability:	Munier Louis
@@ -16,6 +16,7 @@ void init_pins(){
 // Raspicam initialization
 RaspiCam_Cv init_raspicam(){
     RaspiCam_Cv camera;
+    sleep(WAIT_WAKEUP_CAMERA);
 
     camera.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     camera.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
@@ -77,7 +78,6 @@ void* bottles_scanning(void*){
     // Open camera
     if(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
-//        exit(EXIT_FAILURE);
     }
 
     // Turn on light

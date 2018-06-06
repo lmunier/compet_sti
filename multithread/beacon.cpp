@@ -20,6 +20,8 @@ Stepper init_stepper(int& init_step){
 VideoCapture init_webcam(){
     VideoCapture webcam(0);
 
+    sleep(WAIT_WAKEUP_WEBCAM);
+
     webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
     webcam.set(CAP_PROP_BRIGHTNESS, 0.5);
