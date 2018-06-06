@@ -49,8 +49,8 @@
           <file leaf-file-name="b_tracking.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/b_tracking.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="788">
-                  <caret line="127" column="12" lean-forward="true" selection-start-line="127" selection-start-column="12" selection-end-line="127" selection-end-column="12" />
+                <state relative-caret-position="567">
+                  <caret line="142" column="32" lean-forward="true" selection-start-line="142" selection-start-column="32" selection-end-line="142" selection-end-column="32" />
                   <folding />
                 </state>
               </provider>
@@ -63,8 +63,8 @@
           <file leaf-file-name="b_tracking.h" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/b_tracking.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="935">
-                  <caret line="55" column="0" lean-forward="true" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+                <state relative-caret-position="414">
+                  <caret line="36" column="19" lean-forward="false" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="19" />
                   <folding />
                 </state>
               </provider>
@@ -78,8 +78,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/main.cpp" />
-        <option value="$PROJECT_DIR$/b_tracking.cpp" />
         <option value="$PROJECT_DIR$/b_tracking.h" />
+        <option value="$PROJECT_DIR$/b_tracking.cpp" />
       </list>
     </option>
   </component>
@@ -164,12 +164,12 @@
       <workItem from="1527941535526" duration="988000" />
       <workItem from="1527942627666" duration="2028000" />
       <workItem from="1528019588385" duration="1869000" />
-      <workItem from="1528106454180" duration="14735000" />
+      <workItem from="1528106454180" duration="29432000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19620000" />
+    <option name="totallyTimeSpent" value="34317000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -330,16 +330,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/b_tracking.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="55" column="0" lean-forward="true" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+        <state relative-caret-position="414">
+          <caret line="36" column="19" lean-forward="false" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/b_tracking.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="788">
-          <caret line="127" column="12" lean-forward="true" selection-start-line="127" selection-start-column="12" selection-end-line="127" selection-end-column="12" />
+        <state relative-caret-position="567">
+          <caret line="142" column="32" lean-forward="true" selection-start-line="142" selection-start-column="32" selection-end-line="142" selection-end-column="32" />
           <folding />
         </state>
       </provider>

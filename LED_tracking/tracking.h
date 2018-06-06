@@ -28,9 +28,9 @@ using namespace std;
 
 #define TOL_BEACON      5       // Tolerance on beacon width/inclination
 
-#define HUE             0       // Channel blue on image vector
-#define SAT             1       // Channel green on image vector
-#define VAL             2       // Channel red on image vector
+#define HUE             0       // Channel hue on image vector
+#define SAT             1       // Channel saturation on image vector
+#define VAL             2       // Channel value on image vector
 
 #define HEIGHT_IMAGE    480     // Height of our image/frame
 #define WIDTH_IMAGE     640     // Width of our image/frame

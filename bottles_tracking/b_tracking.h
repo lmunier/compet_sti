@@ -1,4 +1,3 @@
-
 //Module:		    b_tracking.h
 //version:		    1.0
 //Update:           02.06.2018
@@ -22,23 +21,19 @@ using namespace cv;
 using namespace std;
 using namespace raspicam;
 
-#define LED_PIN         0       // PIN to enable LEDs gpio (BCM 17)
+#define LED_PIN             0       // PIN to enable LEDs gpio (BCM 17)
 
-#define HUE             0       // Channel hue on image vector
-#define SAT             1       // Channel saturation on image vector
-#define VAL             2       // Channel value on image vector
+#define HUE                 0       // Channel hue on image vector
+#define SAT                 1       // Channel saturation on image vector
+#define VAL                 2       // Channel value on image vector
 
-#define BLUE            0       // Channel blue on image vector
-#define GREEN           1       // Channel green on image vector
-#define RED             2       // Channel red on image vector
+#define NB_CHANNELS         3       // Number of channel per pixel
 
-#define NB_COLORS       4       // Number of colors
-#define NB_CHANNELS     3       // Number of channel per pixel
+#define HEIGHT_IMAGE        480     // Height of our image/frame
+#define WIDTH_IMAGE         640     // Width of our image/frame
 
-#define HEIGHT_IMAGE    480     // Height of our image/frame
-#define WIDTH_IMAGE     640     // Width of our image/frame
-
-#define BOTTLE_TOLERANCE 10     // Tolerance to not detect bottle if the max luminosity point is on the up left
+#define BOTTLE_TOLERANCE    10      // Tolerance to not detect bottle if the max luminosity point is on the top left
+#define AVOID_NOISE         HEIGHT_IMAGE/3
 
 // Pins initialization
 void init_pins();
@@ -55,13 +50,13 @@ int bottles_scanning();
 // Maximum light localization
 void max_light_localization(Mat&, double&, Point&, int);
 
-// Region Of Interest near of the maximum localization
+// Region Of Interest to avoid near localization
+Mat set_roi(Mat&);
+
+// Surchatge of region Of Interest near of the maximum localization
 Mat set_roi(Mat&, Point);
 
-// Extract searching beacon led color
-Mat extract_color(Mat& image, int lower[], int upper[]);
-
-// Delete color of beacons
+// Delete some color in HSV
 Mat del_color(Mat&, int[][NB_CHANNELS], int[][NB_CHANNELS]);
 
 #endif //BOTTLES_TRACKING_B_TRACKING_H

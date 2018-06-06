@@ -18,5 +18,5 @@ while True:
 #	str = rcv.decode("utf-8")
 #	str = repr(rcv)
 
-#	if str != "b''":
-	print(rcv)
+	if str != "b''":
+		print(str)
