@@ -39,6 +39,9 @@ int bottles_scanning(){
     Mat deleted;
 
     // Initialization of variables
+        // Set to one if we found a bottle
+        bool bottle = false;
+
         // Set distance variables
         int bottle_x_pos = 0;
         int bottle_y_pos = 0;
@@ -52,8 +55,8 @@ int bottles_scanning(){
 
     // Initialization of color threshold
         // Bottles
-        int lower_hsv_bottles[] = {0, 0, 0};
-        int upper_hsv_bottles[] = {255, 255, 255};
+        int lower_hsv_bottles[][NB_CHANNELS] = {{0, 0, 0}};
+        int upper_hsv_bottles[][NB_CHANNELS] = {{255, 255, 255}};
 
         // Beacons
 //        int lower_beacon[NB_COLORS][NB_CHANNELS] = {{176, 218, 255}, {196, 252, 255},
@@ -62,42 +65,41 @@ int bottles_scanning(){
 //                                                    {245, 255, 245}, {220, 255, 235}};
 
         // Beacons HSV
-        int lower_beacon[1][NB_CHANNELS] = {{0, 0, 0}};
-        int upper_beacon[1][NB_CHANNELS] = {{255, 255, 230}};
-
-        // Beacons
-        int lower_beacon[NB_COLORS][NB_CHANNELS] = {{176, 218, 255}, {196, 252, 255},
-                                                    {220, 235, 255}, {200, 245, 222}};
-        int upper_beacon[NB_COLORS][NB_CHANNELS] = {{206, 244, 255}, {214, 255, 255},
-                                                    {245, 255, 245}, {220, 255, 235}};
+        int lower_beacon[][NB_CHANNELS] = {{0, 0, 0}};
+        int upper_beacon[][NB_CHANNELS] = {{255, 255, 230}};
 
     wiringPiSetup();
     init_pins();
 
     // Initialize camera
-    //RaspiCam_Cv camera = init_raspicam();
+    RaspiCam_Cv camera = init_raspicam();
 
     // Open camera
-    /*if(!camera.open()) {
+    if(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
         return -1;
-    }*/
+    }
 
     // Turn on light
-    //led_enable(true);
+    led_enable(true);
 
     while(true){
         // Take video input
-        //camera.grab();
-        //camera.retrieve(image);
+        camera.grab();
+        camera.retrieve(image);
 
         deleted = del_color(image, lower_beacon, upper_beacon);
+
+        if(!bottle) {
+            deleted = set_roi(deleted);
+            imshow("Deleted", deleted);
+        }
+
         max_light_localization(deleted, max, max_loc, kernel_blur);
         region_of_interest = set_roi(image, max_loc);
-        filtered = extract_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
-//        imshow("Original", image);
-        imshow("Deleted", deleted);
+        imshow("Original", image);
 //        imshow("ROI", region_of_interest);
         imshow("Extract", filtered);
 
@@ -106,7 +108,7 @@ int bottles_scanning(){
     }
 
     // Turn off light
-    //led_enable(false);
+    led_enable(false);
 
     return 1;
 }
@@ -130,6 +132,20 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
 
     // Show result
     circle(image, max_loc, 10, (0, 255, 255), 2);
+}
+
+// Region of interest near of the maximum localization
+Mat set_roi(Mat& original){
+    // Initialize rectangle
+    int x_start = 0;
+    int y_start = 0;
+    int height = HEIGHT_IMAGE - AVOID_NOISE;
+    int width = WIDTH_IMAGE - 1;
+
+    Rect selection(x_start, y_start, width, height);
+
+    // Return new region of interest
+    return original(selection);
 }
 
 // Region of interest near of the maximum localization
@@ -164,26 +180,8 @@ Mat set_roi(Mat& original, Point max_loc){
     return original(selection);
 }
 
-// Extract searching beacon led color
-Mat extract_color(Mat& original, int lower[], int upper[]){
-    // Initialize extracted color matrix
-    Mat mask;
-    Mat hsv;
-    Mat extracted;
-
-    // Change BGR to HSV mode for our image
-    cvtColor(original, hsv, COLOR_BGR2HSV);
-
-    // Create and apply mask to our image
-    inRange(hsv, Scalar(lower[HUE], lower[SAT], lower[VAL]),
-                 Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
-    bitwise_and(original, original, extracted, mask);
-
-    return extracted;
-}
-
-// Delete color of beacons
-Mat del_color(Mat& original, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS]){
+// Delete some color in HSV
+Mat del_color(Mat& hsv, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS]){
     // Initialization variables
     bool first = true;
     int nb_colors = sizeof(lower[0])/sizeof(int);
@@ -192,14 +190,14 @@ Mat del_color(Mat& original, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS])
 
     // Delete each color separately
     for(int i = 0; i < nb_colors; i++){
-        inRange(original, Scalar(lower[i][BLUE], lower[i][GREEN], lower[i][RED]),
-                          Scalar(upper[i][BLUE], upper[i][GREEN], upper[i][RED]), mask);
+        inRange(hsv, Scalar(lower[i][HUE], lower[i][SAT], lower[i][VAL]),
+                     Scalar(upper[i][HUE], upper[i][SAT], upper[i][VAL]), mask);
 
 //        bitwise_not(mask, mask);
 
         imshow("Mask", mask);
         if(first) {
-            bitwise_and(original, original, deleted, mask);
+            bitwise_and(hsv, hsv, deleted, mask);
             first = false;
         }
         else
