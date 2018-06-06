@@ -29,7 +29,7 @@ VideoCapture init_webcam(){
 
 // Main part, tracking of the corner led where is the bin
 
-void led_tracking() {
+void* led_tracking(void*) {
     // Initialization of matrices
     Mat image;
     Mat blur;
