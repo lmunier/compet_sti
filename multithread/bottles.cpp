@@ -31,7 +31,7 @@ void led_enable(bool enable){
 }
 
 // OpenCV function to detect bottles
-void bottles_scanning(){
+void* bottles_scanning(void*){
     // Initialize variables
     Mat image;
     Mat region_of_interest;
@@ -77,7 +77,7 @@ void bottles_scanning(){
     // Open camera
     if(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
-        return;
+//        exit(EXIT_FAILURE);
     }
 
     // Turn on light
@@ -103,12 +103,16 @@ void bottles_scanning(){
 //        imshow("ROI", region_of_interest);
         imshow("Extract", filtered);
 
+        cout << "bottles" << endl;
+
         if(waitKey(10) == 'q')
             break;
     }
 
     // Turn off light
     led_enable(false);
+
+    return NULL;
 }
 
 // Localize the maximum of light in image

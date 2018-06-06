@@ -1,4 +1,4 @@
-//Module:		    b_tracking.h
+//Module:		    bottles.h
 //version:		    1.0
 //Update:           06.06.2018
 //Responsability:	Munier Louis
@@ -45,7 +45,7 @@ RaspiCam_Cv init_raspicam();
 void led_enable(bool);
 
 // OpenCV function to detect bottles
-void bottles_scanning();
+void* bottles_scanning(void*);
 
 // Maximum light localization
 void max_light_localization(Mat&, double&, Point&, int);

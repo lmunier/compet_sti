@@ -55,6 +55,16 @@ Uart::Uart(){
     tcsetattr(uart0_filestream, TCSANOW, &options);
 }
 
+// Allways listen pin RX
+void* Uart::infinite_receiving(){
+    while(state_port){
+        receive(uart0_filestream);
+    }
+
+    return NULL;
+}
+
+// To transmit informations by TX pin to the arduino
 void Uart::transmit(int uart0_filestream){
     //----- TX BYTES -----
     unsigned char tx_buffer[20];
@@ -73,6 +83,7 @@ void Uart::transmit(int uart0_filestream){
     }
 }
 
+// Receive informations from arduino
 void Uart::receive(int uart0_filestream){
     //----- CHECK FOR ANY RX BYTES -----
     if (uart0_filestream != -1){
@@ -89,16 +100,11 @@ void Uart::receive(int uart0_filestream){
         } else {
             //Bytes received
             rx_buffer[rx_length] = '\0';
-            printf("%i bytes read : %s\n", rx_length, rx_buffer);
+//            printf("%i bytes read : %s\n", rx_length, rx_buffer);
         }
     }
 }
 
-void Uart::infinite_receiving(){
-    while(state_port){
-        receive(uart0_filestream);
-    }
-}
 
 void Uart::close_port(int uart0_filestream){
     close(uart0_filestream);

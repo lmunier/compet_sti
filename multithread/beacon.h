@@ -27,6 +27,7 @@ using namespace std;
 #define SB_IN4          6       // Correpsond to GPIO 25 (BCM)
 
 #define TOL_BEACON      5       // Tolerance on beacon width/inclination
+#define ERROR_DIST	-1.0	// If we have an error when we calculate the distance
 
 #define HUE             0       // Channel hue on image vector
 #define SAT             1       // Channel saturation on image vector
@@ -44,19 +45,19 @@ Stepper init_stepper(int&);
 VideoCapture init_webcam();
 
 // Main part, tracking of the corner led where is the bin
-void led_tracking();
+void* led_tracking(void*);
 
 // Extract searching beacon led color
 Mat extract_color(Mat&, Mat&, int[], int[]);
 
 // Extract position of beacon led
-int extract_position(Mat&, int&, int&, int&);
+void extract_position(Mat&, int&, int&, int&);
 
 // Give distance to corner
 double get_dist_corner(int, int, char);
 
 // Manage stepper back
-void manage_stepper(CheapStepper&, int);
+void manage_stepper(Stepper&, int);
 
 // If  a bottle is captured
 bool is_bottle_captured();
