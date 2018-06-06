@@ -75,10 +75,6 @@ void transmitte(int uart0_filestream){
 
 	p_tx_buffer = &tx_buffer[0];
 	*p_tx_buffer++ = 'H';
-	*p_tx_buffer++ = 'e';
-	*p_tx_buffer++ = 'l';
-	*p_tx_buffer++ = 'l';
-	*p_tx_buffer++ = 'o';
 
 	if (uart0_filestream != -1){
 		//Filestream, bytes to write, number of bytes to write

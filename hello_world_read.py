@@ -17,5 +17,5 @@ while True:
 	rcv = port.readline()
 	str = repr(rcv)
 
-#	if str != "b''":
-	print(str)
+	if str != "b''":
+		print(str)
