@@ -61,6 +61,9 @@ void* led_tracking(void* uart0) {
     // Show results if needed
     bool show_results = true;
 
+    // Send fire only once
+    bool send_fire = false;
+
     // Set blur kernel
     int kernel_blur = 3;
 
@@ -77,6 +80,10 @@ void* led_tracking(void* uart0) {
         cout << "Can not open webcam." << endl;
     }
 
+    // Start arduino
+    ptr_uart0->send_to_arduino('I');
+
+    // Loop on led detection/alignment
     while(true){
         bool bSuccess = webcam.read(image);
 
@@ -97,19 +104,26 @@ void* led_tracking(void* uart0) {
         manage_stepper(stepper_back, led_x_pos);
 
         if(ptr_uart0->is_bottle()) {
-            cout << "Send to arduino " << led_x_pos << endl;
+            //cout << "Send to arduino " << led_x_pos << endl;
 
-            while(!is_aligned(led_x_pos)) {
-                if(stepper_back.getStep() < 0)
+            if(!is_aligned(led_x_pos)) {
+                if(stepper_back.getStep() < 0) {
                     ptr_uart0->send_to_arduino('A', 'R');
-                else
+                    //cout << "A_R" << endl;
+                } else {
                     ptr_uart0->send_to_arduino('A', 'L');
+                    //cout << "A_L" << endl;
+                }
             }
 
-            cout << "Fire !!!" << endl;
-            ptr_uart0->send_to_arduino('A', 'F', dist2corner);
-
-            while (ptr_uart0->is_bottle());
+            while (ptr_uart0->is_bottle() && is_aligned(led_x_pos)) {
+                if(!send_fire) {
+                    //cout << "Fire !!!" << endl;
+                    ptr_uart0->send_to_arduino('A', 'F', dist2corner);
+                }
+            }
+        } else {
+            send_fire = false;
         }
 
         // Show result
@@ -118,14 +132,12 @@ void* led_tracking(void* uart0) {
             imshow("Extracted", extracted);
         }
 
-        if (waitKey(10) == 27)
-        {
-            cout << "Esc key is pressed by user. Stopping the video." << endl;
-            break;
+        if(waitKey(10) == 27){
+            //cout << "Esc key is pressed." << endl;
         }
     }
 
-    return NULL;
+    pthread_exit(NULL);
 }
 
 // Extract searching beacon led color
@@ -185,6 +197,8 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
             y_max = row;
         }
     }
+
+    center = x_max;
 
     // Show result
     typedef Point_<uint16_t> Pixel;

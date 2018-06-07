@@ -57,8 +57,6 @@ Uart::Uart(){
 
 // Allways listen pin RX
 void* Uart::infinite_receiving() {
-    cout << state_port << endl;
-
     while(state_port){
         receive();
     }
@@ -115,6 +113,7 @@ void Uart::send_to_arduino(char type, char param, int dist) {
                           to_send += to_string(dist);
                           break;
             }
+            break;
         case 'I': to_send += "I.";
                   break;
     }
@@ -165,7 +164,7 @@ void Uart::receive() {
             //Bytes received
             rx_buffer[rx_length] = '\0';
             decode_message(rx_buffer);
-            //printf("%i bytes read : %s\n", rx_length, rx_buffer);
+            printf("%i bytes read : %s\n", rx_length, rx_buffer);
         }
     }
 }
@@ -178,8 +177,11 @@ void Uart::decode_message(unsigned char message[]){
                 bottle_to_throw = true;
             else if (message[2] == '0')
                 bottle_to_throw = false;
+
             break;
    }
+
+cout << message << endl;
 }
 
 // Close uart port

@@ -122,6 +122,7 @@ void* bottles_scanning(void* uart0){
         bottle_pos = max_loc;
 
         // Send position of bottle to arduino
+        //cout << "F_" << bottle_pos.x << "_" << bottle_pos.y << endl;
         ptr_uart0->send_to_arduino('F', bottle_pos.x, bottle_pos.y);
 
         // Turn off light during align/shoot
