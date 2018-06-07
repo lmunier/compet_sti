@@ -33,31 +33,39 @@ void led_enable(bool enable){
 }
 
 // OpenCV function to detect bottles
-void* bottles_scanning(void*){
-    // Initialize variables
+void* bottles_scanning(void* uart0){
+    //-----------INIT VARIABLES------------
+    // Matrices
     Mat roi;
     Mat image;
     Mat region_of_interest;
     Mat filtered;
     Mat deleted;
 
-    // Initialization of variables
+    // Initialize pointer to uart class
+    Uart *ptr_uart0 = static_cast<Uart*>(uart0);
+
+    // Show results if needed
+    bool show_results = true;
+
     // Set to one if we found a bottle
-    bool bottle = false;
+    bool bottle_detected = false;
 
     // Set distance variables
-    int bottle_x_pos = 0;
-    int bottle_y_pos = 0;
+    Point bottle_pos;
 
     // Set blur kernel
     int kernel_blur = 3;
 
-    // Extract max, min
+    // Extract max, min light in an image
     Point max_loc;
     double max = 0.0;
 
-    // Set rectangle roi
+    // Set rectangle roi to limit image area
     Rect rect_roi;
+
+    // If a bottle is already grab
+    bool led_state = false;
 
     // Initialization of color threshold
     // Bottles
@@ -68,6 +76,7 @@ void* bottles_scanning(void*){
     int lower_beacon[][NB_CHANNELS] = {{0, 0, 0}};
     int upper_beacon[][NB_CHANNELS] = {{255, 255, 230}};
 
+    //-----------INITIALIZE UTILS--------
     wiringPiSetup();
     init_pins();
 
@@ -79,15 +88,21 @@ void* bottles_scanning(void*){
         cout << "ERROR: can not open camera" << endl;
     }
 
-    // Turn on light
-    led_enable(true);
 
+    //-----------MAIN PART---------------
     while(true){
+        // Turn on light if they are disabled
+        if(!led_state) {
+            led_state = true;
+            led_enable(led_state);
+        }
+
         // Take video input
         camera.grab();
         camera.retrieve(image);
 
-        if(!bottle) {
+        // Compute on input frame to find bottles
+        if(!bottle_detected) {
             roi = set_roi(image);
         } else {
             roi = image(rect_roi);
@@ -95,22 +110,31 @@ void* bottles_scanning(void*){
 
         deleted = del_color(roi, lower_beacon, upper_beacon);
         max_light_localization(deleted, max, max_loc, kernel_blur);
-        region_of_interest = set_roi(image, max_loc, rect_roi, bottle);
+        region_of_interest = set_roi(image, max_loc, rect_roi, bottle_detected);
         filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
-        imshow("Original", image);
-//        imshow("ROI", region_of_interest);
-        imshow("Extract", filtered);
+        // Show results if needed
+        if(show_results) {
+            imshow("Original", image);
+            imshow("Extract", filtered);
+        }
 
-        if(waitKey(10) == 'q')
-            bottle = false;
+        // Send position of bottle to arduino
+        send_bottle_pos(ptr_uart0, bottle_pos);
+
+        // Turn off light during align/shoot
+        while(ptr_uart0->is_bottle()) {
+            if(led_state) {
+                led_state = false;
+                led_enable(led_state);
+            }
+        }
     }
 
     // Turn off light
     led_enable(false);
 
     pthread_exit(NULL);
-//    return NULL;
 }
 
 // Localize the maximum of light in image
@@ -149,7 +173,7 @@ Mat set_roi(Mat& original){
 }
 
 // Region of interest near of the maximum localization
-Mat set_roi(Mat& original, Point max_loc, Rect& rect_roi, bool& bottle){
+Mat set_roi(Mat& original, Point max_loc, Rect& rect_roi, bool& bottle_detected){
     // If we do not have any bottles on image
     int test_bottle = 0;
 
@@ -161,7 +185,7 @@ Mat set_roi(Mat& original, Point max_loc, Rect& rect_roi, bool& bottle){
     if(test_bottle == NB_CHANNELS)
         return original;
     else
-        bottle = true;
+        bottle_detected = true;
 
 
     // Initialize variable to keep tracking on the same bottle
@@ -184,7 +208,6 @@ Mat set_roi(Mat& original, Point max_loc, Rect& rect_roi, bool& bottle){
 
     rect_roi.height = coeff;
     rect_roi.width = coeff;
-    cout << rect_roi << endl;
 
     // Return new region of interest
     return original(rect_roi);
@@ -212,4 +235,16 @@ Mat del_color(Mat& hsv, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS]){
     }
 
     return deleted;
+}
+
+void send_bottle_pos(Uart* uart0, Point pos){
+    string pos_to_send = "F_";
+
+    // Add position of bottle
+    pos_to_send += to_string(pos.x);
+    pos_to_send += "_";
+    pos_to_send += to_string(pos.y);
+    pos_to_send += ".";
+
+    uart0->transmit(pos_to_send);
 }

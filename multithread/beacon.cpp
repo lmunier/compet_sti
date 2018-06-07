@@ -32,13 +32,16 @@ VideoCapture init_webcam(){
 
 // Main part, tracking of the corner led where is the bin
 
-void* led_tracking(void*) {
+void* led_tracking(void* uart0) {
     // Initialization of matrices
     Mat image;
     Mat blur;
     Mat gray;
     Mat image_hsv;
     Mat extracted;
+
+    // Initialize pointer to uart class
+    Uart *ptr_uart0 = static_cast<Uart*>(uart0);
 
     // Initialization of color threshold
     // White leds
@@ -55,6 +58,8 @@ void* led_tracking(void*) {
     static int init_step = 0;
     int degree_correction = 0;
 
+    // Show results if needed
+    bool show_result = true;
 
     // Set blur kernel
     int kernel_blur = 3;
@@ -82,10 +87,6 @@ void* led_tracking(void*) {
         // Blur image to avoid noise
         GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
 
-        // Extract max in prevision
-        //cvtColor(blur, gray, COLOR_BGR2GRAY);
-        //minMaxLoc(gray, &min, &max, &minLoc, &maxLoc);
-
         // Extracted color to detect LEDs
         cvtColor(blur,image_hsv, COLOR_BGR2HSV);
 
@@ -97,6 +98,7 @@ void* led_tracking(void*) {
 
         if(is_aligned(led_x_pos)) {
             cout << "Fire !!!" << endl; // TODO: Send to arduino "FIRE" with dist2corner
+            ptr_uart0->send_to_arduino();
 
             degree_correction = (stepper_back.getStep() - init_step)*360/4096;
             cout << "Degree to correct." << degree_correction << endl;
@@ -110,16 +112,18 @@ void* led_tracking(void*) {
             }*/
         }
 
-        if(is_bottle_captured()) {
+        if(ptr_uart0->is_bottle()) {
             // TODO: Send to arduino led_x_pos to align
 //            cout << "Send to arduino " << led_x_pos << endl;
         }
 
         // Show result
-        //circle(blur, maxLoc, 10, (255, 255, 0), 2);
+        if(show_results){
+            circle(blur, maxLoc, 10, (255, 255, 0), 2);
 
-        imshow("Image", blur);
-        imshow("Extracted", extracted);
+            imshow("Image", blur);
+            imshow("Extracted", extracted);
+        }
 
         if (waitKey(10) == 27)
         {
@@ -236,11 +240,6 @@ void manage_stepper(Stepper& stepper_back, int led_x_pos){
         else
             stepper_back.stepCCW();
     }
-}
-
-// If  a bottle is captured
-bool is_bottle_captured(){
-    return true;
 }
 
 // Check if the robot is aligned

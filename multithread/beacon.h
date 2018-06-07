@@ -20,14 +20,16 @@
 #include <unistd.h>
 
 
-//--------CUSTOM LIBRARIES------------
-
-#include "stepper.h"
-
-
 //--------NON STANDARD LIBRARIES------
 
 #include <opencv2/opencv.hpp>
+
+
+//--------CUSTOM LIBRARIES------------
+
+#include "stepper.h"
+#include "uart.h"
+
 
 using namespace cv;
 using namespace std;
@@ -76,9 +78,6 @@ double get_dist_corner(int, int, char);
 
 // Manage stepper back
 void manage_stepper(Stepper&, int);
-
-// If  a bottle is captured
-bool is_bottle_captured();
 
 // Check if the robot is aligned
 bool is_aligned(int);

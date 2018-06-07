@@ -60,20 +60,24 @@ void* Uart::infinite_receiving(){
     cout << state_port << endl;
 
     while(state_port){
-        receive(uart0_filestream);
+        receive();
     }
 
     return NULL;
 }
 
 // To transmit informations by TX pin to the arduino
-void Uart::transmit(int uart0_filestream){
+void Uart::transmit(string to_send){
     //----- TX BYTES -----
     unsigned char tx_buffer[20];
     unsigned char *p_tx_buffer;
 
     p_tx_buffer = &tx_buffer[0];
-    *p_tx_buffer++ = 'H';
+
+    for(unsigned int c = 0; c < to_send.length(); c++)
+        *p_tx_buffer++ = to_send.at(c);
+
+    pthread_mutex_lock(&mutex_lock_transmit);
 
     if (uart0_filestream != -1){
         //Filestream, bytes to write, number of bytes to write
@@ -83,10 +87,12 @@ void Uart::transmit(int uart0_filestream){
             printf("UART TX error\n");
         }
     }
+
+    pthread_mutex_unlock(&mutex_lock_transmit);
 }
 
 // Receive informations from arduino
-void Uart::receive(int uart0_filestream){
+void Uart::receive(){
     //----- CHECK FOR ANY RX BYTES -----
     if (uart0_filestream != -1){
         // Read up to 255 characters from the port if they are there
@@ -108,6 +114,7 @@ void Uart::receive(int uart0_filestream){
 }
 
 
-void Uart::close_port(int uart0_filestream){
+void Uart::close_port(){
     close(uart0_filestream);
 }
+
