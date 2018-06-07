@@ -27,6 +27,9 @@
 #include <raspicam/raspicam_cv.h>
 
 
+//--------CUSTOM LIBRARIES-------------
+#include "uart.h"
+
 using namespace cv;
 using namespace std;
 using namespace raspicam;
@@ -45,7 +48,7 @@ using namespace raspicam;
 #define HEIGHT_IMAGE        480     		// Height of our image/frame
 #define WIDTH_IMAGE         640     		// Width of our image/frame
 
-#define BOTTLE_TOLERANCE    10      		// Tolerance to not detect bottle if the max luminosity point is on the top left
+#define BOTTLE_THRESHOLD    10      		// Tolerance to not detect bottle if the max luminosity point is on the top left
 #define AVOID_NOISE         HEIGHT_IMAGE/3	// Tolerance to avoid hight intensity when we don't detect bottles
 #define WAIT_WAKEUP_CAMERA  2		// Wait to waking up camera
 
@@ -71,9 +74,12 @@ void max_light_localization(Mat&, double&, Point&, int);
 Mat set_roi(Mat&);
 
 // Surchatge of region Of Interest near of the maximum localization
-Mat set_roi(Mat&, Point);
+Mat set_roi(Mat&, Point, Rect&, bool&);
 
 // Delete some color in HSV
 Mat del_color(Mat&, int[][NB_CHANNELS], int[][NB_CHANNELS]);
+
+// Send position of bottle to arduino
+void send_bottle_pos(Uart*, Point);
 
 #endif //BOTTLES_TRACKING_B_TRACKING_H
