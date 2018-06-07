@@ -61,7 +61,7 @@ int main(){
 			transmitte(uart0_filestream);
 
 		in = 0;
-		receive(uart0_filestream);
+//		receive(uart0_filestream);
 	}
 
 	//-----------CLOSE THE UART----------
@@ -75,6 +75,7 @@ void transmitte(int uart0_filestream){
 
 	p_tx_buffer = &tx_buffer[0];
 	*p_tx_buffer++ = 'H';
+	*p_tx_buffer++ = '.';
 
 	if (uart0_filestream != -1){
 		//Filestream, bytes to write, number of bytes to write
