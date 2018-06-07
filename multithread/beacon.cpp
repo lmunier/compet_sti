@@ -25,6 +25,7 @@ VideoCapture init_webcam(){
     webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
     webcam.set(CAP_PROP_BRIGHTNESS, 0.5);
+    webcam.set(CAP_PROP_FPS, 7);
 
     return webcam;
 }
@@ -72,8 +73,6 @@ void* led_tracking(void*) {
     }
 
     while(true){
-        cout << "beacon" << endl;
-
         bool bSuccess = webcam.read(image);
 
         if(!bSuccess){
