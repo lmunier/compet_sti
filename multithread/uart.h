@@ -9,6 +9,8 @@
 #ifndef UART_H
 #define UART_H
 
+//--------STANDARD LIBRARIES-------------
+
 #include <iostream>
 #include <cstdio>
 #include <unistd.h>			//Used for UART
@@ -16,6 +18,9 @@
 #include <termios.h>		//Used for UART
 
 using namespace std;
+
+
+//--------CLASS------------------------
 
 class Uart {
 public:

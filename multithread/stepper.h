@@ -32,9 +32,18 @@
 #ifndef STEPPER_H
 #define STEPPER_H
 
-#include <wiringPi.h>
+//--------STANDARD LIBRARIES-------------
+
 #include <cstdlib>
 #include <iostream>
+
+
+//--------NON STANDARD LIBRARIES---------
+
+#include <wiringPi.h>
+
+
+//--------DEFINE SOME CONSTANTS----------
 
 #define V_MIN           7       // Minimum rpm
 #define V_MAX           20      // Maximum rpm
@@ -48,6 +57,9 @@
 #define KD_ROT          0       // Derivative coefficient rotation
 
 #define SAMPLING        0.1     // (Sampling time for PID)
+
+
+//--------FUNCTIONS----------------------
 
 class Stepper
 {

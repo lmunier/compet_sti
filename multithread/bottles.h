@@ -11,7 +11,7 @@
 #define BOTTLES_TRACKING_B_TRACKING_H
 
 
-//--------STANDARD LIBRARY-------------
+//--------STANDARD LIBRARIES-----------
 
 #include <cfloat>
 #include <ctime>
@@ -20,7 +20,7 @@
 #include <unistd.h>
 
 
-//--------NON STANDARD LIBRARY---------
+//--------NON STANDARD LIBRARIES-------
 
 #include <wiringPi.h>
 #include <opencv2/opencv.hpp>
