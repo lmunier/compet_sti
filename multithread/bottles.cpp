@@ -111,16 +111,18 @@ void* bottles_scanning(void* uart0){
         deleted = del_color(roi, lower_beacon, upper_beacon);
         max_light_localization(deleted, max, max_loc, kernel_blur);
         region_of_interest = set_roi(image, max_loc, rect_roi, bottle_detected);
-        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
+//        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
         // Show results if needed
         if(show_results) {
             imshow("Original", image);
-            imshow("Extract", filtered);
+            imshow("Extract", region_of_interest);
         }
 
+        bottle_pos = max_loc;
+
         // Send position of bottle to arduino
-        send_bottle_pos(ptr_uart0, bottle_pos);
+        ptr_uart0->send_to_arduino('F', bottle_pos.x, bottle_pos.y);
 
         // Turn off light during align/shoot
         while(ptr_uart0->is_bottle()) {
@@ -155,7 +157,7 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
     minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 
     // Show result
-    circle(image, max_loc, 10, (0, 255, 255), 2);
+    //circle(image, max_loc, 10, (0, 255, 255), 2);
 }
 
 // Region of interest near of the maximum localization
@@ -235,16 +237,4 @@ Mat del_color(Mat& hsv, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS]){
     }
 
     return deleted;
-}
-
-void send_bottle_pos(Uart* uart0, Point pos){
-    string pos_to_send = "F_";
-
-    // Add position of bottle
-    pos_to_send += to_string(pos.x);
-    pos_to_send += "_";
-    pos_to_send += to_string(pos.y);
-    pos_to_send += ".";
-
-    uart0->transmit(pos_to_send);
 }

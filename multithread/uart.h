@@ -27,8 +27,9 @@ public:
     // Function to always listen the RX port
     void* infinite_receiving();
 
-    // Function to transmit data with TX pin
-    void transmit(string);
+    // Send message to arduino
+    void send_to_arduino(char, int, int);
+    void send_to_arduino(char, char = ' ', int dist = 0);
 
     // Initialize mutex
     void set_mutex(pthread_mutex_t mutex){ mutex_lock_transmit = mutex; }
@@ -44,8 +45,14 @@ private:
     int uart0_filestream = -1; // int return when port is initialized
     pthread_mutex_t mutex_lock_transmit;
 
+    // Function to transmit data with TX pin
+    void transmit(string);
+
     // Function to receive data with RX pin
     void receive();
+
+    // Decode message received
+    void decode_message(unsigned char[]);
 
     // Close UART port
     void close_port();

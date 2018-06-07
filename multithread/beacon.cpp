@@ -59,7 +59,7 @@ void* led_tracking(void* uart0) {
     int degree_correction = 0;
 
     // Show results if needed
-    bool show_result = true;
+    bool show_results = true;
 
     // Set blur kernel
     int kernel_blur = 3;
@@ -96,31 +96,24 @@ void* led_tracking(void* uart0) {
         dist2corner = get_dist_corner(led_y_min, led_y_max, 'y');
         manage_stepper(stepper_back, led_x_pos);
 
-        if(is_aligned(led_x_pos)) {
-            cout << "Fire !!!" << endl; // TODO: Send to arduino "FIRE" with dist2corner
-            ptr_uart0->send_to_arduino();
-
-            degree_correction = (stepper_back.getStep() - init_step)*360/4096;
-            cout << "Degree to correct." << degree_correction << endl;
-
-            /*while (true) {// TODO: place checking that bottle is thrown
-
-                if (waitKey(10) == 27) {
-                    cout << "Esc key is pressed by user." << endl;
-                    break;
-                }
-            }*/
-        }
-
         if(ptr_uart0->is_bottle()) {
-            // TODO: Send to arduino led_x_pos to align
-//            cout << "Send to arduino " << led_x_pos << endl;
+            cout << "Send to arduino " << led_x_pos << endl;
+
+            while(!is_aligned(led_x_pos)) {
+                if(stepper_back.getStep() < 0)
+                    ptr_uart0->send_to_arduino('A', 'R');
+                else
+                    ptr_uart0->send_to_arduino('A', 'L');
+            }
+
+            cout << "Fire !!!" << endl;
+            ptr_uart0->send_to_arduino('A', 'F', dist2corner);
+
+            while (ptr_uart0->is_bottle());
         }
 
         // Show result
         if(show_results){
-            circle(blur, maxLoc, 10, (255, 255, 0), 2);
-
             imshow("Image", blur);
             imshow("Extracted", extracted);
         }

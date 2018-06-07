@@ -56,7 +56,7 @@ Uart::Uart(){
 }
 
 // Allways listen pin RX
-void* Uart::infinite_receiving(){
+void* Uart::infinite_receiving() {
     cout << state_port << endl;
 
     while(state_port){
@@ -66,8 +66,64 @@ void* Uart::infinite_receiving(){
     return NULL;
 }
 
+// Send message to arduino
+void Uart::send_to_arduino(char type, int x, int y){
+    string to_send = "";
+
+    switch(type) {
+        case 'F': to_send += "F_"; break;
+        case 'B': to_send += "B_"; break;
+    }
+
+    to_send += to_string(x);
+    to_send += "_";
+    to_send += to_string(y);
+    to_send += ".";
+
+    transmit(to_send);
+}
+
+void Uart::send_to_arduino(char type, char param, int dist) {
+    string to_send = "";
+
+    switch(type) {
+        case 'S':
+            to_send += "S_";
+
+            switch(param) {
+                case 'D': to_send += "D.";
+                          break;
+                case 'G': to_send += "G.";
+                          break;
+                case 'B': to_send += "B.";
+                          break;
+                case 'P': to_send += "P.";
+                          break;
+                case 'A': to_send += "A.";
+                          break;
+            }
+            break;
+        case 'A':
+            to_send += "A_";
+
+            switch(param) {
+                case 'L': to_send += "L.";
+                          break;
+                case 'R': to_send += "R.";
+                          break;
+                case 'F': to_send += "F_";
+                          to_send += to_string(dist);
+                          break;
+            }
+        case 'I': to_send += "I.";
+                  break;
+    }
+
+    transmit(to_send);
+}
+
 // To transmit informations by TX pin to the arduino
-void Uart::transmit(string to_send){
+void Uart::transmit(string to_send) {
     //----- TX BYTES -----
     unsigned char tx_buffer[20];
     unsigned char *p_tx_buffer;
@@ -92,29 +148,42 @@ void Uart::transmit(string to_send){
 }
 
 // Receive informations from arduino
-void Uart::receive(){
+void Uart::receive() {
     //----- CHECK FOR ANY RX BYTES -----
-    if (uart0_filestream != -1){
+    if (uart0_filestream != -1) {
         // Read up to 255 characters from the port if they are there
         unsigned char rx_buffer[256];
 
         //Filestream, buffer to store in, number of bytes to read (max)
         int rx_length = read(uart0_filestream, (void*)rx_buffer, 255);
 
-        if (rx_length < 0){
+        if (rx_length < 0) {
             //An error occured (will occur if there are no bytes)
         } else if (rx_length == 0) {
             //No data waiting
         } else {
             //Bytes received
             rx_buffer[rx_length] = '\0';
-            printf("%i bytes read : %s\n", rx_length, rx_buffer);
+            decode_message(rx_buffer);
+            //printf("%i bytes read : %s\n", rx_length, rx_buffer);
         }
     }
 }
 
+// Decode the message received by the RX port
+void Uart::decode_message(unsigned char message[]){
+    switch(message[0]) {
+        case 'B':
+            if (message[2] == '1')
+                bottle_to_throw = true;
+            else if (message[2] == '0')
+                bottle_to_throw = false;
+            break;
+   }
+}
 
-void Uart::close_port(){
+// Close uart port
+void Uart::close_port() {
     close(uart0_filestream);
 }
 

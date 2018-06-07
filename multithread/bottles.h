@@ -79,7 +79,4 @@ Mat set_roi(Mat&, Point, Rect&, bool&);
 // Delete some color in HSV
 Mat del_color(Mat&, int[][NB_CHANNELS], int[][NB_CHANNELS]);
 
-// Send position of bottle to arduino
-void send_bottle_pos(Uart*, Point);
-
 #endif //BOTTLES_TRACKING_B_TRACKING_H
