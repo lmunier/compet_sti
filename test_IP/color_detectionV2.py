@@ -63,20 +63,18 @@ def brigthest_zone(image):
     radius = 5
 
     # load the image and convert it to grayscale
-#    h, w, c = image.shape
-#    crop = image[0:h-50, 0:w-1]
-#    orig = image.copy()
-#    gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+    h, w, c = image.shape
+    crop = image[0:h-50, 0:w-1]
+    orig = image.copy()
+    gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 
     # apply a Gaussian blur to the image then find the brightest
     # region
-#    gray = cv2.GaussianBlur(gray, (radius, radius), 0)
-    gray = cv2.GaussianBlur(image, (radius, radius), 0)
+    gray = cv2.GaussianBlur(gray, (radius, radius), 0)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-#    cv2.circle(image, maxLoc, radius, (255, 0, 0), 2)
-    cv2.circle(gray, maxLoc, radius, (255, 0, 0), 2)
+    cv2.circle(image, maxLoc, radius, (255, 0, 0), 2)
 
-#    cv2.imshow("Crop", crop)
+    cv2.imshow("Crop", crop)
     cv2.imshow("MaxLoc", gray)
 
 def get_arguments():
@@ -114,7 +112,6 @@ def main():
     elif args['source'] != ('r' or 'w'):
         # load the query image, compute the ratio of the old height to the new height, clone it, and resize it
         image = cv2.imread(args['source'])
-#        image = imutils.resize(image, height=300)
 
         image = cv2.blur(image, (blur_kernel_size, blur_kernel_size))
         #image = cv2.convertScaleAbs(image, alpha=1.2, beta=-255)
@@ -142,36 +139,38 @@ def main():
         cv2.imshow("Original", image)
         output = image.copy()
 
-        brigthest_zone(equal)
-
         RGB_v1_min, RGB_v2_min, RGB_v3_min, RGB_v1_max, RGB_v2_max, RGB_v3_max = get_trackbar_values(range_filter_RGB)
         HSV_v1_min, HSV_v2_min, HSV_v3_min, HSV_v1_max, HSV_v2_max, HSV_v3_max = get_trackbar_values(range_filter_HSV)
 
-#        RGB_thresh = cv2.inRange(image, (RGB_v1_min, RGB_v2_min, RGB_v3_min), (RGB_v1_max, RGB_v2_max, RGB_v3_max))
+        RGB_thresh = cv2.inRange(image, (RGB_v1_min, RGB_v2_min, RGB_v3_min), (RGB_v1_max, RGB_v2_max, RGB_v3_max))
 
-#        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-#        HSV_thresh = cv2.inRange(hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
-#        HSV = cv2.bitwise_and(image, image, mask=HSV_thresh)
-#        cv2.imshow("HSV", HSV)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        HSV_thresh = cv2.inRange(hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
+        HSV = cv2.bitwise_and(image, image, mask=HSV_thresh)
+        cv2.imshow("HSV", HSV)
 
-#        rgb_hsv = cv2.bitwise_and(image, image, mask=RGB_thresh)
-#        rgb_hsv = cv2.cvtColor(rgb_hsv, cv2.COLOR_BGR2HSV)
-#        rgb_hsv = cv2.inRange(rgb_hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
+        #rgb_hsv = cv2.bitwise_and(image, image, mask=RGB_thresh)
+        #rgb_hsv = cv2.cvtColor(rgb_hsv, cv2.COLOR_BGR2HSV)
+        #rgb_hsv = cv2.inRange(rgb_hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
 
-#        brigthest_zone(HSV)
+        brigthest_zone(HSV)
 
         # Show all images
-#        cv2.imshow("RGB", RGB_thresh)
-#        cv2.imshow("HSV_tresh", HSV_thresh)
-#        cv2.imshow("rgb_hsv", rgb_hsv)
+        #cv2.imshow("RGB", RGB_thresh)
+        #cv2.imshow("HSV_tresh", HSV_thresh)
+        #cv2.imshow("rgb_hsv", rgb_hsv)
 
         # show the frame to our screen
-#        opening = cv2.morphologyEx(rgb_hsv, cv2.MORPH_OPEN, kernel)
-#        opening = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
-#        cv2.imshow("Opening", opening)
+        #opening = cv2.morphologyEx(rgb_hsv, cv2.MORPH_OPEN, kernel)
+        #opening = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
+        #cv2.imshow("Opening", opening)
 
-#        edged = cv2.Canny(opening, 30, 200)
-#        cv2.imshow("Edged", edged)
+#        HSV = cv2.GaussianBlur(HSV, (5, 5), 0)
+#        edged = cv2.Canny(HSV, 30, 200)
+        HSV = cv2.cvtColor(HSV, cv2.COLOR_HSV2BGR)
+        HSV = cv2.cvtColor(HSV, cv2.COLOR_BGR2GRAY)
+        edged = cv2.Laplacian(HSV,cv2.CV_64F)
+        cv2.imshow("Edged", edged)
 
         # find contours in the edged image, keep only the largest
         # ones, and initialize our screen contour

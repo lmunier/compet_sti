@@ -53,7 +53,7 @@ using namespace std;
 #define WIDTH_IMAGE     	640     // Width of our image/frame
 
 #define TOLERANCE_ALIGN 	10      // Tolerance for alignment
-#define WAIT_WAKEUP_WEBCAM	5	// Waiting to the webcam waking up
+#define WAIT_WAKEUP_WEBCAM	2	// Waiting to the webcam waking up
 
 
 //--------FUNCTIONS------------------

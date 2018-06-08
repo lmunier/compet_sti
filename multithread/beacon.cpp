@@ -173,17 +173,17 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
     minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 
     // Extract hight of beacon
-    for(int row = 0; row < HEIGHT_IMAGE - 1; row++){
+    for(int row = 0; row < HEIGHT_IMAGE; row++){
         nbr = 0;
         x_tmp = 0;
 
-        for(int col = max_loc.x - TOL_BEACON; col < max_loc.x + TOL_BEACON - 1; col++){
+        for(int col = max_loc.x - TOL_BEACON; col < max_loc.x + TOL_BEACON; col++){
             if(col < 0)
                 col = 0;
-            else if (col > WIDTH_IMAGE - 1)
+            else if (col >= WIDTH_IMAGE)
                 break;
 
-            if((int) image.at<Vec3b>(row, col)[0] >= 100) {
+            if((int) image.at<Vec3b>(row, col)[0] >= 230) {
                 x_tmp += col;
                 nbr++;
             }

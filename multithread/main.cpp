@@ -41,16 +41,16 @@ int main(){
         exit(-1);
     }
 
-    // Thread to listen arduino
-    int bottles_verif = pthread_create(&beacon_detection, NULL, led_tracking, (void*) ptr_uart0);
+    // Thread to detect bottles
+    int bottles_verif = pthread_create(&bottles_detection, NULL, bottles_scanning, (void*) ptr_uart0);
 
     if (bottles_verif) {
         cout << "Error:unable to create thread," << bottles_verif << endl;
         exit(-1);
     }
 
-    // Thread to listen arduino
-    int led_verif = pthread_create(&bottles_detection, NULL, bottles_scanning, (void*) ptr_uart0);
+    // Thread to track beacon led
+    int led_verif = pthread_create(&beacon_detection, NULL, led_tracking, (void*) ptr_uart0);
 
     if (led_verif) {
         cout << "Error:unable to create thread," << led_verif << endl;
