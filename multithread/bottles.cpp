@@ -36,6 +36,7 @@ void led_enable(bool enable){
 void* bottles_scanning(void* uart0){
     //-----------INIT VARIABLES------------
     // Matrices
+    Mat result;
     Mat roi;
     Mat image;
     Mat region_of_interest;
@@ -117,6 +118,10 @@ void* bottles_scanning(void* uart0){
         if(show_results) {
             imshow("Original", image);
             imshow("Extract", region_of_interest);
+
+            result = image.clone();
+            circle(result, max_loc, 10, (255, 0, 0), 2);
+            imshow("Result", result);
         }
 
         bottle_pos = max_loc;
@@ -145,6 +150,7 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
     // Initialize matrices
     Mat gray;
     Mat blur;
+    Mat equal;
 
     // Initialize variables
     double min = 0.0;
@@ -155,10 +161,8 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
 
     // Extract max in prevision
     cvtColor(blur, gray, COLOR_BGR2GRAY);
-    minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
-
-    // Show result
-    //circle(image, max_loc, 10, (0, 255, 255), 2);
+    equalizeHist(gray, equal);
+    minMaxLoc(equal, &min, &max, &min_loc, &max_loc);
 }
 
 // Region of interest near of the maximum localization
