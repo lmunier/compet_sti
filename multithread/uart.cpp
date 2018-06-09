@@ -7,7 +7,7 @@
  */
 
 #include "uart.h"
-
+#include <pthread.h>
 Uart::Uart(){
     //-------------------------
     //----- SETUP USART 0 -----
@@ -57,6 +57,7 @@ Uart::Uart(){
 
 // Allways listen pin RX
 void* Uart::infinite_receiving() {
+cout << "In funtion thread id " << pthread_self() << endl;
     while(state_port){
         receive();
     }

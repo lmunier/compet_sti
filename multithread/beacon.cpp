@@ -7,7 +7,7 @@
  */
 
 #include "beacon.h"
-
+#include <pthread.h>
 // Initialize pins stepper
 Stepper init_stepper(int& init_step){
     Stepper stepper_back(SB_IN1, SB_IN2, SB_IN3, SB_IN4);
@@ -33,6 +33,7 @@ VideoCapture init_webcam(){
 // Main part, tracking of the corner led where is the bin
 
 void* led_tracking(void* uart0) {
+cout << "In funtion thread id " << pthread_self() << endl;
     // Initialization of matrices
     Mat image;
     Mat blur;
@@ -149,7 +150,7 @@ Mat extract_color(Mat& image, Mat& hsv, int lower[], int upper[]){
     // Create and apply mask to our image
 
     inRange(hsv, Scalar(lower[HUE], lower[SAT], lower[VAL]),
-            Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
+                 Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
     bitwise_and(image, image, extracted, mask);
 
     return extracted;
@@ -241,7 +242,7 @@ void manage_stepper(Stepper& stepper_back, int led_x_pos){
     int rpm = stepper_back.getRpm();
     stepper_back.PID_orientation(led_x_pos);
 
-    for(int s=0; s<rpm/3; s++) {
+    for(int s=0; s<rpm/2; s++) {
         if (WIDTH_IMAGE / 2 - led_x_pos < 0)
             stepper_back.stepCW();
         else

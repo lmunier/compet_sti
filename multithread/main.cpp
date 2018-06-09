@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <pthread.h>
+#include <sys/syscall.h>
 
 #include "beacon.h"
 #include "uart.h"
@@ -32,6 +33,7 @@ int main(){
     Uart *ptr_uart0 = new Uart();
     ptr_uart0->set_mutex(mutex_lock_transmit);
 
+cout << "Main thread id " << pthread_self() << endl;
     //------------------Thread creation----------------
     // Thread to listen arduino
     int rx_verif = pthread_create(&listen_serial, NULL, (UARTPTR) &Uart::infinite_receiving, ptr_uart0);
@@ -60,6 +62,8 @@ int main(){
     pthread_join(rx_verif, NULL);
     pthread_join(bottles_verif, NULL);
     pthread_join(led_verif, NULL);
+
+    while(true);
 
     pthread_exit(NULL);
 }
