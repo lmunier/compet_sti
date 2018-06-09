@@ -51,41 +51,27 @@ void* bottles_scanning(void* uart0){
                                             1, 1, 1, 1, 1);
 
     Mat sharp;
-    Mat and_im;
-    Mat thresh;
-    Mat gray;
-    Mat result;
     Mat roi;
     Mat image;
     Mat region_of_interest;
-    Mat filtered;
-    Mat deleted;
+    Mat contours;
 
-    // Initialize pointer to uart class
-    Uart *ptr_uart0 = static_cast<Uart*>(uart0);
+    // Different variables
+    Uart *ptr_uart0 = static_cast<Uart*>(uart0);        // Initialize pointer to uart class
+    bool show_results = true;                           // Show results if needed
+    bool bottle_detected = false;                       // Set to one if we found a bottle
+    bool led_state = false;                             // State of the led to toggle them
+    bool beacon_detected = false;                       // Beacon is on image or not
+    int kernel_blur = 3;                                // Set blur kernel
+    Point bottle_pos;                                   // Set distance variables
+    Rect rect_roi;                                      // Set rectangle roi to limit image area
 
-    // Show results if needed
-    bool show_results = true;
-
-    // Set to one if we found a bottle
-    bool bottle_detected = false;
-
-    // Set distance variables
-    Point bottle_pos;
-
-    // Set blur kernel
-    int kernel_blur = 3;
+    vector<Point2f> center;
+    vector<float> radius;
 
     // Extract max, min light in an image
     Point max_loc;
     double max = 0.0;
-    double check_max = 0.0;
-
-    // Set rectangle roi to limit image area
-    Rect rect_roi;
-
-    // If a bottle is already grab
-    bool led_state = false;
 
     // Initialization of color threshold
     // Beacons
@@ -104,11 +90,10 @@ void* bottles_scanning(void* uart0){
         cout << "ERROR: can not open camera" << endl;
     }
 
-
     //-----------MAIN PART---------------
     while(true){
         // Turn on light if they are disabled
-        if(!led_state) {
+        if(!led_state){
             led_state = true;
             led_enable(led_state);
         }
@@ -117,28 +102,44 @@ void* bottles_scanning(void* uart0){
         camera.grab();
         camera.retrieve(image);
 
+        if(beacon_detected){
+            center.resize(contours.size());
+            radius.resize(contours.size());
+
+            for(int i = 0; i < contours.size(); i++){
+                approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
+                minEnclosingCircle((Mat)contours_poly[i], center[i], radius[i]);
+            }
+
+            for(int i = 0; i< contours.size(); i++){
+                circle(image, center[i], (int)radius[i], Scalar(0, 0, 0), 2, 8, 0);
+            }
+
+            imshow("With black squarre", image);
+        }
+
         // Compute on input frame to find bottles
-        if(!bottle_detected) {
+        /*if(!bottle_detected) {
             roi = set_roi(image);
         } else {
             roi = image(rect_roi);
-        }
+        }*/
 
-//        deleted = del_color(image, lower_beacon, upper_beacon);
-        filter2D(roi, sharp, -1, kern);
+        filter2D(image, sharp, -1, kern);
 //        bilateralFilter (and_im, thresh, 5, 15, 6);
         max_light_localization(sharp, max, max_loc, kernel_blur);
 
-        check_max = max;
-        if(check_max >= 150.0)
-            check_bottle(roi, lower_beacon, upper_beacon);
+        if(max >= NO_BOTTLE)
+            contours = check_bottle(camera, lower_beacon, upper_beacon, beacon_detected);
 
-        region_of_interest = set_roi(image, max_loc, rect_roi, bottle_detected);
+        cout << beacon_detected << endl;
+
+        //region_of_interest = set_roi(image, max_loc, rect_roi, bottle_detected);
 //        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
         // Show results if needed
-        if(show_results) {
-            imshow("Extract", region_of_interest);
+        if(show_results){
+            //imshow("Extract", region_of_interest);
 
             circle(image, max_loc, 10, (0, 255, 255), 2);
             imshow("Original", image);
@@ -151,7 +152,7 @@ void* bottles_scanning(void* uart0){
         ptr_uart0->send_to_arduino('F', bottle_pos.x, bottle_pos.y);
 
         // Turn off light during align/shoot
-        while(ptr_uart0->is_bottle()) {
+        while(ptr_uart0->is_bottle()){
             if(led_state) {
                 led_state = false;
                 led_enable(led_state);
@@ -166,10 +167,11 @@ void* bottles_scanning(void* uart0){
 }
 
 // Check if we don't have beacon on image
-bool check_bottle(RaspiCam_Cv camera, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS]){
+Mat check_bottle(RaspiCam_Cv camera, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS], bool& beacon){
     // Initialize variables
     Mat hsv;
     Mat mask;
+    Mat contours;
 
     bool beacon = false;
     double min = 0.0, max = 0.0;
@@ -191,14 +193,15 @@ bool check_bottle(RaspiCam_Cv camera, int lower[][NB_CHANNELS], int upper[][NB_C
     inRange(hsv, Scalar(lower[0][HUE], lower[0][SAT], lower[0][VAL]),
                  Scalar(upper[0][HUE], upper[0][SAT], upper[0][VAL]), mask);
 
-    // Find max to localize beacon position
-    minMaxLoc(mask, min, max, min_loc, max_loc);
-
-    if(max > 0.0){
-//        rectangle(image, (0,(510,128),(0,255,0),3)
+    if(countNonZero(mask) > 0){
+        // Find contours on our mask
+        findContours(mask, contours, RETR_LIST, CHAIN_APPROX_TC89_L1);
+        beacon = true;
+    }
+    findContours( threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
 cout << beacon << endl;
-    return beacon;
+    return contours;
 }
 
 // Localize the maximum of light in image

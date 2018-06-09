@@ -48,13 +48,13 @@ using namespace raspicam;
 #define HEIGHT_IMAGE        480     		// Height of our image/frame
 #define WIDTH_IMAGE         640     		// Width of our image/frame
 
-#define NO_BOTTLE	    170      		// Tolerance to not detect bottle if the max luminosity point is on the top left
+#define NO_BOTTLE	        170      		// Tolerance to not detect bottle if the max luminosity point is on the top left
 #define AVOID_NOISE         HEIGHT_IMAGE/3	// Tolerance to avoid hight intensity when we don't detect bottles
 #define WAIT_WAKEUP_CAMERA  2			// Wait to waking up camera
 
-#define BRIGHTNESS	    35			// Brightness of our camera
+#define BRIGHTNESS	        35			// Brightness of our camera
 #define CONTRAST            65			// Contrast of our camera
-#define MAX_FPS		    5			// Maximum fps of our camera, to not overheat our rapsberry pi
+#define MAX_FPS		        5			// Maximum fps of our camera, to not overheat our rapsberry pi
 
 //--------FUNCTIONS-------------------
 
@@ -71,7 +71,7 @@ void led_enable(bool);
 void* bottles_scanning(void*);
 
 // Check if there is a beacon on image
-bool check_bottle(Mat&, int[][NB_CHANNELS], int[][NB_CHANNELS]);
+Mat check_bottle(RaspiCam_Cv, int[][NB_CHANNELS], int[][NB_CHANNELS], bool&);
 
 // Maximum light localization
 void max_light_localization(Mat&, double&, Point&, int);
