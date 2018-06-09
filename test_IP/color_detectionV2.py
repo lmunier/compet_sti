@@ -25,14 +25,14 @@ def setup_trackbars(range_filter):
         for j in range_filter:
             if range_filter == "HSV":
                 if f == 0:
-                    v[0] = 25
-                    v[1] = 255
+                    v[0] = 20
+                    v[1] = 60
                 elif f == 1:
                     v[0] = 0
-                    v[1] = 255
+                    v[1] = 55
                 else:
-                    v[0] = 0
-                    v[1] = 235
+                    v[0] = 250
+                    v[1] = 255
             elif range_filter == "BGR":
                 if f == 0:
                     v[0] = 0
@@ -105,7 +105,8 @@ def main():
 
     if args['source'] == 'w':
         camera = cv2.VideoCapture(0)
-        camera.set(cv2.CAP_PROP_BRIGHTNESS, 0.5)
+        camera.set(cv2.CAP_PROP_BRIGHTNESS, -2)
+        camera.set(cv2.CAP_PROP_CONTRAST, 20)
     elif args['source'] == 'r':
         camera = VideoStream(usePiCamera=True).start()
         time.sleep(2.0)

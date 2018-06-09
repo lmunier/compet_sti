@@ -70,6 +70,9 @@ void led_enable(bool);
 // OpenCV function to detect bottles
 void* bottles_scanning(void*);
 
+// Check if there is a beacon on image
+bool check_bottle(Mat&, int[][NB_CHANNELS], int[][NB_CHANNELS]);
+
 // Maximum light localization
 void max_light_localization(Mat&, double&, Point&, int);
 

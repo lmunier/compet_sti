@@ -1,4 +1,3 @@
-
 //Module:		    bottles.cpp
 //version:		    1.0
 //Update:           06.06.2018
@@ -37,14 +36,21 @@ void led_enable(bool enable){
 void* bottles_scanning(void* uart0){
     //-----------INIT VARIABLES------------
     // Matrices
-    /*Mat kern = (Mat_<char>(3,3) <<   0, -1,  0,
+    Mat kern = (Mat_<char>(3,3) <<   0, -1,  0,
                                     -1,  5, -1,
-                                     0, -1,  0);*/
+                                     0, -1,  0);
 
-    Mat kern = (Mat_<char>(3,3) <<  -1, -1, -1,
+    /*Mat kern = (Mat_<char>(3,3) <<  -1, -1, -1,
                                     -1,  8, -1,
-                                    -1, -1, -1);
+                                    -1, -1, -1);*/
 
+    Mat kern_dilate = (Mat_<char>(5, 5) <<  1, 1, 1, 1, 1,
+                                            1, 1, 1, 1, 1,
+                                            1, 1, 1, 1, 1,
+                                            1, 1, 1, 1, 1,
+                                            1, 1, 1, 1, 1);
+
+    Mat sharp;
     Mat and_im;
     Mat thresh;
     Mat gray;
@@ -73,6 +79,7 @@ void* bottles_scanning(void* uart0){
     // Extract max, min light in an image
     Point max_loc;
     double max = 0.0;
+    double check_max = 0.0;
 
     // Set rectangle roi to limit image area
     Rect rect_roi;
@@ -82,8 +89,8 @@ void* bottles_scanning(void* uart0){
 
     // Initialization of color threshold
     // Beacons
-    int lower_beacon[][NB_CHANNELS] = {{0, 0, 0}};
-    int upper_beacon[][NB_CHANNELS] = {{255, 255, 230}};
+    int lower_beacon[][NB_CHANNELS] = {{80, 0, 0}};
+    int upper_beacon[][NB_CHANNELS] = {{255, 255, 255}};
 
     //-----------INITIALIZE UTILS--------
     wiringPiSetup();
@@ -111,27 +118,24 @@ void* bottles_scanning(void* uart0){
         camera.retrieve(image);
 
         // Compute on input frame to find bottles
-/*        if(!bottle_detected) {
+        if(!bottle_detected) {
             roi = set_roi(image);
         } else {
             roi = image(rect_roi);
         }
-*/
-//        cvtColor(deleted, gray, COLOR_BGR2GRAY);
-//        threshold(gray, thresh, 120.0, 255.0, THRESH_BINARY);
 
-        filter2D(image, and_im, -1, kern);
-//        deleted = del_color(and_im, lower_beacon, upper_beacon);
+//        deleted = del_color(image, lower_beacon, upper_beacon);
+        filter2D(roi, sharp, -1, kern);
 //        bilateralFilter (and_im, thresh, 5, 15, 6);
-        medianBlur(and_im, thresh,  3);
-//        morphologyEx(and_im, thresh, MORPH_BLACKHAT,  getStructuringElement(MORPH_RECT, Size(5, 5)));
-imshow("Filtered", thresh);
-        max_light_localization(and_im, max, max_loc, kernel_blur);
-cout << "Before roi" << endl;
+        max_light_localization(sharp, max, max_loc, kernel_blur);
+
+        check_max = max;
+        if(check_max >= 150.0)
+            check_bottle(roi, lower_beacon, upper_beacon);
+
         region_of_interest = set_roi(image, max_loc, rect_roi, bottle_detected);
-cout << "After roi" << endl;
 //        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
-cout << rect_roi << endl;
+
         // Show results if needed
         if(show_results) {
             imshow("Extract", region_of_interest);
@@ -161,6 +165,42 @@ cout << rect_roi << endl;
     pthread_exit(NULL);
 }
 
+// Check if we don't have beacon on image
+bool check_bottle(RaspiCam_Cv camera, int lower[][NB_CHANNELS], int upper[][NB_CHANNELS]){
+    // Initialize variables
+    Mat hsv;
+    Mat mask;
+
+    bool beacon = false;
+    double min = 0.0, max = 0.0;
+    Point min_loc, max_loc,
+
+    // Turn off light
+    led_enable(false);
+    sleep(0.05);
+
+    // Take a new picture to avoid beacon on image
+    camera.grab();
+    camera.retrieve(image);
+
+    // Turn on light
+    led_enable(true);
+
+    // Work on new image
+    cvtColor(image, hsv, COLOR_BGR2HSV);
+    inRange(hsv, Scalar(lower[0][HUE], lower[0][SAT], lower[0][VAL]),
+                 Scalar(upper[0][HUE], upper[0][SAT], upper[0][VAL]), mask);
+
+    // Find max to localize beacon position
+    minMaxLoc(mask, min, max, min_loc, max_loc);
+
+    if(max > 0.0){
+//        rectangle(image, (0,(510,128),(0,255,0),3)
+
+cout << beacon << endl;
+    return beacon;
+}
+
 // Localize the maximum of light in image
 void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_blur){
     // Initialize variables
@@ -179,17 +219,6 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
 
     // Extract max to find bottle
     minMaxLoc(blur, &min, &max, &min_loc, &max_loc);
-
-    // Compute mean and standard deviation
-    meanStdDev(blur, mean, stddev);
-imshow("blur", blur);
-cout << "mean " << mean << " stddev " << stddev << endl;
-
-    // Add threshold to avoid false positiv
-    if (max < NO_BOTTLE)
-        max_loc = Point(0, 0);
-
-    cout << max << endl;
 }
 
 // Region of interest near of the maximum localization
