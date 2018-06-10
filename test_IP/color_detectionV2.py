@@ -9,8 +9,10 @@ import time
 
 
 DELAY_BLUR = 100
-MAX_KERNEL_LENGTH = 9
-
+MAX_KERNEL_LENGTH = 31
+brightness = 0
+saturation = 0
+gain = 0.15
 
 def callback(value):
     pass
@@ -60,7 +62,7 @@ def hitogramm_equalizer(image):
 
 
 def brigthest_zone(image):
-    radius = 5
+    radius = 9
 
     # load the image and convert it to grayscale
     h, w, c = image.shape
@@ -70,7 +72,8 @@ def brigthest_zone(image):
 
     # apply a Gaussian blur to the image then find the brightest
     # region
-    gray = cv2.GaussianBlur(gray, (radius, radius), 0)
+#    gray = cv2.GaussianBlur(gray, (radius, radius), 0)
+    gray = cv2.medianBlur(gray, radius)
     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
     cv2.circle(image, maxLoc, radius, (255, 0, 0), 2)
 
@@ -105,8 +108,9 @@ def main():
 
     if args['source'] == 'w':
         camera = cv2.VideoCapture(0)
-        camera.set(cv2.CAP_PROP_BRIGHTNESS, -2)
-        camera.set(cv2.CAP_PROP_CONTRAST, 20)
+        camera.set(cv2.CAP_PROP_BRIGHTNESS, brightness)
+#        camera.set(cv2.CAP_PROP_SATURATION, saturation)
+        camera.set(cv2.CAP_PROP_GAIN, gain)
     elif args['source'] == 'r':
         camera = VideoStream(usePiCamera=True).start()
         time.sleep(2.0)
@@ -150,16 +154,16 @@ def main():
         HSV = cv2.bitwise_and(image, image, mask=HSV_thresh)
         cv2.imshow("HSV", HSV)
 
-        #rgb_hsv = cv2.bitwise_and(image, image, mask=RGB_thresh)
-        #rgb_hsv = cv2.cvtColor(rgb_hsv, cv2.COLOR_BGR2HSV)
-        #rgb_hsv = cv2.inRange(rgb_hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
+        rgb_hsv = cv2.bitwise_and(RGB_thresh, HSV_thresh)
+#        rgb_hsv = cv2.cvtColor(rgb_hsv, cv2.COLOR_BGR2HSV)
+#        rgb_hsv = cv2.inRange(rgb_hsv, (HSV_v1_min, HSV_v2_min, HSV_v3_min), (HSV_v1_max, HSV_v2_max, HSV_v3_max))
 
         brigthest_zone(HSV)
 
         # Show all images
-        #cv2.imshow("RGB", RGB_thresh)
+        cv2.imshow("RGB", RGB_thresh)
         #cv2.imshow("HSV_tresh", HSV_thresh)
-        #cv2.imshow("rgb_hsv", rgb_hsv)
+        cv2.imshow("rgb_hsv", rgb_hsv)
 
         # show the frame to our screen
         #opening = cv2.morphologyEx(rgb_hsv, cv2.MORPH_OPEN, kernel)
@@ -170,18 +174,21 @@ def main():
 #        edged = cv2.Canny(HSV, 30, 200)
         HSV = cv2.cvtColor(HSV, cv2.COLOR_HSV2BGR)
         HSV = cv2.cvtColor(HSV, cv2.COLOR_BGR2GRAY)
-        edged = cv2.Laplacian(HSV,cv2.CV_64F)
+        edged = cv2.Sobel(HSV,cv2.CV_8UC1, 1, 0, ksize=9)
         cv2.imshow("Edged", edged)
 
         # find contours in the edged image, keep only the largest
         # ones, and initialize our screen contour
-#        im2, cnts, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-#        cnts.sort(key=cv2.contourArea, reverse=False)
+        im2, cnts, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cnts.sort(key=cv2.contourArea, reverse=True)
 
         # loop over our contours to find number of bottles in image
 #        nb_bottles = 0
 
-#        for c in cnts:
+        for c in cnts:
+            approx = cv2.approxPolyDP(c, 0.05 * cv2.contourArea(c, True), True)
+            cv2.drawContours(output, [approx], -1, (0, 255, 0), 3)
+            break;
 #            print(c)
             # approximate the contour
 #            peri = cv2.arcLength(c, True)
@@ -193,12 +200,12 @@ def main():
 #                nb_bottles += 1
 #                cv2.drawContours(output, [approx], -1, (0, 255, 0), 3)
 
-#        cv2.imshow("Output", output)
+        cv2.imshow("Output", output)
 
         if cv2.waitKey(1) & 0xFF is ord('q'):
+            camera.release()
             break
 
 
 if __name__ == '__main__':
     main()
-

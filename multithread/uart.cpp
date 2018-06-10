@@ -7,7 +7,7 @@
  */
 
 #include "uart.h"
-#include <pthread.h>
+
 Uart::Uart(){
     //-------------------------
     //----- SETUP USART 0 -----
@@ -22,8 +22,8 @@ Uart::Uart(){
     //		O_WRONLY - Open for writing only.
     //
     //	O_NDELAY / O_NONBLOCK (same function) - Enables nonblocking mode. When set read requests on the file can return immediately with a failure status
-    //											if there is no input immediately available (instead of blocking). Likewise, write requests can also return
-    //											immediately with a failure status if the output can't be written immediately.
+    //						if there is no input immediately available (instead of blocking). Likewise, write requests can also return
+    //						immediately with a failure status if the output can't be written immediately.
     //
     //	O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
     uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);		//Open in blocking read/write mode
@@ -57,7 +57,6 @@ Uart::Uart(){
 
 // Allways listen pin RX
 void* Uart::infinite_receiving() {
-cout << "In funtion thread id " << pthread_self() << endl;
     while(state_port){
         receive();
     }
@@ -79,7 +78,13 @@ void Uart::send_to_arduino(char type, int x, int y){
     to_send += to_string(y);
     to_send += ".";
 
-    transmit(to_send);
+    if(state_raspicam && state_webcam){
+        transmit(to_send);
+
+        #ifndef DISPLAY_MESSAGE
+            cout << to_send << endl;
+        #endif
+    }
 }
 
 void Uart::send_to_arduino(char type, char param, int dist) {
@@ -119,7 +124,13 @@ void Uart::send_to_arduino(char type, char param, int dist) {
                   break;
     }
 
-    transmit(to_send);
+    if(state_raspicam && state_webcam){
+        transmit(to_send);
+
+        #ifndef DISPLAY_MESSAGE
+            cout << to_send << endl;
+        #endif
+    }
 }
 
 // To transmit informations by TX pin to the arduino
@@ -180,13 +191,16 @@ void Uart::decode_message(unsigned char message[]){
                 bottle_to_throw = false;
 
             break;
-   }
+    }
 
-cout << message << endl;
+    #ifndef DISPLAY_MESSAGE
+        cout << "Decode " << message << endl;
+    #endif
 }
 
 // Close uart port
 void Uart::close_port() {
+    state_port = false;
     close(uart0_filestream);
 }
 

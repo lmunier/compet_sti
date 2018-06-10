@@ -47,16 +47,17 @@
 
 #define V_MIN           7       // Minimum rpm
 #define V_MAX           20      // Maximum rpm
-#define NBR_STEP        3      // Number of step to do
+#define NBR_STEP        3       // Number of step to do
 #define STEP_MAX        4096    // Step maximum for this stepper
 #define TOLERANCE_ROT   13      // Tolerance PID rotation
 #define MIDDLE          320     // Desired target position
 
 #define KP_ROT          0.3     // Proportionnal coefficient rotation
-#define KI_ROT          0       // Integrtive coefficient rotation
-#define KD_ROT          0       // Derivative coefficient rotation
+#define KI_ROT          0.05    // Integrtive coefficient rotation
+#define KD_ROT          0.1     // Derivative coefficient rotation
 
 #define SAMPLING        0.1     // (Sampling time for PID)
+#define INITIAL_STEP	0	// Offset at the beginning of competition
 
 
 //--------FUNCTIONS----------------------
@@ -104,6 +105,7 @@ public:
     int getStepsLeft() { return stepsLeft; } // returns steps left in current move
 
     void PID_orientation(int);
+    void set_step(int step){ stepN = step; } // Set current step of stepper
 
 private:
     int calcDelay(int rpm); // calcs microsecond step delay for given rpm

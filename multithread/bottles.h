@@ -30,6 +30,8 @@
 
 //--------CUSTOM LIBRARIES-------------
 #include "uart.h"
+#include "global_include.h"
+
 
 using namespace cv;
 using namespace std;
@@ -49,9 +51,9 @@ using namespace raspicam;
 #define HEIGHT_IMAGE        480     		// Height of our image/frame
 #define WIDTH_IMAGE         640     		// Width of our image/frame
 
-#define NO_BOTTLE	    165      		// Tolerance to not detect bottle if the max luminosity point is on the top left
+#define NO_BOTTLE           165      		// Tolerance to not detect bottle if the max luminosity point is on the top left
 #define AVOID_NOISE         HEIGHT_IMAGE/3	// Tolerance to avoid hight intensity when we don't detect bottles
-#define WAIT_WAKEUP_CAMERA  3			// Wait to waking up camera
+#define WAIT_WAKEUP_CAMERA  3			    // Wait to waking up camera
 
 #define BRIGHTNESS	    30			// Brightness of our camera
 #define CONTRAST            50			// Contrast of our camera

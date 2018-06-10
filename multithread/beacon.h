@@ -29,6 +29,7 @@
 
 #include "stepper.h"
 #include "uart.h"
+#include "global_include.h"
 
 
 using namespace cv;
@@ -42,12 +43,15 @@ using namespace std;
 #define SB_IN3          	5       // Correpsond to GPIO 24 (BCM)
 #define SB_IN4          	6       // Correpsond to GPIO 25 (BCM)
 
-#define TOL_BEACON      	5       // Tolerance on beacon width/inclination
+#define TOL_BEACON      	10      // Tolerance on beacon width/inclination
 #define ERROR_DIST		-1.0	// If we have an error when we calculate the distance
+#define TOL_HOLE		10	// Tolerance on "hole" in beacon detection
 
 #define HUE             	0       // Channel hue on image vector
 #define SAT             	1       // Channel saturation on image vector
 #define VAL             	2       // Channel value on image vector
+
+#define RED			2	// Red channel
 
 #define HEIGHT_IMAGE    	480     // Height of our image/frame
 #define WIDTH_IMAGE     	640     // Width of our image/frame
@@ -55,6 +59,7 @@ using namespace std;
 #define TOLERANCE_ALIGN 	10      // Tolerance for alignment
 #define WAIT_WAKEUP_WEBCAM	2	// Waiting to the webcam waking up
 
+#define OFF_BUTTON		29	// Wiring pin to confirm calibration (same as shutdown)
 
 //--------FUNCTIONS------------------
 
@@ -63,6 +68,9 @@ Stepper init_stepper(int&);
 
 // Initialize webcam
 VideoCapture init_webcam();
+
+// Calibrate position
+void calibrate_position_step(Stepper);
 
 // Main part, tracking of the corner led where is the bin
 void* led_tracking(void*);
@@ -80,6 +88,6 @@ double get_dist_corner(int, int, char);
 void manage_stepper(Stepper&, int);
 
 // Check if the robot is aligned
-bool is_aligned(int);
+bool is_aligned(Stepper);
 
 #endif //LED_TRACKING_TRACKING_H
