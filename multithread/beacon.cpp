@@ -24,7 +24,9 @@ VideoCapture init_webcam(){
 
     webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
-    webcam.set(CAP_PROP_BRIGHTNESS, 0.5);
+    webcam.set(CAP_PROP_BRIGHTNESS, 0);
+    webcam.set(CAP_PROP_GAIN, 0.15);
+
     webcam.set(CAP_PROP_FPS, 7);
 
     return webcam;
@@ -45,8 +47,11 @@ void* led_tracking(void* uart0) {
 
     // Initialization of color threshold
     // White leds
-    int lower_hsv_yellow[] = {20, 0, 250};
-    int upper_hsv_yellow[] = {60, 55, 255};
+    int lower_hsv_yellow[] = {0, 0, 120};
+    int upper_hsv_yellow[] = {255, 255, 255};
+
+    int lower_rgb_yellow[] = {40, 0, 0};
+    int upper_rgb_yellow[] = {130, 255, 255};
 
     // Initialization of variables
     // Set distance variables
@@ -58,14 +63,11 @@ void* led_tracking(void* uart0) {
     static int init_step = 0;
     int degree_correction = 0;
 
-    // Show results if needed
-    bool show_results = true;
-
     // Send fire only once
     bool send_fire = false;
 
     // Set blur kernel
-    int kernel_blur = 3;
+    int kernel_blur = 9;
 
     // Extract max, min
     //Point minLoc, maxLoc;
@@ -76,17 +78,16 @@ void* led_tracking(void* uart0) {
 
     VideoCapture webcam = init_webcam();
 
-    if(!webcam.isOpened()){
-        cout << "Can not open webcam." << endl;
-    } else {
-        ptr_uart0->set_state_webcam(true);
-    }
+    while(!webcam.isOpened())
+        webcam.open(0);
+
+    ptr_uart0->set_state_webcam(true);
 
     // Start arduino
     ptr_uart0->send_to_arduino('I');
 
     // Loop on led detection/alignment
-    while(false){
+    while(true){
         bool bSuccess = webcam.read(image);
 
         if(!bSuccess){
@@ -94,20 +95,21 @@ void* led_tracking(void* uart0) {
         }
 
         // Blur image to avoid noise
-        GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
+//        GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
 
         // Extracted color to detect LEDs
-        cvtColor(blur,image_hsv, COLOR_BGR2HSV);
+        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
+
+        cvtColor(extracted, image_hsv, COLOR_BGR2HSV);
 
         extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
-        extract_position(extracted, led_x_pos, led_y_min, led_y_max);
+        medianBlur(extracted, blur, kernel_blur);
+        extract_position(blur, led_x_pos, led_y_min, led_y_max);
 
         dist2corner = get_dist_corner(led_y_min, led_y_max, 'y');
         manage_stepper(stepper_back, led_x_pos);
 
         if(ptr_uart0->is_bottle()) {
-            //cout << "Send to arduino " << led_x_pos << endl;
-
             if(!is_aligned(led_x_pos)) {
                 if(stepper_back.getStep() < 0)
                     ptr_uart0->send_to_arduino('A', 'R');
@@ -116,32 +118,38 @@ void* led_tracking(void* uart0) {
             }
 
             while (ptr_uart0->is_bottle() && is_aligned(led_x_pos)) {
-                if(!send_fire)
+                if(!send_fire){
                     ptr_uart0->send_to_arduino('A', 'F', dist2corner);
+                    send_fire = true;
+                }
             }
-        } else {
+
+            // Set send_fire to false to shoot next bottle
             send_fire = false;
         }
 
         // Show result
-        #ifndef DISPLAY_IMAGE_WEBCAM
+        #ifdef DISPLAY_IMAGE_WEBCAM
             imshow("Image", blur);
             imshow("Extracted", extracted);
+            waitKey(10);
         #endif
     }
+
+    webcam.release();
     pthread_exit(NULL);
 }
 
 // Extract searching beacon led color
-Mat extract_color(Mat& image, Mat& hsv, int lower[], int upper[]){
+Mat extract_color(Mat& image, Mat& to_delete, int lower[], int upper[]){
     // Initialize extracted color matrix
     Mat mask;
     Mat extracted;
 
     // Create and apply mask to our image
 
-    inRange(hsv, Scalar(lower[HUE], lower[SAT], lower[VAL]),
-                 Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
+    inRange(to_delete, Scalar(lower[HUE], lower[SAT], lower[VAL]),
+                       Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
     bitwise_and(image, image, extracted, mask);
 
     return extracted;
@@ -158,6 +166,7 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
 
     // Initialize variables
     int nbr = 0;
+    int hole = 0;
     int x_min = 0, x_max = 0, x_tmp = 0;
 
     // Extract max
@@ -175,7 +184,7 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
             else if (col >= WIDTH_IMAGE)
                 break;
 
-            if((int) image.at<Vec3b>(row, col)[0] >= 230) {
+            if((int) image.at<Vec3b>(row, col)[RED] >= 100) {
                 x_tmp += col;
                 nbr++;
             }
@@ -187,13 +196,18 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
         } else if (x_min > 0 && x_tmp > 0) {
             x_max = x_tmp/nbr;
             y_max = row;
+        } else if (x_min > 0 && x_tmp == 0) {
+            hole++;
         }
+
+        if(hole == TOL_HOLE)
+             break;
     }
 
     center = x_max;
 
     // Show result
-    #ifndef DISPLAY_IMAGE_WEBCAM
+    #ifdef DISPLAY_IMAGE_WEBCAM
         typedef Point_<uint16_t> Pixel;
         Pixel pix_up(x_min, y_min);
         Pixel pix_down(x_max, y_max);

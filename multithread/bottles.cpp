@@ -87,8 +87,11 @@ void* bottles_scanning(void* uart0){
         ptr_uart0->set_state_camera(true);
     }
 
+    // Start arduino
+    ptr_uart0->send_to_arduino('I');
+
     //-----------MAIN PART---------------
-    while(false){
+    while(true){
         // Turn on light if they are disabled
         if(!led_state){
             led_state = true;
@@ -98,7 +101,7 @@ void* bottles_scanning(void* uart0){
         camera.grab();
         camera.retrieve(image);
 
-        #ifndef DISPLAY_IMAGE_RASPICAM
+        #ifdef DISPLAY_IMAGE_RASPICAM
             imshow("Original", image);
         #endif
 
@@ -153,6 +156,7 @@ cout << "After delete" << endl;
     // Turn off light
     led_enable(false);
 
+    camera.release();
     pthread_exit(NULL);
 }
 
@@ -193,7 +197,7 @@ Mat check_bottle(RaspiCam_Cv& camera, Mat& original, int lower[][NB_CHANNELS], i
         // Find contours on our mask
         bitwise_and(original, original, new_image, mask_not);
 
-        #ifndef DISPLAY_IMAGE_RASPICAM
+        #ifdef DISPLAY_IMAGE_RASPICAM
             imshow("Image sub", new_image);
         #endif
 

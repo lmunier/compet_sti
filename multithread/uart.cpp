@@ -22,8 +22,8 @@ Uart::Uart(){
     //		O_WRONLY - Open for writing only.
     //
     //	O_NDELAY / O_NONBLOCK (same function) - Enables nonblocking mode. When set read requests on the file can return immediately with a failure status
-    //											if there is no input immediately available (instead of blocking). Likewise, write requests can also return
-    //											immediately with a failure status if the output can't be written immediately.
+    //						if there is no input immediately available (instead of blocking). Likewise, write requests can also return
+    //						immediately with a failure status if the output can't be written immediately.
     //
     //	O_NOCTTY - When set and path identifies a terminal device, open() shall not cause the terminal device to become the controlling terminal for the process.
     uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);		//Open in blocking read/write mode

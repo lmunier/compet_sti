@@ -43,12 +43,15 @@ using namespace std;
 #define SB_IN3          	5       // Correpsond to GPIO 24 (BCM)
 #define SB_IN4          	6       // Correpsond to GPIO 25 (BCM)
 
-#define TOL_BEACON      	5       // Tolerance on beacon width/inclination
+#define TOL_BEACON      	10      // Tolerance on beacon width/inclination
 #define ERROR_DIST		-1.0	// If we have an error when we calculate the distance
+#define TOL_HOLE		10	// Tolerance on "hole" in beacon detection
 
 #define HUE             	0       // Channel hue on image vector
 #define SAT             	1       // Channel saturation on image vector
 #define VAL             	2       // Channel value on image vector
+
+#define RED			2	// Red channel
 
 #define HEIGHT_IMAGE    	480     // Height of our image/frame
 #define WIDTH_IMAGE     	640     // Width of our image/frame
