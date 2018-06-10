@@ -54,7 +54,7 @@ using namespace raspicam;
 #define WAIT_WAKEUP_CAMERA  3			// Wait to waking up camera
 
 #define BRIGHTNESS	    30			// Brightness of our camera
-#define CONTRAST            60			// Contrast of our camera
+#define CONTRAST            50			// Contrast of our camera
 #define MAX_FPS		    5			// Maximum fps of our camera, to not overheat our rapsberry pi
 
 //--------FUNCTIONS-------------------

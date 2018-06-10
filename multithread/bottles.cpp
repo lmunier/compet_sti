@@ -20,12 +20,13 @@ RaspiCam_Cv init_raspicam(){
 
     camera.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     camera.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
-    camera.set(CAP_PROP_CONTRAST, CONTRAST);
+//    camera.set(CAP_PROP_FORMAT, RASPICAM_FORMAT_BGR);
+//    camera.set(CAP_PROP_CONTRAST, CONTRAST);
     camera.set(CAP_PROP_BRIGHTNESS, BRIGHTNESS);
-//    camera.set(CAP_PROP_EXPOSURE, RASPICAM_EXPOSURE_NIGHT);
+//    camera.set(CAP_PROP_EXPOSURE, RASPICAM_EXPOSURE_SPOTLIGHT);
     camera.set(CAP_PROP_FPS, MAX_FPS);
 
-    camera.setAWB(RASPICAM_AWB_OFF);
+//    camera.setAWB(RASPICAM_AWB_OFF);
 
     return camera;
 }
