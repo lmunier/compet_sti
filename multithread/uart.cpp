@@ -7,7 +7,7 @@
  */
 
 #include "uart.h"
-#include <pthread.h>
+
 Uart::Uart(){
     //-------------------------
     //----- SETUP USART 0 -----
@@ -57,7 +57,6 @@ Uart::Uart(){
 
 // Allways listen pin RX
 void* Uart::infinite_receiving() {
-cout << "In funtion thread id " << pthread_self() << endl;
     while(state_port){
         receive();
     }
@@ -79,8 +78,13 @@ void Uart::send_to_arduino(char type, int x, int y){
     to_send += to_string(y);
     to_send += ".";
 
-    if(state_raspicam && state_webcam)
+    if(state_raspicam && state_webcam){
         transmit(to_send);
+
+        #ifndef DISPLAY_MESSAGE
+            cout << to_send << endl;
+        #endif
+    }
 }
 
 void Uart::send_to_arduino(char type, char param, int dist) {
@@ -120,8 +124,13 @@ void Uart::send_to_arduino(char type, char param, int dist) {
                   break;
     }
 
-    if(state_raspicam && state_webcam)
+    if(state_raspicam && state_webcam){
         transmit(to_send);
+
+        #ifndef DISPLAY_MESSAGE
+            cout << to_send << endl;
+        #endif
+    }
 }
 
 // To transmit informations by TX pin to the arduino
@@ -182,7 +191,11 @@ void Uart::decode_message(unsigned char message[]){
                 bottle_to_throw = false;
 
             break;
-   }
+    }
+
+    #ifndef DISPLAY_MESSAGE
+        cout << "Decode " << message << endl;
+    #endif
 }
 
 // Close uart port

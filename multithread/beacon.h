@@ -29,6 +29,7 @@
 
 #include "stepper.h"
 #include "uart.h"
+#include "global_include.h"
 
 
 using namespace cv;

@@ -15,9 +15,15 @@
 #include <string>
 #include <iostream>
 #include <cstdio>
-#include <unistd.h>			//Used for UART
-#include <fcntl.h>			//Used for UART
-#include <termios.h>		//Used for UART
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+
+
+//---------------CUSTOM LIBRARIES----------------
+
+#include "global_include.h"
+
 
 using namespace std;
 

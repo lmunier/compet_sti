@@ -37,9 +37,7 @@ void led_enable(bool enable){
 
 // OpenCV function to detect bottles
 void* bottles_scanning(void* uart0){
-    cout << display_results << endl;
-
-   /* //-----------INIT VARIABLES------------
+    //-----------INIT VARIABLES------------
     // Matrices
     Mat kern = (Mat_<char>(3,3) <<  0, -1,  0,
                                    -1,  5, -1,
@@ -85,7 +83,9 @@ void* bottles_scanning(void* uart0){
     // Open camera
     if(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
-    }*/
+    } else {
+        ptr_uart0->set_state_camera(true);
+    }
 
     //-----------MAIN PART---------------
     while(false){
@@ -97,7 +97,10 @@ void* bottles_scanning(void* uart0){
         // Take video input
         camera.grab();
         camera.retrieve(image);
-imshow("Original", image);
+
+        #ifndef DISPLAY_IMAGE_RASPICAM
+            imshow("Original", image);
+        #endif
 
         // Compute on input frame to find bottles
         /*if(!bottle_detected) {
@@ -115,7 +118,7 @@ imshow("Original", image);
         erode(sharp(rect_roi), test, erode_kern);
         test.copyTo(sharp(rect_roi));
 
-        deleted = check_bottle(camera, sharp, lower_beacon, upper_beacon, beacon_detected, led_state);
+//        deleted = check_bottle(camera, sharp, lower_beacon, upper_beacon, beacon_detected, led_state);
 cout << "After delete" << endl;
         max_light_localization(deleted, max, max_loc, kernel_blur);
 
@@ -125,19 +128,17 @@ cout << "After delete" << endl;
 //        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
         // Show results if needed
-        if(show_results){
+        #ifdef DISPLAY_IMAGE_RASPICAM
             //imshow("Extract", region_of_interest);
             imshow("Sharp", sharp);
 
             circle(image, max_loc, 10, (0, 255, 255), 2);
             imshow("Final", image);
-        }
+        #endif
 
         bottle_pos = max_loc;
-        // Send position of bottle to arduino
-        if(show_results)
-            cout << "F_" << bottle_pos.x << "_" << bottle_pos.y << endl;
 
+        // Send position of bottle to arduino
         ptr_uart0->send_to_arduino('F', bottle_pos.x, bottle_pos.y);
 
         // Turn off light during align/shoot
@@ -150,7 +151,7 @@ cout << "After delete" << endl;
     }
 
     // Turn off light
-    //led_enable(false);
+    led_enable(false);
 
     pthread_exit(NULL);
 }
@@ -191,7 +192,11 @@ Mat check_bottle(RaspiCam_Cv& camera, Mat& original, int lower[][NB_CHANNELS], i
     if(countNonZero(mask) > 0){
         // Find contours on our mask
         bitwise_and(original, original, new_image, mask_not);
-    imshow("Image sub", new_image);
+
+        #ifndef DISPLAY_IMAGE_RASPICAM
+            imshow("Image sub", new_image);
+        #endif
+
         beacon = true;
     } else {
         beacon = false;

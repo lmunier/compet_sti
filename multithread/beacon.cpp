@@ -7,7 +7,7 @@
  */
 
 #include "beacon.h"
-#include <pthread.h>
+
 // Initialize pins stepper
 Stepper init_stepper(int& init_step){
     Stepper stepper_back(SB_IN1, SB_IN2, SB_IN3, SB_IN4);
@@ -33,7 +33,6 @@ VideoCapture init_webcam(){
 // Main part, tracking of the corner led where is the bin
 
 void* led_tracking(void* uart0) {
-cout << "In funtion thread id " << pthread_self() << endl;
     // Initialization of matrices
     Mat image;
     Mat blur;
@@ -79,13 +78,15 @@ cout << "In funtion thread id " << pthread_self() << endl;
 
     if(!webcam.isOpened()){
         cout << "Can not open webcam." << endl;
+    } else {
+        ptr_uart0->set_state_webcam(true);
     }
 
     // Start arduino
     ptr_uart0->send_to_arduino('I');
 
     // Loop on led detection/alignment
-    while(true){
+    while(false){
         bool bSuccess = webcam.read(image);
 
         if(!bSuccess){
@@ -108,36 +109,26 @@ cout << "In funtion thread id " << pthread_self() << endl;
             //cout << "Send to arduino " << led_x_pos << endl;
 
             if(!is_aligned(led_x_pos)) {
-                if(stepper_back.getStep() < 0) {
+                if(stepper_back.getStep() < 0)
                     ptr_uart0->send_to_arduino('A', 'R');
-                    //cout << "A_R" << endl;
-                } else {
+                else
                     ptr_uart0->send_to_arduino('A', 'L');
-                    //cout << "A_L" << endl;
-                }
             }
 
             while (ptr_uart0->is_bottle() && is_aligned(led_x_pos)) {
-                if(!send_fire) {
-                    //cout << "Fire !!!" << endl;
+                if(!send_fire)
                     ptr_uart0->send_to_arduino('A', 'F', dist2corner);
-                }
             }
         } else {
             send_fire = false;
         }
 
         // Show result
-        if(show_results){
+        #ifndef DISPLAY_IMAGE_WEBCAM
             imshow("Image", blur);
             imshow("Extracted", extracted);
-        }
-
-        if(waitKey(10) == 27){
-            //cout << "Esc key is pressed." << endl;
-        }
+        #endif
     }
-
     pthread_exit(NULL);
 }
 
@@ -202,11 +193,13 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
     center = x_max;
 
     // Show result
-    typedef Point_<uint16_t> Pixel;
-    Pixel pix_up(x_min, y_min);
-    Pixel pix_down(x_max, y_max);
-    circle(image, pix_up, 10, (0, 0, 255), 2);
-    circle(image, pix_down, 10, (0, 255, 255), 2);
+    #ifndef DISPLAY_IMAGE_WEBCAM
+        typedef Point_<uint16_t> Pixel;
+        Pixel pix_up(x_min, y_min);
+        Pixel pix_down(x_max, y_max);
+        circle(image, pix_up, 10, (0, 0, 255), 2);
+        circle(image, pix_down, 10, (0, 255, 255), 2);
+    #endif
 }
 
 // Give distance to corner

@@ -30,7 +30,7 @@ depend:
 
 clean:
 	@echo " *** CLEAN UP OBJECT AND EXECUTABLE MODULE ***"
-	@/bin/rm -f multithread.o beacon.o uart.o stepper.o bottles.o *.x *.c~ *.h~
+	@/bin/rm -f main.o multithread.o beacon.o uart.o stepper.o bottles.o *.x *.c~ *.h~
 
 #
 # -- Dependance rules automatically generate

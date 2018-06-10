@@ -26,8 +26,6 @@ int main(){
     pthread_mutex_t mutex_lock_transmit = PTHREAD_MUTEX_INITIALIZER;
 
     // Initialize variables
-    extern bool display_results = false;
-
     pthread_t bottles_detection;
     pthread_t beacon_detection;
     pthread_t listen_serial;
@@ -35,7 +33,6 @@ int main(){
     Uart *ptr_uart0 = new Uart();
     ptr_uart0->set_mutex(mutex_lock_transmit);
 
-cout << "Main thread id " << pthread_self() << endl;
     //------------------Thread creation----------------
     // Thread to listen arduino
     int rx_verif = pthread_create(&listen_serial, NULL, (UARTPTR) &Uart::infinite_receiving, ptr_uart0);
