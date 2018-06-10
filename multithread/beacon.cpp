@@ -32,8 +32,16 @@ VideoCapture init_webcam(){
     return webcam;
 }
 
-// Main part, tracking of the corner led where is the bin
+// Calibration of initiale position of stepper
+void calibrate_position_step(Stepper stepper_back){
+cout << digitalRead(29) << endl;
 
+    while(digitalRead(OFF_BUTTON));
+
+    stepper_back.set_step(INITIAL_STEP);
+}
+
+// Main part, tracking of the corner led where is the bin
 void* led_tracking(void* uart0) {
     // Initialization of matrices
     Mat image;
@@ -81,6 +89,8 @@ void* led_tracking(void* uart0) {
     while(!webcam.isOpened())
         webcam.open(0);
 
+    calibrate_position_step(stepper_back);
+
     ptr_uart0->set_state_webcam(true);
 
     // Start arduino
@@ -110,7 +120,7 @@ void* led_tracking(void* uart0) {
         manage_stepper(stepper_back, led_x_pos);
 
         if(ptr_uart0->is_bottle()) {
-            if(!is_aligned(led_x_pos)) {
+            if(!is_aligned(stepper_back)) {
                 if(stepper_back.getStep() < 0)
                     ptr_uart0->send_to_arduino('A', 'R');
                 else
@@ -258,6 +268,6 @@ void manage_stepper(Stepper& stepper_back, int led_x_pos){
 }
 
 // Check if the robot is aligned
-bool is_aligned(int led_x_pos){
-    return abs(led_x_pos - WIDTH_IMAGE/2) < TOLERANCE_ALIGN;
+bool is_aligned(Stepper stepper_back){
+    return abs(stepper_back.getStep()) < 8;
 }

@@ -68,6 +68,9 @@ Stepper init_stepper(int&);
 // Initialize webcam
 VideoCapture init_webcam();
 
+// Calibrate position
+void calibrate_position_step(Stepper);
+
 // Main part, tracking of the corner led where is the bin
 void* led_tracking(void*);
 
@@ -84,6 +87,6 @@ double get_dist_corner(int, int, char);
 void manage_stepper(Stepper&, int);
 
 // Check if the robot is aligned
-bool is_aligned(int);
+bool is_aligned(Stepper);
 
 #endif //LED_TRACKING_TRACKING_H
