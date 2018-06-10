@@ -59,6 +59,7 @@ using namespace std;
 #define TOLERANCE_ALIGN 	10      // Tolerance for alignment
 #define WAIT_WAKEUP_WEBCAM	2	// Waiting to the webcam waking up
 
+#define OFF_BUTTON		29	// Wiring pin to confirm calibration (same as shutdown)
 
 //--------FUNCTIONS------------------
 

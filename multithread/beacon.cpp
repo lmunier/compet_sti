@@ -127,7 +127,7 @@ void* led_tracking(void* uart0) {
                     ptr_uart0->send_to_arduino('A', 'L');
             }
 
-            while (ptr_uart0->is_bottle() && is_aligned(led_x_pos)) {
+            while (ptr_uart0->is_bottle() && is_aligned(stepper_back)) {
                 if(!send_fire){
                     ptr_uart0->send_to_arduino('A', 'F', dist2corner);
                     send_fire = true;
