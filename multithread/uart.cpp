@@ -79,7 +79,8 @@ void Uart::send_to_arduino(char type, int x, int y){
     to_send += to_string(y);
     to_send += ".";
 
-    transmit(to_send);
+    if(state_raspicam && state_webcam)
+        transmit(to_send);
 }
 
 void Uart::send_to_arduino(char type, char param, int dist) {
@@ -119,7 +120,8 @@ void Uart::send_to_arduino(char type, char param, int dist) {
                   break;
     }
 
-    transmit(to_send);
+    if(state_raspicam && state_webcam)
+        transmit(to_send);
 }
 
 // To transmit informations by TX pin to the arduino
@@ -181,12 +183,11 @@ void Uart::decode_message(unsigned char message[]){
 
             break;
    }
-
-cout << message << endl;
 }
 
 // Close uart port
 void Uart::close_port() {
+    state_port = false;
     close(uart0_filestream);
 }
 

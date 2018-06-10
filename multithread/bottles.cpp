@@ -37,8 +37,9 @@ void led_enable(bool enable){
 
 // OpenCV function to detect bottles
 void* bottles_scanning(void* uart0){
-cout << "In funtion \nthread id " <<  pthread_self() << endl;
-    //-----------INIT VARIABLES------------
+    cout << display_results << endl;
+
+   /* //-----------INIT VARIABLES------------
     // Matrices
     Mat kern = (Mat_<char>(3,3) <<  0, -1,  0,
                                    -1,  5, -1,
@@ -84,10 +85,10 @@ cout << "In funtion \nthread id " <<  pthread_self() << endl;
     // Open camera
     if(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
-    }
+    }*/
 
     //-----------MAIN PART---------------
-    while(true){
+    while(false){
         // Turn on light if they are disabled
         if(!led_state){
             led_state = true;
@@ -149,7 +150,7 @@ cout << "After delete" << endl;
     }
 
     // Turn off light
-    led_enable(false);
+    //led_enable(false);
 
     pthread_exit(NULL);
 }

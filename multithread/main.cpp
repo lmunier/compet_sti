@@ -26,6 +26,8 @@ int main(){
     pthread_mutex_t mutex_lock_transmit = PTHREAD_MUTEX_INITIALIZER;
 
     // Initialize variables
+    extern bool display_results = false;
+
     pthread_t bottles_detection;
     pthread_t beacon_detection;
     pthread_t listen_serial;

@@ -40,15 +40,27 @@ public:
     // Initialize mutex
     void set_mutex(pthread_mutex_t mutex){ mutex_lock_transmit = mutex; }
 
+    // Set state of each camera
+    void set_state_webcam(bool state){ state_webcam = state; }
+    void set_state_camera(bool state){ state_raspicam = state; }
+
     // Return value of bottle_to_throw
     bool is_bottle(){ return bottle_to_throw; }
+
+    // Return state of each camera
+    bool is_webcam_ready(){ return state_webcam; }
+    bool is_raspicam_ready(){ return state_raspicam; }
 
 private:
     // Bottle in robot
     bool bottle_to_throw = false;
 
+    // State of each camera
+    bool state_webcam = false;
+    bool state_raspicam = false;
+
     bool state_port = false;
-    int uart0_filestream = -1; // int return when port is initialized
+    int uart0_filestream = -1;              // int return when port is initialized
     pthread_mutex_t mutex_lock_transmit;
 
     // Function to transmit data with TX pin
