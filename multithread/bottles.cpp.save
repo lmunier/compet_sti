@@ -59,7 +59,7 @@ void* bottles_scanning(void* uart0){
     bool bottle_detected = false;                       // Set to one if we found a bottle
     bool led_state = false;                             // State of the led to toggle them
     bool beacon_detected = false;                       // Beacon is on image or not
-    int kernel_blur = 7;                                // Set blur kernel
+    int kernel_blur = 9;                                // Set blur kernel
     Point bottle_pos;                                   // Set distance variables
 
     // Set rectangle roi to limit image area
@@ -71,7 +71,7 @@ void* bottles_scanning(void* uart0){
 
     // Initialization of color threshold
     // Beacons
-    int lower_beacon[][NB_CHANNELS] = {{0, 0, 50}};
+    int lower_beacon[][NB_CHANNELS] = {{0, 0, 80}};
     int upper_beacon[][NB_CHANNELS] = {{255, 255, 255}};
 
     //-----------INITIALIZE UTILS--------
@@ -129,7 +129,7 @@ void* bottles_scanning(void* uart0){
         medianBlur(deleted(rect_roi), test, kernel_blur);
         test.copyTo(deleted(rect_roi));
 
-        max_light_localization(deleted, max, max_loc, kernel_blur, beacon_detected);
+        max_light_localization(deleted, max, max_loc, kernel_blur);
 
         cout << beacon_detected << endl;
 
@@ -150,8 +150,7 @@ void* bottles_scanning(void* uart0){
         bottle_pos = max_loc;
 
         // Send position of bottle to arduino
-        if(max_loc != Point(0, 0))
-            ptr_uart0->send_to_arduino('F', bottle_pos.x, bottle_pos.y);
+        ptr_uart0->send_to_arduino('F', bottle_pos.x, bottle_pos.y);
 
         // Turn off light during align/shoot
         while(ptr_uart0->is_bottle()){
@@ -246,12 +245,8 @@ cout << mean << stddev << endl;
 
 cout << max << endl;
     // Threshold to avoid false positiv
-    if(max >= NO_BOTTLE){
-        if((mean[0] > MEAN_NOTHING && !beacon) || (beacon && max < NO_BOTTLE_BEACON))
-            max_loc = Point(0,0);
-    } else {
+    if(max <= NO_BOTTLE && mean[0] > 15 && )
         max_loc = Point(0,0);
-    }
 }
 
 // Region of interest near of the maximum localization

@@ -91,23 +91,23 @@ void Stepper::PID_orientation(int pos_beacon) {
     e_p = e;
 
     // Anti-windup control to avoid aberrant commands
-    if (abs(speed) > V_MAX) {
-        ui = (int)((V_MAX/KP_ROT) - e - ud);
+    if (abs(speed) > STEP_MAX_TO_DO) {
+        ui = (int)((STEP_MAX_TO_DO/KP_ROT) - e - ud);
 
         if(speed > 0)
-            speed = V_MAX;
+            speed = STEP_MAX_TO_DO;
         else
-            speed = -V_MAX;
-    } else if (abs(speed) < V_MIN) {
-        ui = (int)((V_MIN/KP_ROT) - e - ud);
+            speed = -STEP_MAX_TO_DO;
+    } else if (abs(speed) < STEP_MIN_TO_DO) {
+        ui = (int)((STEP_MIN_TO_DO/KP_ROT) - e - ud);
 
         if(speed > 0)
-            speed = V_MIN;
+            speed = STEP_MIN_TO_DO;
         else
-            speed = -V_MIN;
+            speed = -STEP_MIN_TO_DO;
     }
-
-    setRpm(abs(speed));
+    step_to_do = abs(speed);
+//    setRpm(abs(speed));
 }
 
 

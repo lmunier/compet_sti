@@ -9,9 +9,9 @@
 #include "beacon.h"
 
 // Initialize pins stepper
-Stepper init_stepper(int& init_step){
+Stepper init_stepper(){
     Stepper stepper_back(SB_IN1, SB_IN2, SB_IN3, SB_IN4);
-    init_step = stepper_back.getStep();
+    stepper_back.setRpm(V_MAX);
 
     return stepper_back;
 }
@@ -32,15 +32,6 @@ VideoCapture init_webcam(){
     return webcam;
 }
 
-// Calibration of initiale position of stepper
-void calibrate_position_step(Stepper stepper_back){
-cout << digitalRead(29) << endl;
-
-    while(digitalRead(OFF_BUTTON));
-
-    stepper_back.set_step(INITIAL_STEP);
-}
-
 // Main part, tracking of the corner led where is the bin
 void* led_tracking(void* uart0) {
     // Initialization of matrices
@@ -55,11 +46,11 @@ void* led_tracking(void* uart0) {
 
     // Initialization of color threshold
     // White leds
-    int lower_hsv_yellow[] = {0, 0, 120};
+    int lower_hsv_yellow[] = {0, 0, 125};
     int upper_hsv_yellow[] = {255, 255, 255};
 
-    int lower_rgb_yellow[] = {40, 0, 0};
-    int upper_rgb_yellow[] = {130, 255, 255};
+    int lower_rgb_yellow[] = {75, 0, 40};
+    int upper_rgb_yellow[] = {255, 255, 130};
 
     // Initialization of variables
     // Set distance variables
@@ -67,12 +58,14 @@ void* led_tracking(void* uart0) {
     int led_y_min = 0, led_y_max = 0;
     double dist2corner = 0.0;
 
-    // Set step variable
-    static int init_step = 0;
-    int degree_correction = 0;
-
     // Send fire only once
     bool send_fire = false;
+
+    // Calibration is done
+    bool calibration = false;
+
+    // If obstacle between robot and beacon
+    bool obstacle = true;
 
     // Set blur kernel
     int kernel_blur = 9;
@@ -82,26 +75,20 @@ void* led_tracking(void* uart0) {
     //double min=0.0, max=0.0;
 
     wiringPiSetup();
-    Stepper stepper_back = init_stepper(init_step);
+    Stepper stepper_back = init_stepper();
 
     VideoCapture webcam = init_webcam();
 
-    while(!webcam.isOpened())
+    while(!webcam.isOpened()){
         webcam.open(0);
-
-    calibrate_position_step(stepper_back);
-
-    ptr_uart0->set_state_webcam(true);
-
-    // Start arduino
-    ptr_uart0->send_to_arduino('I');
+    }
 
     // Loop on led detection/alignment
     while(true){
         bool bSuccess = webcam.read(image);
 
         if(!bSuccess){
-            cout << "Webcam disconnected."<< endl;
+            cout << "Webcam disconnected." << endl;
         }
 
         // Blur image to avoid noise
@@ -109,38 +96,54 @@ void* led_tracking(void* uart0) {
 
         // Extracted color to detect LEDs
         extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
-
         cvtColor(extracted, image_hsv, COLOR_BGR2HSV);
 
         extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
         extract_position(blur, led_x_pos, led_y_min, led_y_max);
 
-        dist2corner = get_dist_corner(led_y_min, led_y_max, 'y');
         manage_stepper(stepper_back, led_x_pos);
 
-        if(ptr_uart0->is_bottle()) {
+        // Shooting procedure
+        if(ptr_uart0->is_bottle() && calibration) {
             if(!is_aligned(stepper_back)) {
                 if(stepper_back.getStep() < 0)
                     ptr_uart0->send_to_arduino('A', 'R');
                 else
                     ptr_uart0->send_to_arduino('A', 'L');
+            } else if (obstacle) {
+                if(get_dist_corner(led_y_min, led_y_max, 'h') < BEACON_SIZE_MIN)
+                    ptr_uart0->send_to_arduino('A', 'O');
+                else
+                    obstacle = false;
             }
 
-            while (ptr_uart0->is_bottle() && is_aligned(stepper_back)) {
+            while (ptr_uart0->is_bottle() && is_aligned(stepper_back) && !obstacle) {
                 if(!send_fire){
-                    ptr_uart0->send_to_arduino('A', 'F', dist2corner);
+                    ptr_uart0->send_to_arduino('A', 'F', get_dist_corner(led_y_min, led_y_max, 'y'));
                     send_fire = true;
                 }
             }
 
             // Set send_fire to false to shoot next bottle
             send_fire = false;
+            obstacle = false;
+        }
+
+        // Setting calibration to true and step to 0
+        if(!calibration && digitalRead(OFF_BUTTON) == 0){
+            stepper_back.setStepN(INITIAL_STEP);
+            ptr_uart0->set_state_webcam(true);
+            calibration = true;
+
+            // Start arduino
+            ptr_uart0->send_to_arduino('I');
         }
 
         // Show result
         #ifdef DISPLAY_IMAGE_WEBCAM
-            imshow("Image", blur);
+            imshow("Blur", blur);
+            imshow("Image", image);
             imshow("Extracted", extracted);
             waitKey(10);
         #endif
@@ -259,7 +262,7 @@ void manage_stepper(Stepper& stepper_back, int led_x_pos){
     int rpm = stepper_back.getRpm();
     stepper_back.PID_orientation(led_x_pos);
 
-    for(int s=0; s<rpm/2; s++) {
+    for(int s = 0; s < stepper_back.get_step_to_do(); s++) {
         if (WIDTH_IMAGE / 2 - led_x_pos < 0)
             stepper_back.stepCW();
         else

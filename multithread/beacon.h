@@ -45,7 +45,8 @@ using namespace std;
 
 #define TOL_BEACON      	10      // Tolerance on beacon width/inclination
 #define ERROR_DIST		-1.0	// If we have an error when we calculate the distance
-#define TOL_HOLE		10	// Tolerance on "hole" in beacon detection
+#define TOL_HOLE		20	// Tolerance on "hole" in beacon detection
+#define BEACON_SIZE_MIN		60.0	// Minimum size to avoid having an obstacle on the way
 
 #define HUE             	0       // Channel hue on image vector
 #define SAT             	1       // Channel saturation on image vector
@@ -64,13 +65,10 @@ using namespace std;
 //--------FUNCTIONS------------------
 
 // Initialize pins stepper
-Stepper init_stepper(int&);
+Stepper init_stepper();
 
 // Initialize webcam
 VideoCapture init_webcam();
-
-// Calibrate position
-void calibrate_position_step(Stepper);
 
 // Main part, tracking of the corner led where is the bin
 void* led_tracking(void*);

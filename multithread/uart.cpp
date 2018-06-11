@@ -57,6 +57,7 @@ Uart::Uart(){
 
 // Allways listen pin RX
 void* Uart::infinite_receiving() {
+cout << "Coucou" << endl;
     while(state_port){
         receive();
     }
@@ -81,7 +82,7 @@ void Uart::send_to_arduino(char type, int x, int y){
     if(state_raspicam && state_webcam){
         transmit(to_send);
 
-        #ifndef DISPLAY_MESSAGE
+        #ifdef DISPLAY_MESSAGE
             cout << to_send << endl;
         #endif
     }
@@ -127,7 +128,7 @@ void Uart::send_to_arduino(char type, char param, int dist) {
     if(state_raspicam && state_webcam){
         transmit(to_send);
 
-        #ifndef DISPLAY_MESSAGE
+        #ifdef DISPLAY_MESSAGE
             cout << to_send << endl;
         #endif
     }
@@ -160,6 +161,7 @@ void Uart::transmit(string to_send) {
 
 // Receive informations from arduino
 void Uart::receive() {
+cout << "Je suis la" << endl;
     //----- CHECK FOR ANY RX BYTES -----
     if (uart0_filestream != -1) {
         // Read up to 255 characters from the port if they are there
@@ -176,7 +178,10 @@ void Uart::receive() {
             //Bytes received
             rx_buffer[rx_length] = '\0';
             decode_message(rx_buffer);
-            printf("%i bytes read : %s\n", rx_length, rx_buffer);
+
+            #ifdef DISPLAY_MESSAGE
+                printf("%i bytes read : %s\n", rx_length, rx_buffer);
+            #endif
         }
     }
 }
@@ -193,7 +198,7 @@ void Uart::decode_message(unsigned char message[]){
             break;
     }
 
-    #ifndef DISPLAY_MESSAGE
+    #ifdef DISPLAY_MESSAGE
         cout << "Decode " << message << endl;
     #endif
 }
