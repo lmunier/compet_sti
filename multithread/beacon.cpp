@@ -22,8 +22,8 @@ VideoCapture init_webcam(){
 
     sleep(WAIT_WAKEUP_WEBCAM);
 
-    webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
-    webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
+    webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE_WEBCAM);
+    webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE_WEBCAM);
     webcam.set(CAP_PROP_BRIGHTNESS, 0);
     webcam.set(CAP_PROP_GAIN, 0.15);
 
@@ -61,7 +61,7 @@ void* led_tracking(void* uart0) {
     int height_beacon = 0;              // Height of the beacon
     int y_min = 0, y_max = 0;           // Position y at the min and max of the beacon
     int kernel_blur = 9;                // Set blur kernel
-    Rect roi(0, 0, HEIGHT_IMAGE, WIDTH_IMAGE);
+    Rect roi(0, 0, HEIGHT_IMAGE_WEBCAM, WIDTH_IMAGE_WEBCAM);
 
     wiringPiSetup();
     Stepper stepper_back = init_stepper();
@@ -168,13 +168,13 @@ Rect get_roi(int x_max){
     // Initialize rectangle
     int x_start = x_max - BEACON_WIDTH_MIN/2;
     int y_start = 0;
-    int height = HEIGHT_IMAGE;
+    int height = HEIGHT_IMAGE_WEBCAM;
     int width = BEACON_WIDTH_MIN;
 
     if(x_start < 0)
         x_start = 0;
-    else if(x_start >= WIDTH_IMAGE - BEACON_WIDTH_MIN)
-        x_start = WIDTH_IMAGE - BEACON_WIDTH_MIN - 1;
+    else if(x_start >= WIDTH_IMAGE_WEBCAM - BEACON_WIDTH_MIN)
+        x_start = WIDTH_IMAGE_WEBCAM - BEACON_WIDTH_MIN - 1;
 
     Rect selection(x_start, y_start, width, height);
 
@@ -212,14 +212,14 @@ int extract_height(Mat& image, int x, int& y_min, int& y_max){
     int x_min = 0, x_max = 0, x_tmp = 0;
 
     // Extract hight of beacon
-    for(int row = 0; row < HEIGHT_IMAGE; row++){
+    for(int row = 0; row < HEIGHT_IMAGE_WEBCAM; row++){
         nbr = 0;
         x_tmp = 0;
 
         for(int col = x - TOL_BEACON; col < x + TOL_BEACON; col++){
             if(col < 0)
                 col = 0;
-            else if (col >= WIDTH_IMAGE)
+            else if (col >= WIDTH_IMAGE_WEBCAM)
                 break;
 
             if((int) image.at<Vec3b>(row, col)[RED] >= 100) {
@@ -289,7 +289,7 @@ cout << stepper_back.get_step_to_do() << endl;
             stepper_back.stepCCW();
     }*/
 
-    if(WIDTH_IMAGE/2 - led_x_pos < 0){
+    if(WIDTH_IMAGE_WEBCAM/2 - led_x_pos < 0){
         clockwise = true;
         new_step = step + step_to_do;
     } else {
