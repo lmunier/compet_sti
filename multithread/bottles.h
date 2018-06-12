@@ -40,27 +40,27 @@ using namespace raspicam;
 
 //--------DEFINE SOME CONSTANTS--------
 
-#define LED_PIN             0       		// PIN to enable LEDs gpio (BCM 17)
+#define LED_PIN                     0       		// PIN to enable LEDs gpio (BCM 17)
 
-#define HUE                 0       		// Channel hue on image vector
-#define SAT                 1       		// Channel saturation on image vector
-#define VAL                 2       		// Channel value on image vector
+#define HUE                         0       		// Channel hue on image vector
+#define SAT                         1       		// Channel saturation on image vector
+#define VAL                         2       		// Channel value on image vector
 
-#define NB_CHANNELS         3       		// Number of channel per pixel
+#define NB_CHANNELS                 3       		// Number of channel per pixel
 
-#define HEIGHT_IMAGE        480     		// Height of our image/frame
-#define WIDTH_IMAGE         640     		// Width of our image/frame
+#define HEIGHT_IMAGE_RASPICAM       480     		// Height of our image/frame
+#define WIDTH_IMAGE_RASPICAM        640     		// Width of our image/frame
 
-#define NO_BOTTLE           70      		// Tolerance to not detect bottle if the max luminosity point is on the top left
-#define NO_BOTTLE_BEACON    100
-#define MEAN_NOTHING        8
+#define NO_BOTTLE                   70      		// Tolerance to not detect bottle if the max luminosity point is on the top left
+#define NO_BOTTLE_BEACON            100
+#define MEAN_NOTHING                8
 
-#define AVOID_NOISE         HEIGHT_IMAGE/3	// Tolerance to avoid hight intensity when we don't detect bottles
-#define WAIT_WAKEUP_CAMERA  3			    // Wait to waking up camera
+#define AVOID_NOISE                 HEIGHT_IMAGE/3	// Tolerance to avoid hight intensity when we don't detect bottles
+#define WAIT_WAKEUP_CAMERA          3			    // Wait to waking up camera
 
-#define BRIGHTNESS	    17			// Brightness of our camera
-#define CONTRAST            60			// Contrast of our camera
-#define MAX_FPS		    5			// Maximum fps of our camera, to not overheat our rapsberry pi
+#define BRIGHTNESS	                17			    // Brightness of our camera
+#define CONTRAST                    60			    // Contrast of our camera
+#define MAX_FPS		                5			    // Maximum fps of our camera, to not overheat our rapsberry pi
 
 //--------FUNCTIONS-------------------
 
