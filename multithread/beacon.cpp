@@ -36,7 +36,6 @@ VideoCapture init_webcam(){
 void* led_tracking(void* uart0) {
     // Initialization of matrices
     Mat original;
-    Mat image;
     Mat blur;
     Mat gray;
     Mat image_hsv;
@@ -75,6 +74,7 @@ void* led_tracking(void* uart0) {
     // Loop on led detection/alignment
     while(true){
         bool bSuccess = webcam.read(original);
+        Mat image;
 
         if(!bSuccess){
             cout << "Webcam disconnected." << endl;
