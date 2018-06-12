@@ -87,11 +87,11 @@ void* led_tracking(void* uart0) {
         // Extracted color to detect LEDs
 //        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
         if(led_x_pos != 0)
-            roi = get_roi(original, led_x_pos);
+            roi = get_roi(led_x_pos);
 
-        cvtColor(image(roi), image_hsv, COLOR_BGR2HSV);
+        cvtColor(original(roi), image_hsv, COLOR_BGR2HSV);
 
-        extracted = extract_color(image(roi), image_hsv, lower_hsv_yellow, upper_hsv_yellow);
+        extracted = extract_color(original(roi), image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
         led_x_pos = extract_position(blur);
 
@@ -108,7 +108,7 @@ void* led_tracking(void* uart0) {
                     direction = 'L';
                 }
             } else if (obstacle) {
-                height_beacon = extract_height(image, led_x_pos, y_min, y_max);
+                height_beacon = extract_height(original(roi), led_x_pos, y_min, y_max);
 
                 if(height_beacon < BEACON_SIZE_MIN)
                     ptr_uart0->send_to_arduino('A', 'O');
@@ -167,7 +167,7 @@ Mat extract_color(Mat& image, Mat& to_delete, int lower[], int upper[]){
 }
 
 // Region of interest near of the maximum localization
-Rect get_roi(Mat& original, int x_max){
+Rect get_roi(int x_max){
     // Initialize rectangle
     int x_start = x_max - BEACON_WIDTH_MIN/2;
     int y_start = 0;
