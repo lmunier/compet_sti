@@ -55,8 +55,8 @@ using namespace std;
 
 #define RED	                2	    // Red channel
 
-#define HEIGHT_IMAGE    	480     // Height of our image/frame
-#define WIDTH_IMAGE     	640     // Width of our image/frame
+#define HEIGHT_IMAGE    	240     // Height of our image/frame
+#define WIDTH_IMAGE     	320     // Width of our image/frame
 
 #define TOLERANCE_ALIGN 	10      // Tolerance for alignment
 #define WAIT_WAKEUP_WEBCAM	2	// Waiting to the webcam waking up

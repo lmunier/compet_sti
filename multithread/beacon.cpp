@@ -86,12 +86,10 @@ void* led_tracking(void* uart0) {
 
         // Extracted color to detect LEDs
 //        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
-        if(led_x_pos != 0)
-            roi = get_roi(led_x_pos);
 
-        cvtColor(original(roi), image_hsv, COLOR_BGR2HSV);
+        cvtColor(original, image_hsv, COLOR_BGR2HSV);
 
-        extracted = extract_color(original(roi), image_hsv, lower_hsv_yellow, upper_hsv_yellow);
+        extracted = extract_color(original, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
         led_x_pos = extract_position(blur);
 
@@ -108,7 +106,7 @@ void* led_tracking(void* uart0) {
                     direction = 'L';
                 }
             } else if (obstacle) {
-                height_beacon = extract_height(original(roi), led_x_pos, y_min, y_max);
+                height_beacon = extract_height(original, led_x_pos, y_min, y_max);
 
                 if(height_beacon < BEACON_SIZE_MIN)
                     ptr_uart0->send_to_arduino('A', 'O');
