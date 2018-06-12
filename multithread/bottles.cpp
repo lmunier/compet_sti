@@ -55,8 +55,6 @@ void* bottles_scanning(void* uart0){
 
     // Different variables
     Uart *ptr_uart0 = static_cast<Uart*>(uart0);        // Initialize pointer to uart class
-    bool show_results = true;                           // Show results if needed
-    bool bottle_detected = false;                       // Set to one if we found a bottle
     bool led_state = false;                             // State of the led to toggle them
     bool beacon_detected = false;                       // Beacon is on image or not
     int kernel_blur = 7;                                // Set blur kernel
@@ -82,11 +80,11 @@ void* bottles_scanning(void* uart0){
     RaspiCam_Cv camera = init_raspicam();
 
     // Open camera
-    if(!camera.open()) {
+    while(!camera.open()) {
         cout << "ERROR: can not open camera" << endl;
-    } else {
-        ptr_uart0->set_state_camera(true);
     }
+
+    ptr_uart0->set_state_camera(true);
 
     // Start arduino
     ptr_uart0->send_to_arduino('I');
@@ -131,14 +129,12 @@ void* bottles_scanning(void* uart0){
 
         max_light_localization(deleted, max, max_loc, kernel_blur, beacon_detected);
 
-        cout << beacon_detected << endl;
-
         //region_of_interest = set_roi(image, max_loc, rect_roi, bottle_detected);
 //        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
         // Show results if needed
         #ifdef DISPLAY_IMAGE_RASPICAM
-            imshow("Extract", deleted);
+//            imshow("Extract", deleted);
 //            imshow("Sharp", sharp);
 
             circle(image, max_loc, 10, (0, 255, 255), 2);
@@ -179,9 +175,6 @@ Mat check_bottle(RaspiCam_Cv& camera, Mat& original, int lower[][NB_CHANNELS], i
     Mat new_image;
     Mat contours;
 
-    double min = 0.0, max = 0.0;
-    Point min_loc, max_loc;
-
     // Turn off light
     led = false;
     led_enable(led);
@@ -201,13 +194,13 @@ Mat check_bottle(RaspiCam_Cv& camera, Mat& original, int lower[][NB_CHANNELS], i
                  Scalar(upper[0][HUE], upper[0][SAT], upper[0][VAL]), mask);
 
     bitwise_not(mask, mask_not);
-imshow("Mask", mask);
+
     if(countNonZero(mask) > 0){
         // Find contours on our mask
         bitwise_and(original, original, new_image, mask_not);
 
         #ifdef DISPLAY_IMAGE_RASPICAM
-            imshow("Image sub", new_image);
+//            imshow("Image sub", new_image);
         #endif
 
         beacon = true;
@@ -242,9 +235,9 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
     minMaxLoc(blur, &min, &max, &min_loc, &max_loc);
 
     meanStdDev(blur, mean, stddev);
-cout << mean << stddev << endl;
+//cout << mean << stddev << endl;
 
-cout << max << endl;
+//cout << max << endl;
     // Threshold to avoid false positiv
     if(max >= NO_BOTTLE){
         if((mean[0] > MEAN_NOTHING && !beacon) || (beacon && max < NO_BOTTLE_BEACON))

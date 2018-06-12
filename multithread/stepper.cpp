@@ -107,7 +107,8 @@ void Stepper::PID_orientation(int pos_beacon) {
             speed = -STEP_MIN_TO_DO;
     }
     step_to_do = abs(speed);
-//    setRpm(abs(speed));
+
+    std::cout << step_to_do << std::endl;
 }
 
 

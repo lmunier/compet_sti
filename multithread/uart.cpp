@@ -47,7 +47,7 @@ Uart::Uart(){
     //	PARODD - Odd parity (else even)
     struct termios options;
     tcgetattr(uart0_filestream, &options);
-    options.c_cflag = B9600 | CS8 | CLOCAL | CREAD;		//<Set baud rate
+    options.c_cflag = B115200 | CS8 | CLOCAL | CREAD;		//<Set baud rate
     options.c_iflag = IGNPAR;
     options.c_oflag = 0;
     options.c_lflag = 0;
@@ -57,7 +57,6 @@ Uart::Uart(){
 
 // Allways listen pin RX
 void* Uart::infinite_receiving() {
-cout << "Coucou" << endl;
     while(state_port){
         receive();
     }
@@ -80,12 +79,15 @@ void Uart::send_to_arduino(char type, int x, int y){
     to_send += ".";
 
     if(state_raspicam && state_webcam){
-        transmit(to_send);
+        if(get_avoid_sending() == SENDING_LIMIT-1)
+            transmit(to_send);
 
         #ifdef DISPLAY_MESSAGE
             cout << to_send << endl;
         #endif
     }
+
+    increment_avoid_sending();
 }
 
 void Uart::send_to_arduino(char type, char param, int dist) {
@@ -126,12 +128,15 @@ void Uart::send_to_arduino(char type, char param, int dist) {
     }
 
     if(state_raspicam && state_webcam){
-        transmit(to_send);
+        if((get_avoid_sending() == SENDING_LIMIT-1) || param == 'F' || type == 'I')
+            transmit(to_send);
 
         #ifdef DISPLAY_MESSAGE
             cout << to_send << endl;
         #endif
     }
+
+    increment_avoid_sending();
 }
 
 // To transmit informations by TX pin to the arduino
@@ -161,7 +166,6 @@ void Uart::transmit(string to_send) {
 
 // Receive informations from arduino
 void Uart::receive() {
-cout << "Je suis la" << endl;
     //----- CHECK FOR ANY RX BYTES -----
     if (uart0_filestream != -1) {
         // Read up to 255 characters from the port if they are there

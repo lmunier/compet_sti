@@ -10,6 +10,9 @@
 #define UART_H
 
 
+#define SENDING_LIMIT		5	// Value to avoid sending too many times infos to arduino
+
+
 //---------------STANDARD LIBRARIES--------------
 
 #include <string>
@@ -57,7 +60,14 @@ public:
     bool is_webcam_ready(){ return state_webcam; }
     bool is_raspicam_ready(){ return state_raspicam; }
 
+    // Management of variable to not send too many times infos
+    void increment_avoid_sending(){ avoid_send_many = (avoid_send_many + 1)%SENDING_LIMIT; }
+    int get_avoid_sending(){ return avoid_send_many; }
+
 private:
+    // Avoid to send too many times informations to arduino
+    int avoid_send_many = 0;
+
     // Bottle in robot
     bool bottle_to_throw = false;
 

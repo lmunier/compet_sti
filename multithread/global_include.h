@@ -9,8 +9,8 @@
 #ifndef GLOBAL_INCLUDE_H
 #define GLOBAL_INCLUDE_H
 
-//#define DISPLAY_IMAGE_WEBCAM
-#define DISPLAY_IMAGE_RASPICAM
+#define DISPLAY_IMAGE_WEBCAM
+//#define DISPLAY_IMAGE_RASPICAM
 #define DISPLAY_MESSAGE
 
 #endif //global_include.h

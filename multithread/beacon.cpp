@@ -27,7 +27,7 @@ VideoCapture init_webcam(){
     webcam.set(CAP_PROP_BRIGHTNESS, 0);
     webcam.set(CAP_PROP_GAIN, 0.15);
 
-    webcam.set(CAP_PROP_FPS, 7);
+    webcam.set(CAP_PROP_FPS, MAX_FPS);
 
     return webcam;
 }
@@ -49,17 +49,19 @@ void* led_tracking(void* uart0) {
     int lower_hsv_yellow[] = {0, 0, 125};
     int upper_hsv_yellow[] = {255, 255, 255};
 
-    int lower_rgb_yellow[] = {75, 0, 40};
+    int lower_rgb_yellow[] = {75, 0, 55};
     int upper_rgb_yellow[] = {255, 255, 130};
 
     // Initialization of variables
     // Set distance variables
     int led_x_pos = 0;
     int led_y_min = 0, led_y_max = 0;
-    double dist2corner = 0.0;
 
     // Send fire only once
     bool send_fire = false;
+
+    // Direction character
+    char direction = ' ';
 
     // Calibration is done
     bool calibration = false;
@@ -95,8 +97,8 @@ void* led_tracking(void* uart0) {
 //        GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
 
         // Extracted color to detect LEDs
-        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
-        cvtColor(extracted, image_hsv, COLOR_BGR2HSV);
+//        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
+        cvtColor(image, image_hsv, COLOR_BGR2HSV);
 
         extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
@@ -107,10 +109,13 @@ void* led_tracking(void* uart0) {
         // Shooting procedure
         if(ptr_uart0->is_bottle() && calibration) {
             if(!is_aligned(stepper_back)) {
-                if(stepper_back.getStep() < 0)
+                if(stepper_back.getStep() < 0 && (direction == ' ' || direction == 'L')){
                     ptr_uart0->send_to_arduino('A', 'R');
-                else
+                    direction = 'R';
+                } else if (stepper_back.getStep() >= 0 && (direction == ' ' || direction == 'R')){
                     ptr_uart0->send_to_arduino('A', 'L');
+                    direction = 'L';
+                }
             } else if (obstacle) {
                 if(get_dist_corner(led_y_min, led_y_max, 'h') < BEACON_SIZE_MIN)
                     ptr_uart0->send_to_arduino('A', 'O');
@@ -259,15 +264,29 @@ double get_dist_corner(int pixel_min, int pixel_max, char function){
 
 // Manage stepper back
 void manage_stepper(Stepper& stepper_back, int led_x_pos){
-    int rpm = stepper_back.getRpm();
     stepper_back.PID_orientation(led_x_pos);
 
-    for(int s = 0; s < stepper_back.get_step_to_do(); s++) {
+    bool clockwise = false;
+    int new_step = 0;
+    int step_to_do = stepper_back.get_step_to_do();
+    int step = stepper_back.getStep();
+cout << stepper_back.get_step_to_do() << endl;
+/*    for(int s = 0; s < stepper_back.get_step_to_do(); s++) {
         if (WIDTH_IMAGE / 2 - led_x_pos < 0)
             stepper_back.stepCW();
         else
             stepper_back.stepCCW();
+    }*/
+
+    if(WIDTH_IMAGE/2 - led_x_pos < 0){
+        clockwise = true;
+        new_step = step + step_to_do;
+    } else {
+        clockwise = false;
+        new_step = step - step_to_do;
     }
+
+    stepper_back.moveTo(clockwise, new_step);
 }
 
 // Check if the robot is aligned
