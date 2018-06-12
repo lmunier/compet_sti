@@ -201,10 +201,7 @@ int extract_position(Mat& image){
     // Show result
     #ifdef DISPLAY_IMAGE_WEBCAM
         typedef Point_<uint16_t> Pixel;
-        Pixel pix_up(x_min, y_min);
-        Pixel pix_down(x_max, y_max);
-        circle(image, pix_up, 10, (0, 0, 255), 2);
-        circle(image, pix_down, 10, (0, 255, 255), 2);
+        circle(image, max_loc, 10, (0, 255, 255), 2);
     #endif
 
     return max_loc.x;
