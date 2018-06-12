@@ -59,8 +59,9 @@ void* led_tracking(void* uart0) {
     bool obstacle = true;               // If obstacle between robot and beacon
     char direction = ' ';               // Direction character
     int led_x_pos = 0;                  // Set distance variables
-    int kernel_blur = 9;                // Set blur kernel
+    int height_beacon = 0;              // Height of the beacon
     int y_min = 0, y_max = 0;           // Position y at the min and max of the beacon
+    int kernel_blur = 9;                // Set blur kernel
 
     wiringPiSetup();
     Stepper stepper_back = init_stepper();
