@@ -79,7 +79,7 @@ void* led_tracking(void*);
 Mat extract_color(Mat&, Mat&, int[], int[]);
 
 // Reduce region of interest to reduce computation costs
-Mat set_roi(Mat&);
+Mat get_roi(Mat&, int);
 
 // Extract position of beacon led
 int extract_position(Mat&);

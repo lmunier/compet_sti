@@ -35,6 +35,7 @@ VideoCapture init_webcam(){
 // Main part, tracking of the corner led where is the bin
 void* led_tracking(void* uart0) {
     // Initialization of matrices
+    Mat image;
     Mat original;
     Mat blur;
     Mat gray;
@@ -61,6 +62,7 @@ void* led_tracking(void* uart0) {
     int height_beacon = 0;              // Height of the beacon
     int y_min = 0, y_max = 0;           // Position y at the min and max of the beacon
     int kernel_blur = 9;                // Set blur kernel
+    Rect roi(0, 0, HEIGHT_IMAGE, WIDTH_IMAGE);
 
     wiringPiSetup();
     Stepper stepper_back = init_stepper();
@@ -74,7 +76,6 @@ void* led_tracking(void* uart0) {
     // Loop on led detection/alignment
     while(true){
         bool bSuccess = webcam.read(original);
-        Mat image;
 
         if(!bSuccess){
             cout << "Webcam disconnected." << endl;
@@ -85,14 +86,12 @@ void* led_tracking(void* uart0) {
 
         // Extracted color to detect LEDs
 //        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
-        if(led_x_pos == 0)
-            image = original;
-        else
-            image = set_roi(original);
+        if(led_x_pos != 0)
+            roi = get_roi(original, led_x_pos);
 
-        cvtColor(image, image_hsv, COLOR_BGR2HSV);
+        cvtColor(image(roi), image_hsv, COLOR_BGR2HSV);
 
-        extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
+        extracted = extract_color(image(roi), image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
         led_x_pos = extract_position(blur);
 
@@ -168,9 +167,9 @@ Mat extract_color(Mat& image, Mat& to_delete, int lower[], int upper[]){
 }
 
 // Region of interest near of the maximum localization
-Mat set_roi(Mat& original, Point max){
+Rect get_roi(Mat& original, int x_max){
     // Initialize rectangle
-    int x_start = max.x - BEACON_WIDTH_MIN/2;
+    int x_start = x_max - BEACON_WIDTH_MIN/2;
     int y_start = 0;
     int height = HEIGHT_IMAGE;
     int width = BEACON_WIDTH_MIN;
@@ -183,7 +182,7 @@ Mat set_roi(Mat& original, Point max){
     Rect selection(x_start, y_start, width, height);
 
     // Return new region of interest
-    return original(selection);
+    return selection;
 }
 
 // Extract position of beacon led
