@@ -35,6 +35,7 @@ VideoCapture init_webcam(){
 // Main part, tracking of the corner led where is the bin
 void* led_tracking(void* uart0) {
     // Initialization of matrices
+    Mat original;
     Mat image;
     Mat blur;
     Mat gray;
@@ -53,28 +54,13 @@ void* led_tracking(void* uart0) {
     int upper_rgb_yellow[] = {255, 255, 130};
 
     // Initialization of variables
-    // Set distance variables
-    int led_x_pos = 0;
-    int led_y_min = 0, led_y_max = 0;
+    bool send_fire = false;             // Send fire only once
+    bool calibration = false;           // Calibration is done
+    bool obstacle = true;               // If obstacle between robot and beacon
+    char direction = ' ';               // Direction character
+    int led_x_pos = 0;                  // Set distance variables
+    int kernel_blur = 9;                // Set blur kernel
 
-    // Send fire only once
-    bool send_fire = false;
-
-    // Direction character
-    char direction = ' ';
-
-    // Calibration is done
-    bool calibration = false;
-
-    // If obstacle between robot and beacon
-    bool obstacle = true;
-
-    // Set blur kernel
-    int kernel_blur = 9;
-
-    // Extract max, min
-    //Point minLoc, maxLoc;
-    //double min=0.0, max=0.0;
 
     wiringPiSetup();
     Stepper stepper_back = init_stepper();
@@ -87,7 +73,7 @@ void* led_tracking(void* uart0) {
 
     // Loop on led detection/alignment
     while(true){
-        bool bSuccess = webcam.read(image);
+        bool bSuccess = webcam.read(original);
 
         if(!bSuccess){
             cout << "Webcam disconnected." << endl;
@@ -98,11 +84,16 @@ void* led_tracking(void* uart0) {
 
         // Extracted color to detect LEDs
 //        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
+        if(led_x_pos == 0)
+            image = originale;
+        else
+            image = set_roi(original);
+
         cvtColor(image, image_hsv, COLOR_BGR2HSV);
 
         extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
-        extract_position(blur, led_x_pos, led_y_min, led_y_max);
+        led_x_pos = extract_position(blur);
 
         manage_stepper(stepper_back, led_x_pos);
 
@@ -117,7 +108,7 @@ void* led_tracking(void* uart0) {
                     direction = 'L';
                 }
             } else if (obstacle) {
-                if(get_dist_corner(led_y_min, led_y_max, 'h') < BEACON_SIZE_MIN)
+                if(extract_height(image, led_x_pos) < BEACON_SIZE_MIN)
                     ptr_uart0->send_to_arduino('A', 'O');
                 else
                     obstacle = false;
@@ -173,8 +164,27 @@ Mat extract_color(Mat& image, Mat& to_delete, int lower[], int upper[]){
     return extracted;
 }
 
+// Region of interest near of the maximum localization
+Mat set_roi(Mat& original, Point max){
+    // Initialize rectangle
+    int x_start = max.x - BEACON_WIDTH_MIN/2;
+    int y_start = 0;
+    int height = HEIGHT_IMAGE;
+    int width = BEACON_WIDTH_MIN;
+
+    if(x_start < 0)
+        x_start = 0;
+    else if(x_start >= WIDTH_IMAGE - BEACON_WIDTH_MIN)
+        x_start = WIDTH_IMAGE - BEACON_WIDTH_MIN - 1;
+
+    Rect selection(x_start, y_start, width, height);
+
+    // Return new region of interest
+    return original(selection);
+}
+
 // Extract position of beacon led
-void extract_position(Mat& image, int& center, int& y_min, int& y_max){
+int extract_position(Mat& image){
     // Initialize matrices
     Mat gray;
 
@@ -182,21 +192,36 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
     Point min_loc, max_loc;
     double min=0.0, max=0.0;
 
+    // Extract max
+    cvtColor(image, gray, COLOR_BGR2GRAY);
+    minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
+
+    // Show result
+    #ifdef DISPLAY_IMAGE_WEBCAM
+        typedef Point_<uint16_t> Pixel;
+        Pixel pix_up(x_min, y_min);
+        Pixel pix_down(x_max, y_max);
+        circle(image, pix_up, 10, (0, 0, 255), 2);
+        circle(image, pix_down, 10, (0, 255, 255), 2);
+    #endif
+
+    return max_loc.x;
+}
+
+// Return height of beacon led
+int extract_height(Mat& image, int x){
     // Initialize variables
     int nbr = 0;
     int hole = 0;
     int x_min = 0, x_max = 0, x_tmp = 0;
-
-    // Extract max
-    cvtColor(image, gray, COLOR_BGR2GRAY);
-    minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
+    int y_min = 0, y_max = 0;
 
     // Extract hight of beacon
     for(int row = 0; row < HEIGHT_IMAGE; row++){
         nbr = 0;
         x_tmp = 0;
 
-        for(int col = max_loc.x - TOL_BEACON; col < max_loc.x + TOL_BEACON; col++){
+        for(int col = x - TOL_BEACON; col < x + TOL_BEACON; col++){
             if(col < 0)
                 col = 0;
             else if (col >= WIDTH_IMAGE)
@@ -222,16 +247,7 @@ void extract_position(Mat& image, int& center, int& y_min, int& y_max){
              break;
     }
 
-    center = x_max;
-
-    // Show result
-    #ifdef DISPLAY_IMAGE_WEBCAM
-        typedef Point_<uint16_t> Pixel;
-        Pixel pix_up(x_min, y_min);
-        Pixel pix_down(x_max, y_max);
-        circle(image, pix_up, 10, (0, 0, 255), 2);
-        circle(image, pix_down, 10, (0, 255, 255), 2);
-    #endif
+    return y_max - y_min;
 }
 
 // Give distance to corner

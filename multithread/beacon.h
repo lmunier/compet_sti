@@ -44,15 +44,16 @@ using namespace std;
 #define SB_IN4          	6       // Correpsond to GPIO 25 (BCM)
 
 #define TOL_BEACON      	10      // Tolerance on beacon width/inclination
-#define ERROR_DIST		-1.0	// If we have an error when we calculate the distance
-#define TOL_HOLE		20	// Tolerance on "hole" in beacon detection
+#define ERROR_DIST          -1.0	// If we have an error when we calculate the distance
+#define TOL_HOLE            20      // Tolerance on "hole" in beacon detection
 #define BEACON_SIZE_MIN		60.0	// Minimum size to avoid having an obstacle on the way
+#define BEACON_WIDTH_MIN	40.0	// Width to determine new ROI in order to minimize computation
 
 #define HUE             	0       // Channel hue on image vector
 #define SAT             	1       // Channel saturation on image vector
 #define VAL             	2       // Channel value on image vector
 
-#define RED			2	// Red channel
+#define RED	                2	    // Red channel
 
 #define HEIGHT_IMAGE    	480     // Height of our image/frame
 #define WIDTH_IMAGE     	640     // Width of our image/frame
@@ -77,8 +78,14 @@ void* led_tracking(void*);
 // Extract searching beacon led color
 Mat extract_color(Mat&, Mat&, int[], int[]);
 
+// Reduce region of interest to reduce computation costs
+Mat set_roi(Mat&);
+
 // Extract position of beacon led
-void extract_position(Mat&, int&, int&, int&);
+int extract_position(Mat&, int&, int&, int&);
+
+// Extract position of beacon led
+int extract_height(Mat&, int);
 
 // Give distance to corner
 double get_dist_corner(int, int, char);
