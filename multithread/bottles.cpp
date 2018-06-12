@@ -18,14 +18,15 @@ RaspiCam_Cv init_raspicam(){
     RaspiCam_Cv camera;
     sleep(WAIT_WAKEUP_CAMERA);
 
-    camera.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE_WEBCAM);
-    camera.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE_WEBCAM);
+    camera.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE_RASPICAM);
+    camera.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE_RASPICAM);
     camera.set(CAP_PROP_FORMAT, RASPICAM_FORMAT_BGR);
     camera.set(CAP_PROP_CONTRAST, CONTRAST);
     camera.set(CAP_PROP_BRIGHTNESS, BRIGHTNESS);
     camera.set(CAP_PROP_EXPOSURE, RASPICAM_EXPOSURE_SPOTLIGHT);
     camera.set(CAP_PROP_FPS, MAX_FPS);
 
+    sleep(0.5);
 //    camera.setAWB(RASPICAM_AWB_FLASH);
 
     return camera;
@@ -61,7 +62,7 @@ void* bottles_scanning(void* uart0){
     Point bottle_pos;                                   // Set distance variables
 
     // Set rectangle roi to limit image area
-    Rect rect_roi = Rect(0, HEIGHT_IMAGE_WEBCAM/2-1, WIDTH_IMAGE_WEBCAM, HEIGHT_IMAGE_WEBCAM/2);
+    Rect rect_roi = Rect(0, HEIGHT_IMAGE_RASPICAM/2-1, WIDTH_IMAGE_RASPICAM, HEIGHT_IMAGE_RASPICAM/2);
 
     // Extract max, min light in an image
     Point max_loc;
@@ -115,14 +116,7 @@ void* bottles_scanning(void* uart0){
         }*/
 
         filter2D(image, sharp, -1, kern);
-//        bilateralFilter (and_im, thresh, 5, 15, 6);
-//        max_light_localization(sharp, max, max_loc, kernel_blur);
-
-//        if(max >= NO_BOTTLE)
-//        erode(sharp, sharp, erode_kern);
-//        erode(image(rect_roi), test, erode_kern);
         deleted = check_bottle(camera, sharp, lower_beacon, upper_beacon, beacon_detected, led_state);
-//        image = del_color(deleted, lower_hsv, upper_hsv);
 
         medianBlur(deleted(rect_roi), test, kernel_blur);
         test.copyTo(deleted(rect_roi));
@@ -139,8 +133,6 @@ void* bottles_scanning(void* uart0){
 
             circle(image, max_loc, 10, (0, 255, 255), 2);
             imshow("Final", image);
-
-            waitKey(10);
         #endif
 
         bottle_pos = max_loc;
@@ -156,6 +148,9 @@ void* bottles_scanning(void* uart0){
                 led_enable(led_state);
             }
         }
+        waitKey(10);
+
+        sleep(0.1);
     }
 
     // Turn off light
@@ -252,8 +247,8 @@ Mat set_roi(Mat& original){
     // Initialize rectangle
     int x_start = 0;
     int y_start = 0;
-    int height = HEIGHT_IMAGE_WEBCAM - AVOID_NOISEHEIGHT_IMAGE_WEBCAM - 1;
-    int width = WIDTH_IMAGE_WEBCAM - 1;
+    int height = HEIGHT_IMAGE_RASPICAM - AVOID_NOISE - 1;
+    int width = WIDTH_IMAGE_RASPICAM - 1;
 
     Rect selection(x_start, y_start, width, height);
 
@@ -264,20 +259,20 @@ Mat set_roi(Mat& original){
 // Region of interest near of the maximum localization
 Mat set_roi(Mat& original, Point max_loc, Rect& rect_roi, bool& bottle_detected){
     // Initialize variable to keep tracking on the same bottle
-    int coeff = (HEIGHT_IMAGE_WEBCAM + max_loc.y)/2;
+    int coeff = (HEIGHT_IMAGE_RASPICAM + max_loc.y)/2;
 
     // Initialize rectangle
     if(max_loc.x - coeff/2 <= 0)
         rect_roi.x = 0;
-    else if(max_loc.x + coeff/2 >= WIDTH_IMAGE_WEBCAM)
-        rect_roi.x = WIDTH_IMAGE_WEBCAM - coeff - 1;
+    else if(max_loc.x + coeff/2 >= WIDTH_IMAGE_RASPICAM)
+        rect_roi.x = WIDTH_IMAGE_RASPICAM - coeff - 1;
     else
         rect_roi.x = max_loc.x - coeff/2;
 
     if(max_loc.y - coeff/2 <= 0)
         rect_roi.y = 0;
-    else if(max_loc.y + coeff/2 >= HEIGHT_IMAGE_WEBCAM)
-        rect_roi.y = HEIGHT_IMAGE_WEBCAM - coeff - 1;
+    else if(max_loc.y + coeff/2 >= HEIGHT_IMAGE_RASPICAM)
+        rect_roi.y = HEIGHT_IMAGE_RASPICAM - coeff - 1;
     else
         rect_roi.y = max_loc.y - coeff/2;
 

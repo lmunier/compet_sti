@@ -65,11 +65,16 @@ public:
     int get_avoid_sending(){ return avoid_send_many; }
 
 private:
+    // Send fire or align a number of time controlled
+    int send_fire = SENDING_LIMIT;
+    int send_align = SENDING_LIMIT;
+
     // Avoid to send too many times informations to arduino
     int avoid_send_many = 0;
 
     // Bottle in robot
     bool bottle_to_throw = false;
+    bool enable_sending = true;
 
     // State of each camera
     bool state_webcam = false;

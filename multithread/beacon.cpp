@@ -49,18 +49,17 @@ void* led_tracking(void* uart0) {
     int lower_hsv_yellow[] = {0, 0, 100};
     int upper_hsv_yellow[] = {50, 60, 140};
 
-    int lower_rgb_yellow[] = {75, 0, 80};
-    int upper_rgb_yellow[] = {255, 255, 130};
+    int lower_rgb_yellow[] = {70, 0, 70};
+    int upper_rgb_yellow[] = {255, 255, 135};
 
     // Initialization of variables
-    bool send_fire = false;             // Send fire only once
     bool calibration = false;           // Calibration is done
     bool obstacle = true;               // If obstacle between robot and beacon
     char direction = ' ';               // Direction character
     int led_x_pos = 0;                  // Set distance variables
     int height_beacon = 0;              // Height of the beacon
     int y_min = 0, y_max = 0;           // Position y at the min and max of the beacon
-    int kernel_blur = 3;//9;                // Set blur kernel
+    int kernel_blur = 3;                // Set blur kernel
 
     wiringPiSetup();
     Stepper stepper_back = init_stepper();
@@ -79,12 +78,6 @@ void* led_tracking(void* uart0) {
             cout << "Webcam disconnected." << endl;
         }
 
-        // Blur image to avoid noise
-//        GaussianBlur(image, blur, Size(kernel_blur, kernel_blur), 0, 0);
-
-        // Extracted color to detect LEDs
-//        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
-
         cvtColor(image, image_hsv, COLOR_BGR2HSV);
 
         extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
@@ -96,6 +89,7 @@ void* led_tracking(void* uart0) {
         // Shooting procedure
         if(ptr_uart0->is_bottle() && calibration) {
             if(!is_aligned(stepper_back)) {
+                sleep(0.1);
                 if(stepper_back.getStep() < 0 && (direction == ' ' || direction == 'L')){
                     ptr_uart0->send_to_arduino('A', 'R');
                     direction = 'R';
@@ -106,21 +100,19 @@ void* led_tracking(void* uart0) {
             } else if (obstacle) {
                 height_beacon = extract_height(image, led_x_pos, y_min, y_max);
 
-                if(height_beacon < BEACON_SIZE_MIN)
+                if(height_beacon < BEACON_SIZE_MIN){
+                    sleep(0.1);
                     ptr_uart0->send_to_arduino('A', 'O');
-                else
+                }else
                     obstacle = false;
             }
 
             while (ptr_uart0->is_bottle() && is_aligned(stepper_back) && !obstacle) {
-                if(!send_fire){
-                    ptr_uart0->send_to_arduino('A', 'F', get_dist_corner(y_min, y_max, 'y'));
-                    send_fire = true;
-                }
+                ptr_uart0->send_to_arduino('A', 'F', get_dist_corner(y_min, y_max, 'y'));
+                sleep(0.1);
             }
 
             // Set send_fire to false to shoot next bottle
-            send_fire = false;
             obstacle = true;
         }
 
@@ -138,9 +130,10 @@ void* led_tracking(void* uart0) {
         #ifdef DISPLAY_IMAGE_WEBCAM
             imshow("Blur", blur);
             imshow("Image", image);
-            imshow("Extracted", extracted);
             waitKey(10);
         #endif
+
+        sleep(0.1);
     }
 
     webcam.release();
@@ -191,7 +184,7 @@ void extract_position(Mat& image, int& x_max){
     double min = 0.0, max = 0.0;
 
     // Set roi to improve computation and avoid noisy detection
-    Rect roi(0, 0, WIDTH_IMAGE, HEIGHT_IMAGE/2);
+    Rect roi(0, 0, WIDTH_IMAGE_WEBCAM, HEIGHT_IMAGE_WEBCAM/2);
 
     // Extract max
     cvtColor(image(roi), gray, COLOR_BGR2GRAY);
@@ -283,13 +276,6 @@ void manage_stepper(Stepper& stepper_back, int led_x_pos){
     int new_step = 0;
     int step_to_do = stepper_back.get_step_to_do();
     int step = stepper_back.getStep();
-cout << stepper_back.get_step_to_do() << endl;
-/*    for(int s = 0; s < stepper_back.get_step_to_do(); s++) {
-        if (WIDTH_IMAGE / 2 - led_x_pos < 0)
-            stepper_back.stepCW();
-        else
-            stepper_back.stepCCW();
-    }*/
 
     if(WIDTH_IMAGE_WEBCAM/2 - led_x_pos < 0){
         clockwise = true;
@@ -304,5 +290,6 @@ cout << stepper_back.get_step_to_do() << endl;
 
 // Check if the robot is aligned
 bool is_aligned(Stepper stepper_back){
-    return abs(stepper_back.getStep()) < 8;
+    int actual_step = stepper_back.getStep();
+    return (actual_step < TOL_ALIGN) || ((STEP_MAX - actual_step) < TOL_ALIGN);
 }

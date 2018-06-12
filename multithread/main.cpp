@@ -61,7 +61,9 @@ int main(){
     pthread_join(bottles_verif, NULL);
     pthread_join(led_verif, NULL);
 
-    while(true);
+    while(true){
+        sleep(0.1);
+    }
 
     pthread_exit(NULL);
 }

@@ -59,6 +59,7 @@ Uart::Uart(){
 void* Uart::infinite_receiving() {
     while(state_port){
         receive();
+        sleep(0.1);
     }
 
     return NULL;
@@ -78,13 +79,14 @@ void Uart::send_to_arduino(char type, int x, int y){
     to_send += to_string(y);
     to_send += ".";
 
-    if(state_raspicam && state_webcam){
-        if(get_avoid_sending() == SENDING_LIMIT-1)
+    if(state_raspicam && state_webcam && enable_sending){
+        if(get_avoid_sending() == SENDING_LIMIT-1){
             transmit(to_send);
 
-        #ifdef DISPLAY_MESSAGE
-            cout << to_send << endl;
-        #endif
+            #ifdef DISPLAY_MESSAGE
+                cout << to_send << endl;
+            #endif
+        }
     }
 
     increment_avoid_sending();
@@ -115,11 +117,15 @@ void Uart::send_to_arduino(char type, char param, int dist) {
 
             switch(param) {
                 case 'L': to_send += "L.";
+                          send_align--;
                           break;
                 case 'R': to_send += "R.";
+                          send_align--;
                           break;
                 case 'F': to_send += "F_";
                           to_send += to_string(dist);
+                          to_send += ".";
+                          send_fire--;
                           break;
             }
             break;
@@ -127,13 +133,20 @@ void Uart::send_to_arduino(char type, char param, int dist) {
                   break;
     }
 
-    if(state_raspicam && state_webcam){
-        if((get_avoid_sending() == SENDING_LIMIT-1) || param == 'F' || type == 'I')
+    if(state_raspicam && state_webcam && enable_sending){
+        if((send_fire > 0 && param == 'F') || (send_align > 0 && (param == 'L' || param == 'R'))){
             transmit(to_send);
 
-        #ifdef DISPLAY_MESSAGE
-            cout << to_send << endl;
-        #endif
+            #ifdef DISPLAY_MESSAGE
+                cout << to_send << endl;
+            #endif
+        }else if(type == 'I' || type == 'S'){
+            transmit(to_send);
+
+            #ifdef DISPLAY_MESSAGE
+                cout << to_send << endl;
+            #endif
+        }
     }
 
     increment_avoid_sending();
@@ -182,10 +195,6 @@ void Uart::receive() {
             //Bytes received
             rx_buffer[rx_length] = '\0';
             decode_message(rx_buffer);
-
-            #ifdef DISPLAY_MESSAGE
-                printf("%i bytes read : %s\n", rx_length, rx_buffer);
-            #endif
         }
     }
 }
@@ -194,13 +203,24 @@ void Uart::receive() {
 void Uart::decode_message(unsigned char message[]){
     switch(message[0]) {
         case 'B':
-            if (message[2] == '1')
+            if (bottle_to_throw == false){
                 bottle_to_throw = true;
-            else if (message[2] == '0')
+            } else {
                 bottle_to_throw = false;
-
+                send_fire = SENDING_LIMIT;
+                send_align = SENDING_LIMIT;
+            }
             break;
-    }
+        case 'N':
+            if (enable_sending == false){
+                enable_sending = true;
+            } else {
+                enable_sending = false;
+                send_fire = SENDING_LIMIT;
+                send_align = SENDING_LIMIT;
+            }
+            break;
+   }
 
     #ifdef DISPLAY_MESSAGE
         cout << "Decode " << message << endl;

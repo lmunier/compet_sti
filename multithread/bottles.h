@@ -55,8 +55,8 @@ using namespace raspicam;
 #define NO_BOTTLE_BEACON            100
 #define MEAN_NOTHING                8
 
-#define AVOID_NOISE                 HEIGHT_IMAGE/3	// Tolerance to avoid hight intensity when we don't detect bottles
-#define WAIT_WAKEUP_CAMERA          3			    // Wait to waking up camera
+#define AVOID_NOISE                 HEIGHT_IMAGE_RASPICAM/3	// Tolerance to avoid hight intensity when we don't detect bottles
+#define WAIT_WAKEUP_CAMERA          4			    // Wait to waking up camera
 
 #define BRIGHTNESS	                17			    // Brightness of our camera
 #define CONTRAST                    60			    // Contrast of our camera

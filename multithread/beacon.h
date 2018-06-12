@@ -58,8 +58,9 @@ using namespace std;
 #define HEIGHT_IMAGE_WEBCAM   240     // Height of our image/frame
 #define WIDTH_IMAGE_WEBCAM     	    320     // Width of our image/frame
 
+#define TOL_ALIGN		30
 #define TOLERANCE_ALIGN 	    10      // Tolerance for alignment
-#define WAIT_WAKEUP_WEBCAM	    2	    // Waiting to the webcam waking up
+#define WAIT_WAKEUP_WEBCAM	    5	    // Waiting to the webcam waking up
 #define MAX_FPS			        5	    // FPS max for the webcam
 
 #define OFF_BUTTON		        29	    // Wiring pin to confirm calibration (same as shutdown)

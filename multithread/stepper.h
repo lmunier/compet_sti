@@ -55,9 +55,9 @@
 #define TOLERANCE_ROT   10      // Tolerance PID rotation
 #define MIDDLE          160     // Desired target position
 
-#define KP_ROT          0.2    // Proportionnal coefficient rotation
-#define KI_ROT          0       // Integrtive coefficient rotation
-#define KD_ROT          0.001       // Derivative coefficient rotation
+#define KP_ROT          0.3    // Proportionnal coefficient rotation
+#define KI_ROT          0.001       // Integrtive coefficient rotation
+#define KD_ROT          0.002       // Derivative coefficient rotation
 
 #define SAMPLING        0.1     // (Sampling time for PID)
 #define INITIAL_STEP	0	// Offset at the beginning of competition
