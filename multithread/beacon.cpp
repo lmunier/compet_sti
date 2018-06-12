@@ -86,7 +86,7 @@ void* led_tracking(void* uart0) {
         // Extracted color to detect LEDs
 //        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
         if(led_x_pos == 0)
-            image = originale;
+            image = original;
         else
             image = set_roi(original);
 
