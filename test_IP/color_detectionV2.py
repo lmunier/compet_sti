@@ -108,9 +108,12 @@ def main():
 
     if args['source'] == 'w':
         camera = cv2.VideoCapture(0)
-        camera.set(cv2.CAP_PROP_BRIGHTNESS, brightness)
-#        camera.set(cv2.CAP_PROP_SATURATION, saturation)
-        camera.set(cv2.CAP_PROP_GAIN, gain)
+        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240);
+        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+        camera.set(cv2.CAP_PROP_BRIGHTNESS, 0)
+        camera.set(cv2.CAP_PROP_GAIN, 0.1)
+
+        camera.set(cv2.CAP_PROP_FPS, 5);
     elif args['source'] == 'r':
         camera = VideoStream(usePiCamera=True).start()
         time.sleep(2.0)

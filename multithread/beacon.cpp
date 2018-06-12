@@ -25,7 +25,7 @@ VideoCapture init_webcam(){
     webcam.set(CAP_PROP_FRAME_HEIGHT, HEIGHT_IMAGE);
     webcam.set(CAP_PROP_FRAME_WIDTH, WIDTH_IMAGE);
     webcam.set(CAP_PROP_BRIGHTNESS, 0);
-    webcam.set(CAP_PROP_GAIN, 0.15);
+    webcam.set(CAP_PROP_GAIN, 0.1);
 
     webcam.set(CAP_PROP_FPS, MAX_FPS);
 
@@ -46,10 +46,10 @@ void* led_tracking(void* uart0) {
 
     // Initialization of color threshold
     // White leds
-    int lower_hsv_yellow[] = {0, 0, 125};
-    int upper_hsv_yellow[] = {255, 255, 255};
+    int lower_hsv_yellow[] = {0, 0, 100};
+    int upper_hsv_yellow[] = {50, 60, 140};
 
-    int lower_rgb_yellow[] = {75, 0, 55};
+    int lower_rgb_yellow[] = {75, 0, 80};
     int upper_rgb_yellow[] = {255, 255, 130};
 
     // Initialization of variables
@@ -60,8 +60,7 @@ void* led_tracking(void* uart0) {
     int led_x_pos = 0;                  // Set distance variables
     int height_beacon = 0;              // Height of the beacon
     int y_min = 0, y_max = 0;           // Position y at the min and max of the beacon
-    int kernel_blur = 9;                // Set blur kernel
-    Rect roi(0, 0, HEIGHT_IMAGE, WIDTH_IMAGE);
+    int kernel_blur = 3;//9;                // Set blur kernel
 
     wiringPiSetup();
     Stepper stepper_back = init_stepper();
@@ -90,7 +89,7 @@ void* led_tracking(void* uart0) {
 
         extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
-        led_x_pos = extract_position(blur);
+        extract_position(blur, led_x_pos);
 
         manage_stepper(stepper_back, led_x_pos);
 
@@ -183,25 +182,28 @@ Rect get_roi(int x_max){
 }
 
 // Extract position of beacon led
-int extract_position(Mat& image){
+void extract_position(Mat& image, int& x_max){
     // Initialize matrices
     Mat gray;
 
     // Extract max, min
     Point min_loc, max_loc;
-    double min=0.0, max=0.0;
+    double min = 0.0, max = 0.0;
+
+    // Set roi to improve computation and avoid noisy detection
+    Rect roi(0, 0, WIDTH_IMAGE, HEIGHT_IMAGE/2);
 
     // Extract max
-    cvtColor(image, gray, COLOR_BGR2GRAY);
+    cvtColor(image(roi), gray, COLOR_BGR2GRAY);
     minMaxLoc(gray, &min, &max, &min_loc, &max_loc);
 
     // Show result
     #ifdef DISPLAY_IMAGE_WEBCAM
-        typedef Point_<uint16_t> Pixel;
+//        max_loc.x = x_start + max_loc.x;
         circle(image, max_loc, 10, (0, 255, 255), 2);
     #endif
 
-    return max_loc.x;
+    x_max = max_loc.x;
 }
 
 // Return height of beacon led

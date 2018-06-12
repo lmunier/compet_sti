@@ -82,7 +82,7 @@ Mat extract_color(Mat&, Mat&, int[], int[]);
 Rect get_roi(int);
 
 // Extract position of beacon led
-int extract_position(Mat&);
+void extract_position(Mat&, int&);
 
 // Extract position of beacon led
 int extract_height(Mat&, int, int&, int&);
