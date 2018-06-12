@@ -85,7 +85,7 @@ Mat set_roi(Mat&);
 int extract_position(Mat&, int&, int&, int&);
 
 // Extract position of beacon led
-int extract_height(Mat&, int);
+int extract_height(Mat&, int, int&, int&);
 
 // Give distance to corner
 double get_dist_corner(int, int, char);

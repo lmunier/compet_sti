@@ -60,7 +60,7 @@ void* led_tracking(void* uart0) {
     char direction = ' ';               // Direction character
     int led_x_pos = 0;                  // Set distance variables
     int kernel_blur = 9;                // Set blur kernel
-
+    int y_min = 0, y_max = 0;           // Position y at the min and max of the beacon
 
     wiringPiSetup();
     Stepper stepper_back = init_stepper();
@@ -108,7 +108,9 @@ void* led_tracking(void* uart0) {
                     direction = 'L';
                 }
             } else if (obstacle) {
-                if(extract_height(image, led_x_pos) < BEACON_SIZE_MIN)
+                height_beacon = extract_height(image, led_x_pos, y_min, y_max);
+
+                if(height_beacon < BEACON_SIZE_MIN)
                     ptr_uart0->send_to_arduino('A', 'O');
                 else
                     obstacle = false;
@@ -123,7 +125,7 @@ void* led_tracking(void* uart0) {
 
             // Set send_fire to false to shoot next bottle
             send_fire = false;
-            obstacle = false;
+            obstacle = true;
         }
 
         // Setting calibration to true and step to 0
@@ -209,12 +211,11 @@ int extract_position(Mat& image){
 }
 
 // Return height of beacon led
-int extract_height(Mat& image, int x){
+int extract_height(Mat& image, int x, int& y_min, int& y_max){
     // Initialize variables
     int nbr = 0;
     int hole = 0;
     int x_min = 0, x_max = 0, x_tmp = 0;
-    int y_min = 0, y_max = 0;
 
     // Extract hight of beacon
     for(int row = 0; row < HEIGHT_IMAGE; row++){

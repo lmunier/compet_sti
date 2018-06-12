@@ -57,8 +57,8 @@
           <file leaf-file-name="beacon.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/beacon.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-890">
-                  <caret line="210" column="30" lean-forward="false" selection-start-line="210" selection-start-column="30" selection-end-line="210" selection-end-column="30" />
+                <state relative-caret-position="17">
+                  <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -92,7 +92,7 @@
             <entry file="file://$PROJECT_DIR$/beacon.h">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="754">
-                  <caret line="87" column="3" lean-forward="false" selection-start-line="87" selection-start-column="3" selection-end-line="87" selection-end-column="3" />
+                  <caret line="87" column="40" lean-forward="false" selection-start-line="87" selection-start-column="40" selection-end-line="87" selection-end-column="40" />
                   <folding />
                 </state>
               </provider>
@@ -221,12 +221,12 @@
       <option name="presentableId" value="Default" />
       <updated>1528292266012</updated>
       <workItem from="1528292267516" duration="5673000" />
-      <workItem from="1528298816145" duration="27744000" />
+      <workItem from="1528298816145" duration="28058000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33417000" />
+    <option name="totallyTimeSpent" value="33731000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -390,15 +390,15 @@
     <entry file="file://$PROJECT_DIR$/beacon.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="754">
-          <caret line="87" column="3" lean-forward="false" selection-start-line="87" selection-start-column="3" selection-end-line="87" selection-end-column="3" />
+          <caret line="87" column="40" lean-forward="false" selection-start-line="87" selection-start-column="40" selection-end-line="87" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/beacon.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-890">
-          <caret line="210" column="30" lean-forward="false" selection-start-line="210" selection-start-column="30" selection-end-line="210" selection-end-column="30" />
+        <state relative-caret-position="17">
+          <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
           <folding />
         </state>
       </provider>
