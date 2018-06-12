@@ -36,7 +36,6 @@ VideoCapture init_webcam(){
 void* led_tracking(void* uart0) {
     // Initialization of matrices
     Mat image;
-    Mat original;
     Mat blur;
     Mat gray;
     Mat image_hsv;
@@ -75,7 +74,7 @@ void* led_tracking(void* uart0) {
 
     // Loop on led detection/alignment
     while(true){
-        bool bSuccess = webcam.read(original);
+        bool bSuccess = webcam.read(image);
 
         if(!bSuccess){
             cout << "Webcam disconnected." << endl;
@@ -87,9 +86,9 @@ void* led_tracking(void* uart0) {
         // Extracted color to detect LEDs
 //        extracted = extract_color(image, image, lower_rgb_yellow, upper_rgb_yellow);
 
-        cvtColor(original, image_hsv, COLOR_BGR2HSV);
+        cvtColor(image, image_hsv, COLOR_BGR2HSV);
 
-        extracted = extract_color(original, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
+        extracted = extract_color(image, image_hsv, lower_hsv_yellow, upper_hsv_yellow);
         medianBlur(extracted, blur, kernel_blur);
         led_x_pos = extract_position(blur);
 
@@ -106,7 +105,7 @@ void* led_tracking(void* uart0) {
                     direction = 'L';
                 }
             } else if (obstacle) {
-                height_beacon = extract_height(original, led_x_pos, y_min, y_max);
+                height_beacon = extract_height(image, led_x_pos, y_min, y_max);
 
                 if(height_beacon < BEACON_SIZE_MIN)
                     ptr_uart0->send_to_arduino('A', 'O');
