@@ -1,7 +1,7 @@
 //Module:		    CheapStepper
 //version:		    1.0
 //Update:           15.05.2018
-//Responsability:	Munier Louis
+//Author:	        Munier Louis
 /*Description :
  * This file is based on an open one find on github with the following information and will be adapted for our uses.
  */

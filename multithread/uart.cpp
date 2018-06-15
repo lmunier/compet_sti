@@ -1,9 +1,10 @@
 //Module:		    uart.cpp
 //version:		    1.0
-//Update:           06.06.2018
-//Responsability:	Munier Louis
+//Update:           15.06.2018
+//Author:	        Munier Louis
 /*Description :
- * Management of the UART communication between arduino and raspberry pi3
+ * Management of the UART communication between arduino and raspberry pi3. This part is based a lot on the code given in
+ * the link http://www.raspberry-projects.com/pi/programming-in-c/uart-serial-port/using-the-uart
  */
 
 #include "uart.h"

@@ -1,7 +1,7 @@
 //Module:		    bottles.cpp
 //version:		    1.0
-//Update:           06.06.2018
-//Responsability:	Munier Louis
+//Update:           15.06.2018
+//Author:	        Munier Louis
 /*Description :
  * Management of the camera who tracks the bottles to throw them.
  */
@@ -27,7 +27,6 @@ RaspiCam_Cv init_raspicam(){
     camera.set(CAP_PROP_FPS, MAX_FPS);
 
     sleep(0.5);
-//    camera.setAWB(RASPICAM_AWB_FLASH);
 
     return camera;
 }
@@ -108,13 +107,6 @@ void* bottles_scanning(void* uart0){
             imshow("Original", image);
         #endif
 
-        // Compute on input frame to find bottles
-        /*if(!bottle_detected) {
-            roi = set_roi(image);
-        } else {
-            roi = image(rect_roi);
-        }*/
-
         filter2D(image, sharp, -1, kern);
         deleted = check_bottle(camera, sharp, lower_beacon, upper_beacon, beacon_detected, led_state);
 
@@ -122,9 +114,6 @@ void* bottles_scanning(void* uart0){
         test.copyTo(deleted(rect_roi));
 
         max_light_localization(deleted, max, max_loc, kernel_blur, beacon_detected);
-
-        //region_of_interest = set_roi(image, max_loc, rect_roi, bottle_detected);
-//        filtered = del_color(region_of_interest, lower_hsv_bottles, upper_hsv_bottles);
 
         // Show results if needed
         #ifdef DISPLAY_IMAGE_RASPICAM
@@ -225,14 +214,10 @@ void max_light_localization(Mat& image, double& max, Point& max_loc, int kernel_
     // Blur image to avoid noise
     cvtColor(image, gray, COLOR_BGR2GRAY);
     GaussianBlur(gray, blur, Size(kernel_blur, kernel_blur), 0, 0);
-//    medianBlur(gray, blur, kernel_blur);
-    // Extract max to find bottle
+
     minMaxLoc(blur, &min, &max, &min_loc, &max_loc);
-
     meanStdDev(blur, mean, stddev);
-//cout << mean << stddev << endl;
 
-//cout << max << endl;
     // Threshold to avoid false positiv
     if(max >= NO_BOTTLE){
         if((mean[0] > MEAN_NOTHING && !beacon) || (beacon && max < NO_BOTTLE_BEACON))

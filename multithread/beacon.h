@@ -1,7 +1,7 @@
 //Module:		    beacon.h
 //version:		    1.0
 //Update:           06.06.2018
-//Responsability:	Munier Louis
+//Author:	        Munier Louis
 /*Description :
  * Management of the camera who tracks the corner LED to throw the bottle in right place.
  */

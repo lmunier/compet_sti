@@ -1,7 +1,7 @@
 //Module:		    beacon.cpp
 //version:		    1.0
-//Update:           06.06.2018
-//Responsability:	Munier Louis
+//Update:           15.06.2018
+//Author:	        Munier Louis
 /*Description :
  * Management of the camera who tracks the corner LED to throw the bottle in right place.
  */
@@ -48,9 +48,6 @@ void* led_tracking(void* uart0) {
     // White leds
     int lower_hsv_yellow[] = {0, 0, 100};
     int upper_hsv_yellow[] = {50, 60, 140};
-
-    int lower_rgb_yellow[] = {70, 0, 70};
-    int upper_rgb_yellow[] = {255, 255, 135};
 
     // Initialization of variables
     bool calibration = false;           // Calibration is done
@@ -147,7 +144,6 @@ Mat extract_color(Mat& image, Mat& to_delete, int lower[], int upper[]){
     Mat extracted;
 
     // Create and apply mask to our image
-
     inRange(to_delete, Scalar(lower[HUE], lower[SAT], lower[VAL]),
                        Scalar(upper[HUE], upper[SAT], upper[VAL]), mask);
     bitwise_and(image, image, extracted, mask);
@@ -192,7 +188,6 @@ void extract_position(Mat& image, int& x_max){
 
     // Show result
     #ifdef DISPLAY_IMAGE_WEBCAM
-//        max_loc.x = x_start + max_loc.x;
         circle(image, max_loc, 10, (0, 255, 255), 2);
     #endif
 

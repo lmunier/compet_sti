@@ -1,10 +1,10 @@
 //Module:		    stepper.cpp
 //version:		    1.0
-//Update:           06.06.2018
-//Responsability:	Munier Louis
+//Update:           15.06.2018
+//Author:	        Munier Louis
 /*Description :
- * This file is based on an open one (CheapStepp.cpp) find on github with the following informations and is
- * adapted for our uses.
+ * This file is based on an open one (CheapStepp.cpp) find on github https://github.com/tyhenry/CheapStepper with the
+ * following informations and ii has been for our uses.
  */
 
 /*  CheapStepper.cpp -
